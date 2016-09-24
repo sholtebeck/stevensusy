@@ -25,7 +25,7 @@ $(document).ready(function() {
 <div id="container">
 {% if user %}
     &nbsp;Welcome, <b>{{ user }}</b>:
-  <a href="{{ url }}">{{ url_linktext }}</a>
+  <a href="{{ url }}">{{ url_linktext }}</a> {{msg}}
 <h1>{{title}}</h1>
   <ul class="tabs"> 
         <li class="active" rel="tab1">Ceremony</li>
@@ -59,7 +59,7 @@ $(document).ready(function() {
     <div>
         <div>
             <label for="fullName">Name:</label>
-            <input type="text" id="fullName" name="fullName" size="60" value="">
+            <input type="text" id="name" name="name" size="60" value="">
        </div>
 		<div>
             <label for="email">Email:</label>
@@ -130,10 +130,10 @@ $(document).ready(function() {
 
         <div>
             <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="email" size="20" value="">
+            <input type="text" id="phone" name="phone" size="20" value="">
         </div>
 		 <div>
-            <label for="willAttendWedding">Will you be attending the wedding?</label> <select id="willAttendWedding" name="willAttendWedding">
+            <label for="willAttend">Will you be attending the wedding?</label> <select id="willAttend" name="willAttend">
 			    <option value="no">no</option>
                 <option value="yes">yes</option>
             </select>
@@ -155,7 +155,7 @@ $(document).ready(function() {
 			<input type="text" id="note" name="note" size="60" value="">
         </div>
         <div>
-            <input type="hidden" id="nickname" name="nickname" value="{{name}}">
+            <input type="hidden" id="nickname" name="nickname" value="{{user}}">
             <p><input type="submit" value="Send RSVP">
         </div>
     </div>

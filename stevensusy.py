@@ -37,9 +37,17 @@ def globalVals(ctx):
     
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        template_values= {	"title": "Steve & Susy's Wedding", 	"date": "Easter Sunday, April 16 2017",   
-		"time":	"Mid-morning, about 8:30-10:30am HST",	"attire":"Casual (dress for a beach park)", "location":	"Magic Island Lagoon, Ala Moana Beach Park, Honolulu HI"	}
+        template_values= {
+	"title": "Steve & Susy's Wedding",
+ 	"date": "Easter Sunday, April 16 2017",   
+	"time":	"Mid-morning, about 8:30-10:30am HST",
+	"attire":"Casual (dress for a beach park)",
+        "location": "Magic Island Lagoon, Ala Moana Beach Park, Honolulu HI",
+        "thankyou": "Thank You for your RSVP!"
+	}
    
+        if self.request.get('msg'):
+            template_values['msg']=template_values[self.request.get('msg')]
         if users.get_current_user() and names.get(users.get_current_user().nickname()):
             template_values['user'] = names[users.get_current_user().nickname()]
             template_values['url'] = users.create_logout_url(self.request.uri)
@@ -63,14 +71,17 @@ class Greeting(ndb.Model):
 
 class RSVP(ndb.Model):
     """Models an individual RSVP entry."""
-    author = ndb.UserProperty()
-    fullName = ndb.StringProperty(indexed=False)
-    nickname = ndb.StringProperty(indexed=False)
+    nickname= ndb.StringProperty()
+    name = ndb.StringProperty(indexed=False)
+    address = ndb.StringProperty(indexed=False)
+    city = ndb.StringProperty(indexed=False)
+    state = ndb.StringProperty(indexed=False)
+    zip = ndb.StringProperty(indexed=False)
     email = ndb.StringProperty(indexed=False)
+    phone = ndb.StringProperty(indexed=False)
     note = ndb.TextProperty(indexed=False)
-    willAttendWedding = ndb.TextProperty(indexed=False)
-    willAttendReception = ndb.TextProperty(indexed=False)
-    attendants = ndb.IntegerProperty(indexed=False)
+    willAttend= ndb.TextProperty(indexed=False)
+    attendees = ndb.IntegerProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
 
 class Response(webapp2.RequestHandler):
@@ -83,21 +94,20 @@ class Response(webapp2.RequestHandler):
     def post(self):
         guestbookName = self.request.get('guestbookName',
                                           DEFAULT_GUESTBOOK_NAME)
-        rsvp = RSVP(parent=guestbook_key(guestbookName))
-
-        if users.get_current_user():
-            rsvp.author = users.get_current_user()
-
-        rsvp.fullName = self.request.get('fullName')
+        rsvp = RSVP(parent=guestbook_key(guestbookName),id=users.get_current_user().nickname() )
+        rsvp.name= self.request.get('name')
         rsvp.nickname = self.request.get('nickname')
         rsvp.email = self.request.get('email')
-        rsvp.willAttendWedding = self.request.get('willAttendWedding')
-        rsvp.willAttendReception = self.request.get('willAttendReception')
-        rsvp.attendants = int(self.request.get('attendants'))
+        rsvp.phone = self.request.get('phone')
+        rsvp.address = self.request.get('address')
+        rsvp.city= self.request.get('city')
+        rsvp.state= self.request.get('state')
+        rsvp.zip= self.request.get('zip')
+        rsvp.willAttend= self.request.get('willAttend')
+        rsvp.attendees = int(self.request.get('attendees'))
         rsvp.note = self.request.get('note')
         rsvp.put()
-        self.redirect('/?msg=Thank you for submitting your RSVP')
-
+        self.redirect('/?msg=thankyou')
 
 
 class MessageBoard(webapp2.RequestHandler):
