@@ -31,18 +31,18 @@ def globalVals(ctx):
         'linkText': linkText,
         'notes': notes,
         'name': name,
-        'title': "Steve & Susy's Wedding",
         '_get': _get,
     }
     
 class MainPage(webapp2.RequestHandler):
     def get(self):
         template_values= {
-	"title": "Steve & Susy's Wedding",
+	"title": "Susy & Steve's Wedding",
  	"date": "Easter Sunday, April 16 2017",   
 	"time":	"Mid-morning, about 8:30-10:30am HST",
 	"attire":"Casual (dress for a beach park)",
         "location": "Magic Island Lagoon, Ala Moana Beach Park, Honolulu HI",
+        "map_key": "AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk",
         "thankyou": "Thank You for your RSVP!"
 	}
    
