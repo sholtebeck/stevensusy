@@ -19,7 +19,7 @@ ul.tabs li {
 		border: 1px solid #999999;
 		border-left: none;
 		font-weight: bold;
-        font-size: 1.2em;
+	        font-size: 1.2em;
 		background: #EEEEEE;
 		overflow: hidden;
 		position: relative;
@@ -46,12 +46,12 @@ ul.tabs li.active{
 }
 	body {
 	  font-family: Verdana, Arial, sans-serif;	
-      font-size: 1.1em;
+      font-size: 1.0em;
 	  background-color: #DDDDDD;
 	}
 	select {
 	  font-family: Verdana, Arial, sans-serif;
-	  font-size: 1.1em;
+	  font-size: 1.0em;
         }
 	#container {
 		width: 1350px;
@@ -111,6 +111,7 @@ div.jumbo {
 label {
 color: blue;
 font-weight: bold;
+font-size:1.1em;
 }
 
 table { 
@@ -131,8 +132,11 @@ td {
 background: #FAFAFA; /* Lighter grey background */
 }
 
-select {
-  font-family: inherit;
+input
+{
+    font-size:1.1em;
 }
-
-
+select
+{
+    font-size:1.1em;
+}

@@ -24,8 +24,8 @@ $(document).ready(function() {
 
 <div id="container">
 {% if user %}
-    &nbsp;Welcome, <b>{{ user }}</b>:
-  <a href="{{ url }}">{{ url_linktext }}</a> {{msg}}
+    &nbsp;Welcome, <b>{{ user }}</b>: {{msg}}
+  <a href="{{ url }}">{{ url_linktext }}</a>
 <h1>{{title}}</h1>
   <ul class="tabs"> 
         <li class="active" rel="tab1">Ceremony</li>
@@ -59,7 +59,9 @@ $(document).ready(function() {
        </div>
 		<div>
             <label for="email">Email:</label>
-            <input type="text" id="email" name="email" size="40" value="">
+            <input type="text" id="email" name="email" size="30" value="">
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone" size="15" value="">
      </div>
 		<div>
             <label for="address">Address:</label>
@@ -123,18 +125,15 @@ $(document).ready(function() {
 </select>
 			<label for="zip">ZIP:</label>  <input type="text" id="zip" name="zip" size="10">
        </div>
-
-        <div>
-            <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="phone" size="20" value="">
+	<div>
+            <label for="note">Note: </label>
+			<input type="text" id="note" name="note" size="60" value="">
         </div>
-		 <div>
+	<div>
             <label for="willAttend">Will you be attending the wedding?</label> <select id="willAttend" name="willAttend">
 			    <option value="no">no</option>
                 <option value="yes">yes</option>
             </select>
-        </div>
-        <div>
             <label for="attendees">Number attending:</label>
             <select id="attendees" name="attendees">
                 <option value="0">none</option>
@@ -146,10 +145,6 @@ $(document).ready(function() {
                 <option value="6">six</option>
             </select>
         </div>
-		<div>
-            <label for="note">Note: </label>
-			<input type="text" id="note" name="note" size="60" value="">
-        </div>
         <div>
             <input type="hidden" id="nickname" name="nickname" value="{{user}}">
             <p><input type="submit" value="Send RSVP">
@@ -159,7 +154,7 @@ $(document).ready(function() {
 </div><!-- #tab3 -->
 
 <div id="tab4" class="tab_content"> 
-<iframe width='1250' height='800' frameborder='0' src='http://stevensusy.blogspot.com'></iframe>
+<iframe width='1250' height='800' frameborder='0' src='http://susyandsteve.blogspot.com'></iframe>
 </div><!-- #tab4 -->
 {% else %}
 &nbsp;Welcome, <b>Guest</b>:
