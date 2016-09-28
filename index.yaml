@@ -15,3 +15,8 @@ indexes:
   properties:
   - name: date
     direction: desc
+
+- kind: RSVP
+  ancestor: yes
+  properties:
+  - name: nickname

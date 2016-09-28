@@ -14,48 +14,47 @@ jinja_environment = jinja2.Environment(autoescape=True,loader=jinja2.FileSystemL
 names={'sholtebeck':'Steve','ingrahas':'Susy','mholtebeck':'Mark','aingrahamdwyer':'Andy','moxiemoo':'Janet'}
 DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
 
+def get_RSVP_list():
+    rsvp_query = RSVP.query(ancestor=guestbook_key(DEFAULT_GUESTBOOK_NAME)).order(RSVP.nickname)
+    rsvp_list = rsvp_query.fetch(100)
+    return rsvp_list
+	
+def get_RSVP_count(rsvp_list):
+    rsvp_count = 0
+    for rsvp in rsvp_list:
+        if rsvp.willAttend == "yes":
+            rsvp_count += rsvp.attendees
+    return rsvp_count
+
 def globalVals(ctx):
-    if users.get_current_user():
-        url = users.create_logout_url(ctx.request.uri)
-        linkText = 'Logout'
-        notes = True;
-        name = users.get_current_user().nickname()
-    else:
-        url = users.create_login_url(ctx.request.uri)
-        linkText = 'Login'
-        notes= False
-        name = ""
-    _get = ctx.request.GET
-    return {
-        'url': url,
-        'linkText': linkText,
-        'notes': notes,
-        'name': name,
-        '_get': _get,
+    template_values= {
+    "title": "Susy & Steve's Wedding",
+    "date": "Easter Sunday, April 16 2017",   
+    "time": "Mid-morning, about 8:30-10:30am HST",
+    "attire":"Casual (dress for a beach park)",
+    "location": "Magic Island Lagoon, Ala Moana Beach Park, Honolulu HI",
+    "map_key": "AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk",
+    "attending": "Thank You for your RSVP. You are attending the wedding. &#9786;",
+    "notattending": "You are not attending the wedding. &#9786;",
     }
+  
+    if ctx.request.get('msg'):
+        template_values['msg']=template_values[ctx.request.get('msg')]
+    if users.get_current_user() and names.get(users.get_current_user().nickname()):
+        template_values['rsvplist']=get_RSVP_list()
+        template_values['guestcount']=get_RSVP_count(template_values['rsvplist'])
+        template_values['user'] = names[users.get_current_user().nickname()]
+        template_values['url'] = users.create_logout_url(ctx.request.uri)
+        template_values['url_linktext'] = 'Logout'
+    else:
+        template_values['user'] = ""
+        template_values['url'] = users.create_login_url(ctx.request.uri)
+        template_values['url_linktext'] = 'Login'
+    return template_values
     
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        template_values= {
-	"title": "Susy & Steve's Wedding",
- 	"date": "Easter Sunday, April 16 2017",   
-	"time":	"Mid-morning, about 8:30-10:30am HST",
-	"attire":"Casual (dress for a beach park)",
-        "location": "Magic Island Lagoon, Ala Moana Beach Park, Honolulu HI",
-        "map_key": "AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk",
-        "thankyou": "Thank You for your RSVP!"
-	}
-   
-        if self.request.get('msg'):
-            template_values['msg']=template_values[self.request.get('msg')]
-        if users.get_current_user() and names.get(users.get_current_user().nickname()):
-            template_values['user'] = names[users.get_current_user().nickname()]
-            template_values['url'] = users.create_logout_url(self.request.uri)
-            template_values['url_linktext'] = 'Logout'
-        else:
-            template_values['user'] = ""
-            template_values['url'] = users.create_login_url(self.request.uri)
-            template_values['url_linktext'] = 'Login'
+        template_values= globalVals(self)
         template = jinja_environment.get_template('index.html')
         self.response.out.write(template.render(template_values))
 
@@ -86,15 +85,23 @@ class RSVP(ndb.Model):
 
 class Response(webapp2.RequestHandler):
     def get(self):
-        template = jinja_environment.get_template('templates/rsvp.html')
-        pageVars = globalVals(self)
-        pageVars['title'] = "RSVP"
+        template = jinja_environment.get_template('rsvp.html')
+        guestbookName = self.request.get('guestbookName', DEFAULT_GUESTBOOK_NAME)
+        rsvp_query = RSVP.query(ancestor=guestbook_key(guestbookName)).order(RSVP.nickname)
+        rsvp_list = rsvp_query.fetch(100)
+        pageVars = globalVals(self) 
+        pageVars['rsvplist'] =  rsvp_list
+        pageVars['title'] += ":RSVP"
+        pageVars['guestcount'] = 0
+        for rsvp in rsvp_list:
+            if rsvp.willAttend == "yes":
+                pageVars['guestcount'] += rsvp.attendees
         self.response.write(template.render(pageVars))
 
     def post(self):
-        guestbookName = self.request.get('guestbookName',
-                                          DEFAULT_GUESTBOOK_NAME)
-        rsvp = RSVP(parent=guestbook_key(guestbookName),id=users.get_current_user().nickname() )
+        guestbookName = self.request.get('guestbookName', DEFAULT_GUESTBOOK_NAME)
+        nickName = self.request.get('nickname','Steve')
+        rsvp = RSVP(parent=guestbook_key(guestbookName),id=nickName )
         rsvp.name= self.request.get('name')
         rsvp.nickname = self.request.get('nickname')
         rsvp.email = self.request.get('email')
@@ -107,7 +114,10 @@ class Response(webapp2.RequestHandler):
         rsvp.attendees = int(self.request.get('attendees'))
         rsvp.note = self.request.get('note')
         rsvp.put()
-        self.redirect('/?msg=thankyou')
+        if rsvp.willAttend=="yes":
+            self.redirect('/?msg=attending')
+        else:
+            self.redirect('/?msg=notattending')
 
 
 class MessageBoard(webapp2.RequestHandler):
