@@ -8,9 +8,7 @@
 <body> 
 <h1>{{title}}</h1>
 <form action="/rsvp" method="post">
-{% if user and rsvplist %}
-{% for rsvp in rsvplist %}
-{% if rsvp.nickname == user %}  
+{% if rsvp %}
 {% if rsvp.willAttend=="yes" %}
     <label>You are attending the wedding. &#9786; </label> 
 {% else %}
@@ -120,8 +118,6 @@ $('select[name="state"] option[value="{{rsvp.state}}"]').attr("selected","select
 $('select[name="willAttend"] option[value="{{rsvp.willAttend}}"]').attr("selected","selected");
 $('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected","selected");
 </script>
-{% endif %}
-{% endfor %}
 {% else %}
     <div>
         <div>
@@ -224,7 +220,7 @@ $('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected"
 {% endif %}
 </form>
 
-<h3>Attending ({{attending}})</h3> 
+<label>Attending ({{guestcount}})</label></br> 
 {% for rsvp in rsvplist %}
 {% if rsvp.willAttend=="yes" %}
     <b>{{ rsvp.name }}</b> {{rsvp.note}}<br>

@@ -1,13 +1,7 @@
 
 <form action="/rsvp" method="post">
-{% if user and rsvplist %}
-{% for rsvp in rsvplist %}
-{% if rsvp.nickname == user %}  
-{% if rsvp.willAttend=="yes" %}
-    <label>You are attending the wedding. &#9786; </label> 
-{% else %}
-    <label>You are not attending the wedding. &#9785;</label>
-{% endif %}
+{% if rsvp %}
+<label>{{msg}}</label> 
 <p/>
     <div>
         <div>
@@ -112,8 +106,6 @@ $('select[name="state"] option[value="{{rsvp.state}}"]').attr("selected","select
 $('select[name="willAttend"] option[value="{{rsvp.willAttend}}"]').attr("selected","selected");
 $('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected","selected");
 </script>
-{% endif %}
-{% endfor %}
 {% else %}
     <div>
         <div>
