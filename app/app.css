@@ -140,3 +140,10 @@ select
 {
     font-size:1.1em;
 }
+#map {
+	height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
