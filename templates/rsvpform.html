@@ -186,9 +186,10 @@ $('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected"
         </div>
 	<div>
             <label for="willAttend">Will you be attending the wedding?</label> <select id="willAttend" name="willAttend">
-			    <option value="no">no</option>
                 <option value="yes">yes</option>
-            </select>
+			    <option value="no">no</option>
+                <option value="maybe">maybe</option>
+           </select>
             <label for="attendees">Number attending:</label>
             <select id="attendees" name="attendees">
                 <option value="0">none</option>
@@ -212,7 +213,11 @@ $('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected"
 <label>Attending ({{guestcount}})</label></br>
 {% for rsvp in rsvplist %}
 {% if rsvp.willAttend=="yes" %}
-    <b>{{ rsvp.name }}</b> {{rsvp.note}}<br>
+    {{ rsvp.name }}
+	{% if rsvp.attendees > 1 %}
+	 ({{rsvp.attendees}})
+	{% endif %}
+	<br>
 {% endif %}
 {% endfor %}
 {% endif %}

@@ -29,9 +29,10 @@ $(document).ready(function() {
 <h1>{{title}}</h1>
   <ul class="tabs"> 
         <li class="active" rel="tab1">Ceremony</li>
-        <li rel="tab3">RSVP</li>
-       <li rel="tab2">Travel/Accommodations</li>
-       <li rel="tab4">Wedlog</li>
+        <li rel="tab2">RSVP</li>
+       <li rel="tab3">Registry</li>
+       <li rel="tab4">Travel/Accommodations</li>
+       <li rel="tab5">Wedlog</li>
   </ul>
   
 <div class="tab_container"> 
@@ -45,20 +46,29 @@ $(document).ready(function() {
 </div><!-- #tab1 -->
 
 <div id="tab2" class="tab_content"> 
+{% include "rsvpform.html" %}
+</div><!-- #tab2 -->
+<div id="tab3" class="tab_content"> 
+<label>Our Gift Registry:</label><br>Are you kidding? We just spent months paring down two long-established independent overstuffed households and moving across an ocean together into a small flat! We really don’t need or want anything. 
+In lieu of gifts to us, please consider a donation to one or more of the following:
+<p><A href="https://donate.cancer.org/index.aspx?campaign=CY16MemPod&_ga=1.191803370.1588438681.1474949228" target="_blank">The American Cancer Society</a> or <a href="http://www.nhpco.org/find-hospice">your local hospice</a> in memory of Susy's mom, Judy (Bosanec) Ingraham.
+<br><A href="http://www.ccfa.org/get-involved/donate-to-ccfa/honors-and-memorial.html" target="_blank">The Crohn’s & Colitis Foundation of America</a> in memory of Steve's mom, Joan (Brown) Holtebeck.
+<br><A href="https://www.gofundme.com/2nz0vk" target="_blank">The Scott Miller family fund</a> or <A href="https://afsp.org/take-action/give-a-gift/" target="_blank">AFSP</a>, since we met via Janet & Andy, who Steve met via the loud-fans list, so our wedding is because of Scott Miller.
+<br><A href="http://www.calparks.org/whatwedo/improving/pigeon-point/" target="_blank">Pigeon Point Lighthouse Restoration</a>, to support a cause near and dear to both of us.
+<p><img src="/app/pigeonpoint.jpg" width="500">
+</div><!-- #tab3 -->
+
+<div id="tab4" class="tab_content"> 
     <label>Recommended Hotels</label><br/>
 	<a href="http://www.alamoanahotelhonolulu.com/" target="_blank">Ala Moana Hotel</a> - Near Magic Island/Ala Moana Shopping Center
 <br><a href="http://www.aquapalms.com/" target="_blank">Aqua Palms Waikiki</a> - Affordable boutique hotel near Ala Moana/Waikiki 	
 <br><a href="https://www.halekoa.com/" target="_blank">Hale Koa Hotel</a> - Military hotel in Waikiki   
 <p><a href="https://www.google.com/maps/d/embed?mid=1T52UMNxICwNIEJFzpu0K6BzYHh0" target="_blank"><img src="/app/weddingmap.jpg" width="640" height="480"></a>
-</div><!-- #tab2 -->
-
-<div id="tab3" class="tab_content"> 
-{% include "rsvpform.html" %}
-</div><!-- #tab3 -->
-
-<div id="tab4" class="tab_content"> 
-<iframe width='1250' height='800' frameborder='0' src='http://susyandsteve.blogspot.com'></iframe>
 </div><!-- #tab4 -->
+
+<div id="tab5" class="tab_content"> 
+<iframe width='1250' height='800' frameborder='0' src='http://susyandsteve.blogspot.com'></iframe>
+</div><!-- #tab5 -->
 {% else %}
 &nbsp;Welcome, <b>Guest</b>:
   <a href="{{ url }}">{{ url_linktext }}</a>
