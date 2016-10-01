@@ -3,7 +3,7 @@
 import os
 import cgi
 import urllib
-
+from datetime import date
 from google.appengine.api import users
 from google.appengine.ext import ndb
 
@@ -37,7 +37,8 @@ def globalVals(ctx):
     "yes": "You are attending&#9786;",
     "no": "&#9785; You are not attending",
     }
-  
+    # Get number of days until the big day
+    template_values['days']=(date(2017,4,16)-date.today()).days
     if users.get_current_user() and names.get(users.get_current_user().nickname()):
         template_values['user'] = names[users.get_current_user().nickname()]
         template_values['url'] = users.create_logout_url(ctx.request.uri)
