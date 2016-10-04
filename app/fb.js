@@ -72,7 +72,7 @@
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name);
 	  var nickname=response.name.split(" ")[0]
-      document.getElementById('status').innerHTML = 'Logged in as ' + nickname;
+      document.getElementById('status').innerHTML = 'Logged in as ' + response.name;
       window.location.href = "/login?nickname="+nickname;
     });
   }

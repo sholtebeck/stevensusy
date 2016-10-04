@@ -152,7 +152,7 @@ class Response(BaseHandler):
 class LogMeInOrOut(BaseHandler):
     def get(self):
         nickname = self.request.get('nickname')
-        if not nickname:
+        if not nickname or nickname in ('Guest','undefined'):
             del self.session['nickname']
             self.redirect(users.create_logout_url('/'))
         else:
