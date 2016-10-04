@@ -3,6 +3,7 @@
   <head>
    <title>{{title}}</title>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> 
+<script src="/app/fb.js"></script> 
 <script type="text/javascript">
 $(document).ready(function() {
 
@@ -82,7 +83,10 @@ In lieu of gifts to us, please consider a donation to one or more of the followi
 </div><!-- #tab5 -->
 {% else %}
  <form action="/login" method="post">
-&nbsp;Welcome,<input type="text" id="nickname" name="nickname" size="10" value="Guest"><input type="submit" value="Login">
+Welcome,<input type="text" id="nickname" name="nickname" size="10" value="Guest"><input type="hidden" id="url" name="url" value="{{url}}">
+<a href="/app/fblogin.html"><img src="/app/fb.jpg" align="top" alt="login via Facebook" width="25"></a>
+<a href="{{url}}"><img src="/app/g.jpg" align="top" alt="login via Google" width="25"></a>
+<input type="submit" value="Login">
 </form>
 <h1>{{title}}</h1>
 <br><img src="/app/magicisland.jpg" align="top">

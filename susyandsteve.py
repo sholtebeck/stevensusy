@@ -15,6 +15,12 @@ config={'webapp2_extras.sessions' : {'secret_key': app_name } }
 jinja_environment = jinja2.Environment(autoescape=False,loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')))    
 names={'sholtebeck':'Steve','ingrahas':'Susy','mholtebeck':'Mark','aingrahamdwyer':'Andy','moxiemoo':'Janet'}
 
+def get_Nickname(input):
+    (name,domain)=input.split('@')
+    if (domain == 'gmail.com'):
+        output = name       
+    return output
+
 def get_RSVP_list():
     rsvp_query = RSVP.query(ancestor=login_key(app_name)).order(RSVP.nickname)
     rsvp_list = rsvp_query.fetch(100)
@@ -42,9 +48,10 @@ def globalVals(ctx):
     # Get number of days until the big day
     template_values['action']=ctx.request.get('action') 
     template_values['days']=(date(2017,4,17)-date.today()).days
-    template_values['nickname']=ctx.session_store.get_session().get('nickname')	
+    template_values['nickname']=ctx.session_store.get_session().get('nickname') 
     if users.get_current_user() and names.get(users.get_current_user().nickname()):
         template_values['nickname'] = names[users.get_current_user().nickname()]
+        ctx.session['nickname'] = template_values['nickname']
     if template_values.get('nickname'):
         template_values['url'] = users.create_logout_url(ctx.request.uri)
     else:
@@ -144,26 +151,36 @@ class Response(BaseHandler):
 
 class LogMeInOrOut(BaseHandler):
     def get(self):
-        del self.session['nickname']
-        self.redirect(users.create_logout_url('/'))
+        nickname = self.request.get('nickname')
+        if not nickname:
+            del self.session['nickname']
+            self.redirect(users.create_logout_url('/'))
+        else:
+            guestbookName = self.request.get('guestbookName', app_name)
+            login = Login(parent=login_key(guestbookName), id=nickname)
+            login.nickname = nickname
+            self.session['nickname'] = nickname
+            login.put()
+            self.redirect('/')
+            
 
     def post(self):
-        # We set the same parent key on the 'Login' to ensure each Login
-        # is in the same entity group. Queries across the single entity group
-        # will be consistent. However, the write rate to a single entity group
-        # should be limited to ~1/second.
+        # Login the user and save in the session
         nickname = self.request.get('nickname')
+        # If input is gmail (xxx@gmail.com), redirect to Google login page
+        if nickname.find('@gmail.com'):
+            self.redirect(self.request.get('url'))
         if nickname != 'Guest':
             guestbookName = self.request.get('guestbookName', app_name)
             login = Login(parent=login_key(guestbookName), id=nickname)
-            login.nickname = self.request.get('nickname')
+            login.nickname = nickname
             if users.get_current_user():
                 login.nickname = users.get_current_user().nickname()
             self.session['nickname'] = nickname
             login.put()
         self.redirect('/')
 
-		
+        
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/rsvp', Response),
