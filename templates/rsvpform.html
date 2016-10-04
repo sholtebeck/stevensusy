@@ -84,6 +84,7 @@
             <label for="willAttend">Will you be attending the wedding?</label> <select id="willAttend" name="willAttend">
                 <option value="yes">yes</option>
 			    <option value="no">no</option>
+				<option value="maybe">maybe</option>
             </select>
             <label for="attendees">Number attending:</label>
             <select id="attendees" name="attendees" value="{{rsvp.attendees}}">
@@ -202,7 +203,7 @@ $('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected"
             </select>
         </div>
         <div>
-            <input type="hidden" id="nickname" name="nickname" value="{{user}}">
+            <input type="hidden" id="nickname" name="nickname" value="{{nickname}}">
             <p><input type="submit" value="Send RSVP">
         </div>
     </div>

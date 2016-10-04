@@ -112,7 +112,7 @@
         </div>
         <div>
             <input type="hidden" id="nickname" name="nickname" value="{{rsvp.nickname}}">
-            <p><input type="submit" value="Update RSVP">
+            <p><input type="submit" id="update" value="Update RSVP">
         </div>
     </div>
 <script>
@@ -218,7 +218,7 @@ $('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected"
         </div>
 		<div>
             <label for="fullName">Nickname:</label>
-             <input type="text" id="nickname" name="nickname" value="{{user}}">
+             <input type="text" id="nickname" name="nickname" value="{{nickname}}">
         </div>
         <div>
             <p><input type="submit" value="Send RSVP">
@@ -227,6 +227,7 @@ $('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected"
 {% endif %}
 </form>
 
+{% if guestcount %}
 <label>Attending ({{guestcount}})</label></br> 
 {% for rsvp in rsvplist %}
 {% if rsvp.willAttend=="yes" %}
@@ -236,10 +237,9 @@ $('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected"
 	{% endif %}
 	<br>
 
-	
 {% endif %}
-
 {% endfor %}
+{% endif %}
 
 </body>
 </html>

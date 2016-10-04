@@ -117,11 +117,11 @@ font-size:1.1em;
 table { 
 color: #333; /* Lighten up font color */
 font-family: Helvetica, Arial, sans-serif; /* Nicer font */
+border: 0;
 border-collapse: 
-collapse; border-spacing: 0; 
 }
 
-td, th { border: solid; } /* Make cells a bit taller */
+td, th { valign: top; border: 0; width: 500px; } /* Make cells a bit taller */
 
 th {
 background: #F3F3F3; /* Light grey background */

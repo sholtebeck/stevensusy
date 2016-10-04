@@ -3,19 +3,20 @@
 import os
 import cgi
 import urllib
+import jinja2
+import webapp2
 from datetime import date
 from google.appengine.api import users
 from google.appengine.ext import ndb
+from webapp2_extras import sessions
 
-import jinja2
-import webapp2
-
+app_name='susyandsteve'
+config={'webapp2_extras.sessions' : {'secret_key': app_name } }
 jinja_environment = jinja2.Environment(autoescape=False,loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')))    
 names={'sholtebeck':'Steve','ingrahas':'Susy','mholtebeck':'Mark','aingrahamdwyer':'Andy','moxiemoo':'Janet'}
-DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
 
 def get_RSVP_list():
-    rsvp_query = RSVP.query(ancestor=guestbook_key(DEFAULT_GUESTBOOK_NAME)).order(RSVP.nickname)
+    rsvp_query = RSVP.query(ancestor=login_key(app_name)).order(RSVP.nickname)
     rsvp_list = rsvp_query.fetch(100)
     return rsvp_list
     
@@ -36,20 +37,37 @@ def globalVals(ctx):
     "map_key": "AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk",
     "yes": "You are attending&#9786;",
     "no": "&#9785; You are not attending",
+    "maybe": "You might be attending"
     }
     # Get number of days until the big day
-    template_values['days']=(date(2017,4,16)-date.today()).days
+    template_values['action']=ctx.request.get('action') 
+    template_values['days']=(date(2017,4,17)-date.today()).days
+    template_values['nickname']=ctx.session_store.get_session().get('nickname')	
     if users.get_current_user() and names.get(users.get_current_user().nickname()):
-        template_values['user'] = names[users.get_current_user().nickname()]
+        template_values['nickname'] = names[users.get_current_user().nickname()]
+    if template_values.get('nickname'):
         template_values['url'] = users.create_logout_url(ctx.request.uri)
-        template_values['url_linktext'] = 'Logout'
     else:
-        template_values['user'] = ""
         template_values['url'] = users.create_login_url(ctx.request.uri)
-        template_values['url_linktext'] = 'Login'
     return template_values
+
+class BaseHandler(webapp2.RequestHandler):
+    def dispatch(self):
+        # Get a session store for this request.
+        self.session_store = sessions.get_store(request=self.request)
+ 
+        try:
+            # Dispatch the request.
+            webapp2.RequestHandler.dispatch(self)
+        finally:
+            # Save all sessions.
+            self.session_store.save_sessions(self.response)
+    @webapp2.cached_property
+    def session(self):
+        # Returns a session using the default cookie key.
+        return self.session_store.get_session()     
     
-class MainPage(webapp2.RequestHandler):
+class MainPage(BaseHandler):
     def get(self):
         template_values= globalVals(self)
         rsvp_list = get_RSVP_list()
@@ -58,22 +76,21 @@ class MainPage(webapp2.RequestHandler):
         for rsvp in rsvp_list:
             if rsvp.willAttend == "yes":
                 rsvp_count += rsvp.attendees
-            if rsvp.nickname == template_values['user']:
+            if rsvp.nickname == template_values['nickname']:
                 template_values['msg']=template_values[rsvp.willAttend]
                 template_values['rsvp'] = rsvp
         template_values['guestcount'] = rsvp_count
         template = jinja_environment.get_template('index.html')
         self.response.out.write(template.render(template_values))
 
-def guestbook_key(guestbookName=DEFAULT_GUESTBOOK_NAME):
-    """Constructs a Datastore key for a Guestbook entity with guestbookName."""
-    return ndb.Key('Guestbook', guestbookName)
+def login_key(guestbookName=app_name):
+    """Constructs a Datastore key for a Login entity with guestbookName."""
+    return ndb.Key('Login', guestbookName)
 
-class Greeting(ndb.Model):
-    """Models an individual Guestbook entry."""
-    author = ndb.UserProperty()
-    content = ndb.StringProperty(indexed=False)
-    date = ndb.DateTimeProperty(auto_now_add=True)
+class Login(ndb.Model):
+    """Models an individual Login entry."""
+    nickname = ndb.StringProperty(indexed=False)
+    login_date = ndb.DateTimeProperty(auto_now_add=True)
 
 class RSVP(ndb.Model):
     """Models an individual RSVP entry."""
@@ -90,11 +107,11 @@ class RSVP(ndb.Model):
     attendees = ndb.IntegerProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
 
-class Response(webapp2.RequestHandler):
+class Response(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('rsvp.html')
-        guestbookName = self.request.get('guestbookName', DEFAULT_GUESTBOOK_NAME)
-        rsvp_query = RSVP.query(ancestor=guestbook_key(guestbookName))
+        guestbookName = self.request.get('guestbookName', app_name)
+        rsvp_query = RSVP.query(ancestor=login_key(guestbookName))
         rsvp_list = rsvp_query.fetch(100)
         pageVars = globalVals(self) 
         pageVars['rsvplist'] =  rsvp_list
@@ -103,14 +120,14 @@ class Response(webapp2.RequestHandler):
         for rsvp in rsvp_list:
             if rsvp.willAttend == "yes":
                 pageVars['guestcount'] += rsvp.attendees
-            if rsvp.nickname == pageVars['user']:
+            if rsvp.nickname == pageVars['nickname']:
                 pageVars['rsvp'] = rsvp
         self.response.write(template.render(pageVars))
 
     def post(self):
-        guestbookName = self.request.get('guestbookName', DEFAULT_GUESTBOOK_NAME)
-        rsvp_key = self.request.get('nickname',users.get_current_user().nickname())
-        rsvp = RSVP(parent=guestbook_key(guestbookName),id=rsvp_key)
+        guestbookName = self.request.get('guestbookName', app_name)
+        rsvp_key = self.request.get('nickname')
+        rsvp = RSVP(parent=login_key(guestbookName),id=rsvp_key)
         rsvp.name= self.request.get('name')
         rsvp.nickname = self.request.get('nickname')
         rsvp.email = self.request.get('email')
@@ -125,52 +142,31 @@ class Response(webapp2.RequestHandler):
         rsvp.put()
         self.redirect('/')
 
-
-class MessageBoard(webapp2.RequestHandler):
+class LogMeInOrOut(BaseHandler):
     def get(self):
-        guestbookName = self.request.get('guestbookName',
-                                          DEFAULT_GUESTBOOK_NAME)
-        greetings_query = Greeting.query(
-            ancestor=guestbook_key(guestbookName)).order(-Greeting.date)
-        greetings = greetings_query.fetch(100)
+        del self.session['nickname']
+        self.redirect(users.create_logout_url('/'))
 
-        pageVars = globalVals(self)
-        pageVars['greetings'] =  greetings
-        pageVars['guestbookName'] = urllib.quote_plus(guestbookName)
-
-        template = jinja_environment.get_template('templates/messageboard.html')
-        self.response.write(template.render(pageVars))
-
-
-class Registry(webapp2.RequestHandler):
-    def get(self):
-        pageVars = globalVals(self)
-        template = jinja_environment.get_template('templates/registry.html')
-        self.response.write(template.render(pageVars))
-
-class Guestbook(webapp2.RequestHandler):
     def post(self):
-        # We set the same parent key on the 'Greeting' to ensure each Greeting
+        # We set the same parent key on the 'Login' to ensure each Login
         # is in the same entity group. Queries across the single entity group
         # will be consistent. However, the write rate to a single entity group
         # should be limited to ~1/second.
-        guestbookName = self.request.get('guestbookName',
-                                          DEFAULT_GUESTBOOK_NAME)
-        greeting = Greeting(parent=guestbook_key(guestbookName))
+        nickname = self.request.get('nickname')
+        if nickname != 'Guest':
+            guestbookName = self.request.get('guestbookName', app_name)
+            login = Login(parent=login_key(guestbookName), id=nickname)
+            login.nickname = self.request.get('nickname')
+            if users.get_current_user():
+                login.nickname = users.get_current_user().nickname()
+            self.session['nickname'] = nickname
+            login.put()
+        self.redirect('/')
 
-        if users.get_current_user():
-            greeting.author = users.get_current_user()
-
-        greeting.content = self.request.get('content')
-        greeting.put()
-        queryParams = {'guestbookName': guestbookName}
-        self.redirect('/?' + urllib.urlencode(queryParams))
-
+		
 app = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/registry', Registry),
-    ('/messageboard', MessageBoard),
     ('/rsvp', Response),
-    ('/responded', Response),
-    ('/sign', Guestbook),
-], debug=True)
+    ('/login', LogMeInOrOut),
+    ('/logout', LogMeInOrOut),
+], config=config,debug=True)
