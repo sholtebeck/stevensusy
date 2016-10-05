@@ -49,19 +49,19 @@ def globalVals(ctx):
 	"emoti": {"yes":"&#9786;","no":"&#9785;","maybe":""},
     "sender":"Susy & Steve <us@susyandsteve.appspotmail.com>",
     "subject":"Thank You for your RSVP",
-    "states":[    { "name": "Alabama", "code": "AL" },    { "name": "Alaska", "code": "AK" },    { "name": "Arizona", "code": "AZ" },    { "name": "Arkansas", "code": "AR" },
-    { "name": "California", "code": "CA" },    { "name": "Colorado", "code": "CO" },    { "name": "Connecticut", "code": "CT" },    { "name": "Delaware", "code": "DE" },
-    { "name": "District Of Columbia", "code": "DC" },    { "name": "Florida", "code": "FL" },    { "name": "Georgia", "code": "GA" },    { "name": "Guam", "code": "GU" },
-    { "name": "Hawaii", "code": "HI" },    { "name": "Idaho", "code": "ID" },    { "name": "Illinois", "code": "IL" },    { "name": "Indiana", "code": "IN" },
-    { "name": "Iowa", "code": "IA" },    { "name": "Kansas", "code": "KS" },    { "name": "Kentucky", "code": "KY" },    { "name": "Louisiana", "code": "LA" },
-    { "name": "Maine", "code": "ME" },    { "name": "Maryland", "code": "MD" },    { "name": "Massachusetts", "code": "MA" },    { "name": "Michigan", "code": "MI" },
-    { "name": "Minnesota", "code": "MN" },    { "name": "Mississippi", "code": "MS" },    { "name": "Missouri", "code": "MO" },    { "name": "Montana", "code": "MT" },
-    { "name": "Nebraska", "code": "NE" },    { "name": "Nevada", "code": "NV" },    { "name": "New Hampshire", "code": "NH" },    { "name": "New Jersey", "code": "NJ" },
-    { "name": "New Mexico", "code": "NM" },    { "name": "New York", "code": "NY" },    { "name": "North Carolina", "code": "NC" },    { "name": "North Dakota", "code": "ND" },
-    { "name": "Ohio", "code": "OH" },    { "name": "Oklahoma", "code": "OK" },    { "name": "Oregon", "code": "OR" },    { "name": "Pennsylvania", "code": "PA" },
-    { "name": "Puerto Rico", "code": "PR" },    { "name": "Rhode Island", "code": "RI" },    { "name": "South Carolina", "code": "SC" },    { "name": "South Dakota", "code": "SD" },
-    { "name": "Tennessee", "code": "TN" },    { "name": "Texas", "code": "TX" },    { "name": "Utah", "code": "UT" },    { "name": "Vermont", "code": "VT" },    { "name": "Virginia", "code": "VA" },
-    { "name": "Washington", "code": "WA" },    { "name": "West Virginia", "code": "WV" },    { "name": "Wisconsin", "code": "WI" },    { "name": "Wyoming", "code": "WY"    } ],
+    "states":[ { "name": "Alabama", "code": "AL" }, { "name": "Alaska", "code": "AK" }, { "name": "Arizona", "code": "AZ" }, { "name": "Arkansas", "code": "AR" },
+	{ "name": "California", "code": "CA" }, { "name": "Colorado", "code": "CO" }, { "name": "Connecticut", "code": "CT" }, { "name": "Delaware", "code": "DE" },
+	{ "name": "District Of Columbia", "code": "DC" }, { "name": "Florida", "code": "FL" }, { "name": "Georgia", "code": "GA" }, { "name": "Guam", "code": "GU" },
+	{ "name": "Hawaii", "code": "HI" }, { "name": "Idaho", "code": "ID" }, { "name": "Illinois", "code": "IL" }, { "name": "Indiana", "code": "IN" },
+	{ "name": "Iowa", "code": "IA" }, { "name": "Kansas", "code": "KS" }, { "name": "Kentucky", "code": "KY" }, { "name": "Louisiana", "code": "LA" },
+	{ "name": "Maine", "code": "ME" }, { "name": "Maryland", "code": "MD" }, { "name": "Massachusetts", "code": "MA" }, { "name": "Michigan", "code": "MI" },
+	{ "name": "Minnesota", "code": "MN" }, { "name": "Mississippi", "code": "MS" }, { "name": "Missouri", "code": "MO" }, { "name": "Montana", "code": "MT" },
+	{ "name": "Nebraska", "code": "NE" }, { "name": "Nevada", "code": "NV" }, { "name": "New Hampshire", "code": "NH" }, { "name": "New Jersey", "code": "NJ" },
+	{ "name": "New Mexico", "code": "NM" }, { "name": "New York", "code": "NY" }, { "name": "North Carolina", "code": "NC" }, { "name": "North Dakota", "code": "ND" },
+	{ "name": "Ohio", "code": "OH" }, { "name": "Oklahoma", "code": "OK" }, { "name": "Oregon", "code": "OR" }, { "name": "Pennsylvania", "code": "PA" },
+	{ "name": "Puerto Rico", "code": "PR" }, { "name": "Rhode Island", "code": "RI" }, { "name": "South Carolina", "code": "SC" }, { "name": "South Dakota", "code": "SD" },
+	{ "name": "Tennessee", "code": "TN" }, { "name": "Texas", "code": "TX" }, { "name": "Utah", "code": "UT" }, { "name": "Vermont", "code": "VT" }, { "name": "Virginia", "code": "VA" },
+	{ "name": "Washington", "code": "WA" }, { "name": "West Virginia", "code": "WV" }, { "name": "Wisconsin", "code": "WI" }, { "name": "Wyoming", "code": "WY"    } ],
     "carriers": [ {"name":"Alltel","domain":"message.alltel.com"},{"name":"AT&T","domain":"message.alltel.com"},{"name":"Boost","domain":"myboostmobile.com"},
     {"name":"Sprint","domain":"messaging.sprintpcs.com"},{"name":"T-Mobile","domain":"tmomail.net"},{"name":"Verizon","domain":"vtext.com"},{"name":"Virgin","domain":"vmobl.com"}  ]
     }
@@ -173,17 +173,17 @@ class Response(BaseHandler):
         rsvp.contactMethod = self.request.get('contactMethod')
         rsvp.carrier = self.request.get('carrier')
         rsvp.put()
-        if rsvp.contactMethod=='text' and rsvp.carrier and rsvp.willAttend in ('yes','no'):
+        if rsvp.contactMethod=='text' and rsvp.carrier and rsvp.willAttend =='yes':
             message = mail.EmailMessage(sender=globalvals['sender'], subject=globalvals['subject'])
             message.to = rsvp.phone + "@" + rsvp.carrier
-            message.body = globalvals['subject'] + " ," + rsvp.nickname  + "." + globalvals[rsvp.willAttend]
+            message.body = "Hi " + rsvp.nickname  + ". Thank you for attending our wedding. See you there! :)"
             message.send()
         elif rsvp.contactMethod=='email' and mail.is_email_valid(rsvp.email) and rsvp.willAttend in ('yes','no'):
             message = mail.EmailMessage(sender=globalvals['sender'], subject=globalvals['subject'])
             message.to = rsvp.name + " <" + rsvp.email + ">"
             if globalvals.get('bcc'):
                 message.bcc = globalvals['bcc']
-            message.html = "Dear "+ rsvp.nickname + ",<p>Thank you for your RSVP. " + globalvals[rsvp.willAttend] + "<p>Susy & Steve<br>http://susyandsteve.com"
+            message.html = "Hi "+ rsvp.nickname + ",<p>Thank you for your RSVP. " + globalvals[rsvp.willAttend]+globalvals['emoti'][rsvp.willAttend] + "<p>Susy & Steve<br>http://susyandsteve.com"
             message.send()
         self.redirect('/')
 
