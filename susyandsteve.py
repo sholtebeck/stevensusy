@@ -7,6 +7,7 @@ import jinja2
 import webapp2
 from datetime import date
 from google.appengine.api import users
+from google.appengine.api import mail
 from google.appengine.ext import ndb
 from webapp2_extras import sessions
 
@@ -43,7 +44,9 @@ def globalVals(ctx):
     "map_key": "AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk",
     "yes": "You are attending&#9786;",
     "no": "&#9785; You are not attending",
-    "maybe": "You might be attending"
+    "maybe": "You might be attending",
+    "sender":"Susy & Steve <us@susyandsteve.appspotmail.com>",
+    "subject":"Thank You for your RSVP"
     }
     # Get number of days until the big day
     template_values['action']=ctx.request.get('action') 
@@ -132,6 +135,7 @@ class Response(BaseHandler):
         self.response.write(template.render(pageVars))
 
     def post(self):
+        globalvals=globalVals(self)
         guestbookName = self.request.get('guestbookName', app_name)
         rsvp_key = self.request.get('nickname')
         rsvp = RSVP(parent=login_key(guestbookName),id=rsvp_key)
@@ -147,6 +151,13 @@ class Response(BaseHandler):
         rsvp.attendees = int(self.request.get('attendees'))
         rsvp.note = self.request.get('note')
         rsvp.put()
+        if mail.is_email_valid(rsvp.email) and rsvp.willAttend in ('yes','no'):
+            message = mail.EmailMessage(sender=globalvals['sender'], subject=globalvals['subject'])
+            message.to = rsvp.name + " <" + rsvp.email + ">"
+            if globalvals.get('bcc'):
+                message.bcc = globalvals['bcc']
+            message.body = "Dear "+ rsvp.nickname + ",\n Thank you for your RSVP. " + globalvals[rsvp.willAttend] + "\n\n" + "Susy & Steve http://susyandsteve.com"
+            message.send()
         self.redirect('/')
 
 class LogMeInOrOut(BaseHandler):
