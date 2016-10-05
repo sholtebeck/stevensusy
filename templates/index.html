@@ -25,7 +25,7 @@ $(document).ready(function() {
 <div id="container">
  {% if nickname %}
  <form action="/logout" method="get">
-Welcome, <label>{{ nickname }}</label>: {{msg}}
+Welcome, <label>{{ nickname }}</label>: {{msg}}{{emoticon}}
 <input type="submit" value="Logout"></form>
 <h1>{{title}}</h1>
   <ul class="tabs"> 

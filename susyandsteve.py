@@ -42,11 +42,28 @@ def globalVals(ctx):
     "attire":"Casual (dress for a beach park)",
     "location": "Magic Island Lagoon, Ala Moana Beach Park, Honolulu HI",
     "map_key": "AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk",
-    "yes": "You are attending&#9786;",
-    "no": "&#9785; You are not attending",
+	"methods": ["email","facebook","mail","text"],
+    "yes": "You are attending",
+    "no": "You are not attending",
     "maybe": "You might be attending",
+	"emoti": {"yes":"&#9786;","no":"&#9785;","maybe":""},
     "sender":"Susy & Steve <us@susyandsteve.appspotmail.com>",
-    "subject":"Thank You for your RSVP"
+    "subject":"Thank You for your RSVP",
+    "states":[    { "name": "Alabama", "code": "AL" },    { "name": "Alaska", "code": "AK" },    { "name": "Arizona", "code": "AZ" },    { "name": "Arkansas", "code": "AR" },
+    { "name": "California", "code": "CA" },    { "name": "Colorado", "code": "CO" },    { "name": "Connecticut", "code": "CT" },    { "name": "Delaware", "code": "DE" },
+    { "name": "District Of Columbia", "code": "DC" },    { "name": "Florida", "code": "FL" },    { "name": "Georgia", "code": "GA" },    { "name": "Guam", "code": "GU" },
+    { "name": "Hawaii", "code": "HI" },    { "name": "Idaho", "code": "ID" },    { "name": "Illinois", "code": "IL" },    { "name": "Indiana", "code": "IN" },
+    { "name": "Iowa", "code": "IA" },    { "name": "Kansas", "code": "KS" },    { "name": "Kentucky", "code": "KY" },    { "name": "Louisiana", "code": "LA" },
+    { "name": "Maine", "code": "ME" },    { "name": "Maryland", "code": "MD" },    { "name": "Massachusetts", "code": "MA" },    { "name": "Michigan", "code": "MI" },
+    { "name": "Minnesota", "code": "MN" },    { "name": "Mississippi", "code": "MS" },    { "name": "Missouri", "code": "MO" },    { "name": "Montana", "code": "MT" },
+    { "name": "Nebraska", "code": "NE" },    { "name": "Nevada", "code": "NV" },    { "name": "New Hampshire", "code": "NH" },    { "name": "New Jersey", "code": "NJ" },
+    { "name": "New Mexico", "code": "NM" },    { "name": "New York", "code": "NY" },    { "name": "North Carolina", "code": "NC" },    { "name": "North Dakota", "code": "ND" },
+    { "name": "Ohio", "code": "OH" },    { "name": "Oklahoma", "code": "OK" },    { "name": "Oregon", "code": "OR" },    { "name": "Pennsylvania", "code": "PA" },
+    { "name": "Puerto Rico", "code": "PR" },    { "name": "Rhode Island", "code": "RI" },    { "name": "South Carolina", "code": "SC" },    { "name": "South Dakota", "code": "SD" },
+    { "name": "Tennessee", "code": "TN" },    { "name": "Texas", "code": "TX" },    { "name": "Utah", "code": "UT" },    { "name": "Vermont", "code": "VT" },    { "name": "Virginia", "code": "VA" },
+    { "name": "Washington", "code": "WA" },    { "name": "West Virginia", "code": "WV" },    { "name": "Wisconsin", "code": "WI" },    { "name": "Wyoming", "code": "WY"    } ],
+    "carriers": [ {"name":"Alltel","domain":"message.alltel.com"},{"name":"AT&T","domain":"message.alltel.com"},{"name":"Boost","domain":"myboostmobile.com"},
+    {"name":"Sprint","domain":"messaging.sprintpcs.com"},{"name":"T-Mobile","domain":"tmomail.net"},{"name":"Verizon","domain":"vtext.com"},{"name":"Virgin","domain":"vmobl.com"}  ]
     }
     # Get number of days until the big day
     template_values['action']=ctx.request.get('action') 
@@ -88,6 +105,7 @@ class MainPage(BaseHandler):
                 rsvp_count += rsvp.attendees
             if rsvp.nickname == template_values['nickname']:
                 template_values['msg']=template_values[rsvp.willAttend]
+                template_values['emoticon']=template_values['emoti'][rsvp.willAttend]
                 template_values['rsvp'] = rsvp
         template_values['guestcount'] = rsvp_count
         template = jinja_environment.get_template('index.html')
@@ -115,6 +133,8 @@ class RSVP(ndb.Model):
     note = ndb.TextProperty(indexed=False)
     willAttend= ndb.TextProperty(indexed=False)
     attendees = ndb.IntegerProperty(indexed=False)
+    carrier = ndb.StringProperty(indexed=False)
+    contactMethod = ndb.StringProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
 
 class Response(BaseHandler):
@@ -150,13 +170,20 @@ class Response(BaseHandler):
         rsvp.willAttend= self.request.get('willAttend')
         rsvp.attendees = int(self.request.get('attendees'))
         rsvp.note = self.request.get('note')
+        rsvp.contactMethod = self.request.get('contactMethod')
+        rsvp.carrier = self.request.get('carrier')
         rsvp.put()
-        if mail.is_email_valid(rsvp.email) and rsvp.willAttend in ('yes','no'):
+        if rsvp.contactMethod=='text' and rsvp.carrier and rsvp.willAttend in ('yes','no'):
+            message = mail.EmailMessage(sender=globalvals['sender'], subject=globalvals['subject'])
+            message.to = rsvp.phone + "@" + rsvp.carrier
+            message.body = globalvals['subject'] + " ," + rsvp.nickname  + "." + globalvals[rsvp.willAttend]
+            message.send()
+        elif rsvp.contactMethod=='email' and mail.is_email_valid(rsvp.email) and rsvp.willAttend in ('yes','no'):
             message = mail.EmailMessage(sender=globalvals['sender'], subject=globalvals['subject'])
             message.to = rsvp.name + " <" + rsvp.email + ">"
             if globalvals.get('bcc'):
                 message.bcc = globalvals['bcc']
-            message.body = "Dear "+ rsvp.nickname + ",\n Thank you for your RSVP. " + globalvals[rsvp.willAttend] + "\n\n" + "Susy & Steve http://susyandsteve.com"
+            message.html = "Dear "+ rsvp.nickname + ",<p>Thank you for your RSVP. " + globalvals[rsvp.willAttend] + "<p>Susy & Steve<br>http://susyandsteve.com"
             message.send()
         self.redirect('/')
 
