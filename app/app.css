@@ -41,7 +41,7 @@ ul.tabs li.active{
 }
 .tab_content {
 	padding: 15px;
-	font-size: 1.2em;
+	font-size: 1.1em;
 	display: none;
 }
 	body {
@@ -147,3 +147,20 @@ select
 a {
 	text-decoration: none;
 }
+
+.applist { 
+  
+}
+
+.applist li { 
+   counter-increment: item;
+}
+
+.applist li:before { 
+  content: counter(item) ') ';
+}
+ol { 
+    counter-reset: item;
+    list-style-type: none;
+}
+
