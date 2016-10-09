@@ -29,7 +29,8 @@ Welcome, <label>{{ nickname }}</label>: {{msg}}{{emoticon}}
 <input type="submit" value="Logout"></form>
 <h1>{{title}}</h1>
   <ul class="tabs"> 
-        <li class="active" rel="tab1">Ceremony</li>
+        <li class="active" rel="tab0">Ceremony</li>
+        <li rel="tab1">Wedding Tour</li>
         <li rel="tab2">RSVP</li>
        <li rel="tab3">Registry</li>
        <li rel="tab4">Travel/Accommodations</li>
@@ -38,12 +39,16 @@ Welcome, <label>{{ nickname }}</label>: {{msg}}{{emoticon}}
   
 <div class="tab_container"> 
 
-<div id="tab1" class="tab_content"> 
+<div id="tab0" class="tab_content"> 
 <img src="/app/stevensusy.jpg" width="50%" align="left" style="PADDING-RIGHT: 10px">
 <label>Date: </label> {{date}} (just <label>{{days}}</label> days away!)<br/>
 <label>Time: </label> {{time}}<br/>
 <label>Location: </label> {{location}}<br/>
 <p><iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJQ1w7cvhtAHwR43SPyQbzpus&key=AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk" allowfullscreen></iframe>
+</div><!-- #tab0 -->
+
+<div id="tab1" class="tab_content"> 
+{% include "weddingtour.html" %}
 </div><!-- #tab1 -->
 
 <div id="tab2" class="tab_content"> 
