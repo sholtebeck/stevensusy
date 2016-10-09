@@ -10,9 +10,11 @@
 <form action="/rsvp" method="post">
 {% if rsvp %}
 {% if rsvp.willAttend=="yes" %}
-    <label>You are attending the wedding. &#9786; </label> 
+    <label>You are attending our wedding. &#9786; </label> 
+{% elif rsvp.willAttend=="maybe" %}
+    <label>You might be attending our wedding.</label> 
 {% else %}
-    <label>You are not attending the wedding. &#9785;</label>
+    <label>You are not attending our wedding. &#9785;</label>
 {% endif %}
 <p/>
     <div>
@@ -46,7 +48,7 @@
 			<input type="text" id="note" name="note" size="60" value="{{rsvp.note}}">
         </div>
 	<div>
-            <label for="willAttend">Attending the wedding?</label> <select id="willAttend" name="willAttend">
+            <label for="willAttend">Attending our wedding?</label> <select id="willAttend" name="willAttend">
 			<option value=""></option>
                <option value="yes">yes</option>
  			    <option value="no">no</option>
@@ -77,6 +79,7 @@
              <option value="{{carrier.domain}}">{{carrier.name}}</option>
 {% endfor %}
 		<option value=" ">Landline/Other</option>
+		</select>
         </div>
 	<div>        <div>
             <input type="hidden" id="nickname" name="nickname" value="{{rsvp.nickname}}">
@@ -91,7 +94,7 @@ $('select[name="contactMethod"] option[value="{{rsvp.contactMethod}}"]').attr("s
 </script>
 {% else %}
     <div>
-
+Our wedding will be on {{date}} in Honolulu HI.  Please let us know if you can make it.<p>
        <div>
             <label for="fullName">Name:</label>
             <input type="text" id="name" name="name" size="60" value="">
@@ -121,7 +124,7 @@ $('select[name="contactMethod"] option[value="{{rsvp.contactMethod}}"]').attr("s
 			<input type="text" id="note" name="note" size="60" value="">
         </div>
 	<div>
-            <label for="willAttend">Attending the wedding?</label> <select id="willAttend" name="willAttend">
+            <label for="willAttend">Attending our wedding?</label> <select id="willAttend" name="willAttend">
                 <option value="yes">yes</option>
 			    <option value="no">no</option>
                 <option value="maybe">maybe</option>
@@ -145,10 +148,18 @@ $('select[name="contactMethod"] option[value="{{rsvp.contactMethod}}"]').attr("s
                 <option value="{{method}}">{{method}}</option>
 {% endfor %} 
         </select>
+		</select>
+				<label for="carrier">Cell Carrier: </label><select id="carrier" name="carrier">
+			<option value=""></option>
+{% for carrier in carriers %}
+             <option value="{{carrier.domain}}">{{carrier.name}}</option>
+{% endfor %}
+		<option value=" ">Landline/Other</option>
+		</select>
         </div>
         <div>
-		    <input type="text" id="nickname" name="nickname" value="{{nickname}}">
-            <p><input type="submit" value="Send RSVP">
+		    <input type="hidden" id="nickname" name="nickname" value="{{nickname}}">
+            <input type="submit" value="Send RSVP">
         </div>
     </div>
 {% endif %}
@@ -157,7 +168,7 @@ $('select[name="contactMethod"] option[value="{{rsvp.contactMethod}}"]').attr("s
 {% if guestcount %}
 <label>Attending ({{guestcount}})</label></br> 
 {% for rsvp in rsvplist %}
-{% if rsvp.willAttend=="yes" %}
+{% if rsvp.willAttend=="yes" and rsvp.attendees %}
     {{ rsvp.name }}
 	{% if rsvp.attendees > 1 %}
 	 ({{rsvp.attendees}})

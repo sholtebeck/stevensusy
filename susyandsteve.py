@@ -42,32 +42,32 @@ def globalVals(ctx):
     "attire":"Casual (dress for a beach park)",
     "location": "Magic Island Lagoon, Ala Moana Beach Park, Honolulu HI",
     "map_key": "AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk",
-	"methods": ["email","facebook","mail","text"],
+    "methods": ["email","facebook","mail","text"],
     "yes": "You are attending",
     "no": "You are not attending",
     "maybe": "You might be attending",
-	"emoti": {"yes":"&#9786;","no":"&#9785;","maybe":""},
+    "emoti": {"yes":"&#9786;","no":"&#9785;","maybe":""},
     "sender":"Susy & Steve <us@susyandsteve.appspotmail.com>",
     "subject":"Thank You for your RSVP",
     "states":[ { "name": "Alabama", "code": "AL" }, { "name": "Alaska", "code": "AK" }, { "name": "Arizona", "code": "AZ" }, { "name": "Arkansas", "code": "AR" },
-	{ "name": "California", "code": "CA" }, { "name": "Colorado", "code": "CO" }, { "name": "Connecticut", "code": "CT" }, { "name": "Delaware", "code": "DE" },
-	{ "name": "District Of Columbia", "code": "DC" }, { "name": "Florida", "code": "FL" }, { "name": "Georgia", "code": "GA" }, { "name": "Guam", "code": "GU" },
-	{ "name": "Hawaii", "code": "HI" }, { "name": "Idaho", "code": "ID" }, { "name": "Illinois", "code": "IL" }, { "name": "Indiana", "code": "IN" },
-	{ "name": "Iowa", "code": "IA" }, { "name": "Kansas", "code": "KS" }, { "name": "Kentucky", "code": "KY" }, { "name": "Louisiana", "code": "LA" },
-	{ "name": "Maine", "code": "ME" }, { "name": "Maryland", "code": "MD" }, { "name": "Massachusetts", "code": "MA" }, { "name": "Michigan", "code": "MI" },
-	{ "name": "Minnesota", "code": "MN" }, { "name": "Mississippi", "code": "MS" }, { "name": "Missouri", "code": "MO" }, { "name": "Montana", "code": "MT" },
-	{ "name": "Nebraska", "code": "NE" }, { "name": "Nevada", "code": "NV" }, { "name": "New Hampshire", "code": "NH" }, { "name": "New Jersey", "code": "NJ" },
-	{ "name": "New Mexico", "code": "NM" }, { "name": "New York", "code": "NY" }, { "name": "North Carolina", "code": "NC" }, { "name": "North Dakota", "code": "ND" },
-	{ "name": "Ohio", "code": "OH" }, { "name": "Oklahoma", "code": "OK" }, { "name": "Oregon", "code": "OR" }, { "name": "Pennsylvania", "code": "PA" },
-	{ "name": "Puerto Rico", "code": "PR" }, { "name": "Rhode Island", "code": "RI" }, { "name": "South Carolina", "code": "SC" }, { "name": "South Dakota", "code": "SD" },
-	{ "name": "Tennessee", "code": "TN" }, { "name": "Texas", "code": "TX" }, { "name": "Utah", "code": "UT" }, { "name": "Vermont", "code": "VT" }, { "name": "Virginia", "code": "VA" },
-	{ "name": "Washington", "code": "WA" }, { "name": "West Virginia", "code": "WV" }, { "name": "Wisconsin", "code": "WI" }, { "name": "Wyoming", "code": "WY"    } ],
+    { "name": "California", "code": "CA" }, { "name": "Colorado", "code": "CO" }, { "name": "Connecticut", "code": "CT" }, { "name": "Delaware", "code": "DE" },
+    { "name": "District Of Columbia", "code": "DC" }, { "name": "Florida", "code": "FL" }, { "name": "Georgia", "code": "GA" }, { "name": "Guam", "code": "GU" },
+    { "name": "Hawaii", "code": "HI" }, { "name": "Idaho", "code": "ID" }, { "name": "Illinois", "code": "IL" }, { "name": "Indiana", "code": "IN" },
+    { "name": "Iowa", "code": "IA" }, { "name": "Kansas", "code": "KS" }, { "name": "Kentucky", "code": "KY" }, { "name": "Louisiana", "code": "LA" },
+    { "name": "Maine", "code": "ME" }, { "name": "Maryland", "code": "MD" }, { "name": "Massachusetts", "code": "MA" }, { "name": "Michigan", "code": "MI" },
+    { "name": "Minnesota", "code": "MN" }, { "name": "Mississippi", "code": "MS" }, { "name": "Missouri", "code": "MO" }, { "name": "Montana", "code": "MT" },
+    { "name": "Nebraska", "code": "NE" }, { "name": "Nevada", "code": "NV" }, { "name": "New Hampshire", "code": "NH" }, { "name": "New Jersey", "code": "NJ" },
+    { "name": "New Mexico", "code": "NM" }, { "name": "New York", "code": "NY" }, { "name": "North Carolina", "code": "NC" }, { "name": "North Dakota", "code": "ND" },
+    { "name": "Ohio", "code": "OH" }, { "name": "Oklahoma", "code": "OK" }, { "name": "Oregon", "code": "OR" }, { "name": "Pennsylvania", "code": "PA" },
+    { "name": "Puerto Rico", "code": "PR" }, { "name": "Rhode Island", "code": "RI" }, { "name": "South Carolina", "code": "SC" }, { "name": "South Dakota", "code": "SD" },
+    { "name": "Tennessee", "code": "TN" }, { "name": "Texas", "code": "TX" }, { "name": "Utah", "code": "UT" }, { "name": "Vermont", "code": "VT" }, { "name": "Virginia", "code": "VA" },
+    { "name": "Washington", "code": "WA" }, { "name": "West Virginia", "code": "WV" }, { "name": "Wisconsin", "code": "WI" }, { "name": "Wyoming", "code": "WY"    } ],
     "carriers": [ {"name":"Alltel","domain":"message.alltel.com"},{"name":"AT&T","domain":"message.alltel.com"},{"name":"Boost","domain":"myboostmobile.com"},
     {"name":"Sprint","domain":"messaging.sprintpcs.com"},{"name":"T-Mobile","domain":"tmomail.net"},{"name":"Verizon","domain":"vtext.com"},{"name":"Virgin","domain":"vmobl.com"}  ]
     }
     # Get number of days until the big day
     template_values['action']=ctx.request.get('action') 
-    template_values['days']=(date(2017,4,17)-date.today()).days
+    template_values['days']=(date(2017,4,16)-date.today()).days
     template_values['nickname']=ctx.session_store.get_session().get('nickname') 
     if users.get_current_user() and names.get(users.get_current_user().nickname()):
         template_values['nickname'] = names[users.get_current_user().nickname()]
@@ -145,11 +145,11 @@ class Response(BaseHandler):
         rsvp_list = rsvp_query.fetch(100)
         pageVars = globalVals(self) 
         pageVars['rsvplist'] =  rsvp_list
-        pageVars['title'] += ":RSVP"
+        pageVars['title'] = "RSVP to " + pageVars['title']
         pageVars['guestcount'] = 0
         for rsvp in rsvp_list:
-            if rsvp.willAttend == "yes":
-                pageVars['guestcount'] += rsvp.attendees
+#            if rsvp.willAttend == "yes":
+#                pageVars['guestcount'] += rsvp.attendees
             if rsvp.nickname == pageVars['nickname']:
                 pageVars['rsvp'] = rsvp
         self.response.write(template.render(pageVars))
@@ -158,9 +158,11 @@ class Response(BaseHandler):
         globalvals=globalVals(self)
         guestbookName = self.request.get('guestbookName', app_name)
         rsvp_key = self.request.get('nickname')
+        if not rsvp_key or rsvp_key in ('None','Guest'):
+            rsvp_key = self.request.get('name').split(" ")[0]
         rsvp = RSVP(parent=login_key(guestbookName),id=rsvp_key)
+        rsvp.nickname = rsvp_key
         rsvp.name= self.request.get('name')
-        rsvp.nickname = self.request.get('nickname')
         rsvp.email = self.request.get('email')
         rsvp.phone = self.request.get('phone')
         rsvp.address = self.request.get('address')
@@ -185,13 +187,14 @@ class Response(BaseHandler):
                 message.bcc = globalvals['bcc']
             message.html = "Hi "+ rsvp.nickname + ",<p>Thank you for your RSVP. " + globalvals[rsvp.willAttend]+globalvals['emoti'][rsvp.willAttend] + "<p>Susy & Steve<br>http://susyandsteve.com"
             message.send()
-        self.redirect('/')
+        self.redirect('/login?nickname='+rsvp_key)
 
 class LogMeInOrOut(BaseHandler):
     def get(self):
         nickname = self.request.get('nickname')
-        if not nickname or nickname in ('Guest','undefined'):
-            del self.session['nickname']
+        if not nickname or nickname in ('Guest','None','undefined'):
+            if self.session.get('nickname'):
+                del self.session['nickname']
             self.redirect(users.create_logout_url('/'))
         else:
             guestbookName = self.request.get('guestbookName', app_name)
