@@ -63,7 +63,8 @@ def globalVals(ctx):
     { "name": "Tennessee", "code": "TN" }, { "name": "Texas", "code": "TX" }, { "name": "Utah", "code": "UT" }, { "name": "Vermont", "code": "VT" }, { "name": "Virginia", "code": "VA" },
     { "name": "Washington", "code": "WA" }, { "name": "West Virginia", "code": "WV" }, { "name": "Wisconsin", "code": "WI" }, { "name": "Wyoming", "code": "WY"    } ],
     "carriers": [ {"name":"Alltel","domain":"message.alltel.com"},{"name":"AT&T","domain":"message.alltel.com"},{"name":"Boost","domain":"myboostmobile.com"},
-    {"name":"Sprint","domain":"messaging.sprintpcs.com"},{"name":"T-Mobile","domain":"tmomail.net"},{"name":"Verizon","domain":"vtext.com"},{"name":"Virgin","domain":"vmobl.com"}  ]
+    {"name":"Sprint","domain":"messaging.sprintpcs.com"},{"name":"T-Mobile","domain":"tmomail.net"},{"name":"Verizon","domain":"vtext.com"},{"name":"Virgin","domain":"vmobl.com"}  ],
+	"tour": False 
     }
     # Get number of days until the big day
     template_values['action']=ctx.request.get('action') 

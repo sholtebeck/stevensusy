@@ -30,7 +30,9 @@ Welcome, <label>{{ nickname }}</label>: {{msg}}{{emoticon}}
 <h1>{{title}}</h1>
   <ul class="tabs"> 
         <li class="active" rel="tab0">Ceremony</li>
+{% if tour %}
         <li rel="tab1">Wedding Tour</li>
+{% endif %}
         <li rel="tab2">RSVP</li>
        <li rel="tab3">Registry</li>
        <li rel="tab4">Travel/Accommodations</li>
