@@ -42,11 +42,7 @@ Welcome, <label>{{ nickname }}</label>: {{msg}}{{emoticon}}
 <div class="tab_container"> 
 
 <div id="tab0" class="tab_content"> 
-<img src="/app/stevensusy.jpg" width="50%" align="left" style="PADDING-RIGHT: 10px">
-<label>Date: </label> {{date}} (just <label>{{days}}</label> days away!)<br/>
-<label>Time: </label> {{time}}<br/>
-<label>Location: </label> {{location}}<br/>
-<p><iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJQ1w7cvhtAHwR43SPyQbzpus&key=AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk" allowfullscreen></iframe>
+{% include "ceremony.html" %}
 </div><!-- #tab0 -->
 
 <div id="tab1" class="tab_content"> 
@@ -57,74 +53,12 @@ Welcome, <label>{{ nickname }}</label>: {{msg}}{{emoticon}}
 {% include "weddingtour.html" %}
 </div><!-- #tab1 -->
 
-
 <div id="tab3" class="tab_content"> 
-<label>Our Gift Registry:</label><br>Are you kidding? We just spent months paring down two long-established independent overstuffed households and moving across an ocean together into a small flat! 
-We really don’t need or want anything. In lieu of gifts to us, please consider a donation to one or more of the following:
-<p><table><tr><td><A href="https://donate.cancer.org/index.aspx?campaign=CY16MemPod&_ga=1.191803370.1588438681.1474949228" target="_blank">The American Cancer Society</a> or <a href="http://www.nhpco.org/find-hospice" target="_blank">your local hospice</a>
-<br><img src="/app/judyi.jpg" width="400">
-<br>In memory of Susy's mom, Judy (Bosanec) Ingraham.
-</td><td><A href="http://www.ccfa.org/get-involved/donate-to-ccfa/honors-and-memorial.html" target="_blank">The Crohn’s & Colitis Foundation of America</a>
-<br><img src="/app/joanh.jpg" width="400">
-<br>In memory of Steve's mom, Joan (Brown) Holtebeck.
-</td></tr>
-<tr><td>
-<br><A href="https://www.gofundme.com/2nz0vk" target="_blank">The Scott Miller Memorial fund</a> or <A href="https://afsp.org/take-action/give-a-gift/" target="_blank">AFSP</a> 
-<img src="/app/wscott1.jpg"><br>In memory of the man that made this wedding happen.<br>We met via Janet & Andy, who Steve met via loud-fans.
-</td><td><p><A href="http://www.calparks.org/whatwedo/improving/pigeon-point/" target="_blank">Pigeon Point Lighthouse Restoration</a>
-<img src="/app/pigeonpoint.jpg" width="400">
-<br>To support an effort that is near and dear to both of us.
-</td></tr>
-</table>
+{% include "registry.html" %}
 </div><!-- #tab3 -->
 
 <div id="tab4" class="tab_content">
-<label>Five Recommended Places to Stay</label><ol class="applist">
-<li><a href="http://www.alamoanahotelhonolulu.com/" target="_blank">Ala Moana Hotel</a> - Business class hotel near Magic Island & Ala Moana Shopping Center
-<li><a href="http://www.aquapalms.com/" target="_blank">Aqua Palms Waikiki</a> -  All the Aqua properties are nice and affordable; this one is convenient to Magic Island, Ala Moana and Waikiki 	 	
-<li><a href="https://www.halekoa.com/" target="_blank">Hale Koa Hotel</a> - Military hotel near Fort DeRussy Beach. Available only to active duty, veteran, or surviving family of the armed/uniformed services.  
-<li><a href="http://surfjack.com/" target="_blank">Surfjack Hotel & Swim Club</a> - Boutique suite (sweet) hotel in Waikiki  
-<li>Try short term rentals on  <a href="https://www.vrbo.com/vacation-rentals/usa/hawaii/oahu" target="_blank">VRBO</a> or <a href="https://www.airbnb.com/s/O‘ahu--HI" target="_blank">Airbnb</a>.
-</ol>
-
-<label>Five Recommended Places to Eat</label><ol class="applist">
-<li><a href="http://www.chuckshawaii.com/" target="_blank">Chuck's Cellar</a> - I've (Steve) been eating here since I was a wee kid. A Holtebeck family tradition.
-<li><a href="https://www.eggsnthings.com/" target="_blank">Eggs 'n Things</a> - Popular breakfast/brunch place with three locations around Waikiki.  
-<li><a href="http://www.toridollusa.com/" target="_blank">Marukame Udon</a> - Choose your broth, noodles & toppings. Worth the wait in their perpetual line.
-<li><a href="http://rainbowdrivein.com/menu/" target="_blank">Rainbow Drive-In</a> - Famous Hawaiian plate lunch, near the edge of Waikiki.
-<li><a href="http://www.japanvillagewalk.com/" target="_blank">Shirokiya Japan Village Walk</a> - huge Hong Kong-style food court at Ala Moana Mall.
-<br>&emsp; Sushi, udon, wagyu, bento, burgers, pizza, spam musubi, okonomiyaki, and $1 beers (if you’re not too snobbish). Plus a 
-<br>&emsp; Guardian Spirits Sanctuary where you can seek your good luck guide among 8 different buddhas and 12 animal spirits. What more could you want?
-</ol>
-
-<p> <label>Five Recommended Treats</label><ol class="applist">
-<li>Malasadas from <a href="http://leonardshawaii.com/" target="_blank">Leonard's Bakery</a> - think warm jelly doughnuts without the jelly (or regular ones without the hole).
-<br>&emsp; We like the plain cinnamon sugar ones, but if you like filling do it up with vanilla, chocolate, or coconut(haupia).
-<li>Shave Ice from <a href="http://www.houseofpurealoha.com" target="_blank">Uncle Clay’s House of Pure Aloha</a> (Susy’s favorite), but any of the dozens of stands around Waikiki are ono if you don't have a car.
-<li>Darn good ice cream from <a href="https://www.lappertshawaii.com" target="_blank">Lappert’s</a> in Hilton Hawaiian Village.
-<li>Diamondhead puff or any of the other fabulous and beautiful treats at <a href="http://kulukulucake.com" target="_blank">Kulu Kulu</a>, the bakery in <a href="http://www.japanvillagewalk.com/" target="_blank">Shirokiya</a> (see dining, above)
-<li>If prefer to drink your treats, we recommend <a href="http://www.beerlabhi.com/" target="_blank">Beer Lab HI</a>, <a href="http://www.honolulubeerworks.com/#new-page-3-1-1-1" target="_blank">Honolulu Beer Works</a>, 
-<a href="http://www.brewseums.com/" target="_blank">The Brewseum</a>, or <a href="http://www.waikikibrewing.com/" target="_blank">Waikiki Brewing Company</a>.  
-</ol>
-
-<p> <label>Five Recommended Hikes and Walks</label><ol class="applist">
-<li><a href="http://dlnr.hawaii.gov/dsp/parks/oahu/diamond-head-state-monument/" target="_blank">Diamond Head State Monument</a> - A nice long paved walk up the crater. There are a couple steep staircases and one spot where 
-<br>&emsp; you need to bend over nearly double to get through an old sentry bunker, but it’s a fun, easy climb. Just East of Waikiki. 	
-<li><a href="http://dlnr.hawaii.gov/dsp/hiking/oahu/makapuu-point-lighthouse-trail/" target="_blank">Makapuʻu Point Lighthouse Trail</a> - Another nice hike, just East of Diamond Head.
-<li><a href="http://www.alltrails.com/trail/us/hawaii/manoa-falls-trail" target="_blank">Manoa Falls</a> -  A shady, pretty, 1.5 mile hike to a waterfall, past the U of H campus one valley over from our place. Often rainy/muddy so be prepared!
-<li><a href="http://gis.hicentral.com/FastMaps/Parks/ParkDetails.aspx?id=4&lyrLst=1%7C0%7C0%7C0%7C1%7Caeria" target="_blank">Kapiolani Regional Park</a> - Pretty area at the east end of Waikiki. Adjacent to the zoo, aquarium, and Sans Souci Beach.
-<li><a href="https://www.honolulu.gov/des/golf/alawai.htm" target="_blank">Ala Wai Golf Course</a> - Grab your clubs or rent theirs, and walk this public course right across the canal from Waikiki.
-</ol>
-<label>Five Recommended Sights to Visit</label><ol class="applist">
-<li><a href="http://www.iolanipalace.org/" target="_blank">Iolani Palace</a> - The only royal residence on US soil, home to the Kings and Queens of Hawai’i from the Kamehameha Dynasty 
-<br>&emsp; until the monarchy was overthrown and the Islands annexed by the US in the late 19th century
-<li><a href="https://www.nps.gov/valr/index.htm" target="_blank">Pearl Harbor</a> - This is on the West side of Honolulu near the airport, so it's a good thing to do right after arriving or right before leaving.
-<li><a href="http://dlnr.hawaii.gov/dsp/parks/oahu/puu-ualakaa-state-wayside/" target="_blank">Puu Ualakaa State Park</a> - Fantastic views over Honolulu and Waikiki. Tantalus Lookout is just up the hill from our place
-<li><a href="http://hanaumabaystatepark.com/" target="_blank">Hanauma Bay Nature Preserve</a> - Say hi to the sea turtles for us!
-<li>Head to the beach. Any beach, but the closest is probably going to be the famous <a href="http://www.best-of-oahu.com/waikiki-beach.html" target="_blank">Waikiki Beach</a>.
-</ol>
-
-(click below for an interactive map)<br><a href="https://www.google.com/maps/d/embed?mid=1T52UMNxICwNIEJFzpu0K6BzYHh0" target="_blank"><img src="/app/weddingmap.jpg" width="640" height="480"></a>
+{% include "travel.html" %}
 </div><!-- #tab4 -->
 
 <div id="tab5" class="tab_content"> 
