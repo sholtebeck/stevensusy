@@ -30,10 +30,10 @@ Welcome, <label>{{ nickname }}</label>: {{msg}}{{emoticon}}
 <h1>{{title}}</h1>
   <ul class="tabs"> 
         <li class="active" rel="tab0">Ceremony</li>
+        <li rel="tab1">RSVP</li>
 {% if tour %}
-        <li rel="tab1">Wedding Tour</li>
+        <li rel="tab2">Wedding Tour</li>
 {% endif %}
-        <li rel="tab2">RSVP</li>
        <li rel="tab3">Registry</li>
        <li rel="tab4">Travel/Accommodations</li>
        <li rel="tab5">Wedlog</li>
@@ -50,12 +50,14 @@ Welcome, <label>{{ nickname }}</label>: {{msg}}{{emoticon}}
 </div><!-- #tab0 -->
 
 <div id="tab1" class="tab_content"> 
+{% include "rsvpform.html" %}
+</div><!-- #tab2 -->
+
+<div id="tab2" class="tab_content"> 
 {% include "weddingtour.html" %}
 </div><!-- #tab1 -->
 
-<div id="tab2" class="tab_content"> 
-{% include "rsvpform.html" %}
-</div><!-- #tab2 -->
+
 <div id="tab3" class="tab_content"> 
 <label>Our Gift Registry:</label><br>Are you kidding? We just spent months paring down two long-established independent overstuffed households and moving across an ocean together into a small flat! 
 <br>We really don’t need or want anything. In lieu of gifts to us, please consider a donation to one or more of the following:
