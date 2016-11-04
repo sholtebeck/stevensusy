@@ -38,7 +38,7 @@ def globalVals(ctx):
     template_values= {
     "title": "Susy & Steve's Wedding",
     "date": "Easter Sunday, April 16 2017",   
-    "time": "9:30am HST",
+    "time": "Mid-morning (9:30am HST)",
     "attire":"Casual (dress for a beach park)",
     "location": "Magic Island Lagoon, Ala Moana Beach Park, Honolulu HI",
     "map_key": "AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk",
