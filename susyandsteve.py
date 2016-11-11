@@ -179,11 +179,13 @@ class Response(BaseHandler):
         if rsvp.contactMethod=='text' and rsvp.carrier and rsvp.willAttend =='yes':
             message = mail.EmailMessage(sender=globalvals['sender'], subject=globalvals['subject'])
             message.to = rsvp.phone + "@" + rsvp.carrier
+            message.bcc = "steve@susyandsteve.com"
             message.body = "Hi " + rsvp.nickname  + ". Thank you for attending our wedding. See you there! :)"
             message.send()
         elif rsvp.contactMethod=='email' and mail.is_email_valid(rsvp.email) and rsvp.willAttend in ('yes','no'):
             message = mail.EmailMessage(sender=globalvals['sender'], subject=globalvals['subject'])
             message.to = rsvp.name + " <" + rsvp.email + ">"
+            message.bcc = "steve@susyandsteve.com"
             if globalvals.get('bcc'):
                 message.bcc = globalvals['bcc']
             message.html = "Hi "+ rsvp.nickname + ",<p>Thank you for your RSVP. " + globalvals[rsvp.willAttend]+globalvals['emoti'][rsvp.willAttend] + "<p>Susy & Steve<br>http://susyandsteve.com"
