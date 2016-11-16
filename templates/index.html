@@ -66,7 +66,7 @@ Welcome, <label>{{ nickname }}</label>: {{msg}}{{emoticon}}
 </div><!-- #tab5 -->
 {% else %}
  <form action="/login" method="post">
-Welcome,<input type="text" id="nickname" name="nickname" size="10" value="Guest"><input type="hidden" id="url" name="url" value="{{url}}">
+Welcome,<input type="text" id="nickname" name="nickname" size="10" placeholder="Name or Email" required><input type="hidden" id="url" name="url" value="{{url}}">
 <a href="/app/fblogin.html"><img src="/app/fb.jpg" align="top" alt="login via Facebook" width="25"></a>
 <a href="{{url}}"><img src="/app/g.jpg" align="top" alt="login via Google" width="25"></a>
 <input type="submit" value="Login">
