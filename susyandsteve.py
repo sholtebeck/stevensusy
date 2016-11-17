@@ -23,15 +23,19 @@ def get_Nickname(input):
     return output
 
 def get_RSVP_list():
-    rsvp_query = RSVP.query(ancestor=login_key(app_name)).order(RSVP.nickname)
+    rsvp_query = RSVP.query(ancestor=login_key(app_name)).order(RSVP.date)
     rsvp_list = rsvp_query.fetch(100)
     return rsvp_list
     
 def get_RSVP_count(rsvp_list):
-    rsvp_count = 0
+    rsvp_count={"HI":0,"CA":0,"WI":0}
     for rsvp in rsvp_list:
         if rsvp.willAttend == "yes":
-            rsvp_count += rsvp.attendees
+            rsvp_count['HI'] += max(rsvp.attendees,1)
+        if rsvp.willAttendCA == "yes":
+            rsvp_count['CA'] += max(rsvp.attendees,1)
+        if rsvp.willAttendWI == "yes":
+            rsvp_count['WI'] += max(rsvp.attendees,1)
     return rsvp_count
 
 def globalVals(ctx):
@@ -52,8 +56,8 @@ def globalVals(ctx):
     "states":[ { "name": "Alabama", "code": "AL" }, { "name": "Alaska", "code": "AK" }, { "name": "Arizona", "code": "AZ" }, { "name": "Arkansas", "code": "AR" },
     { "name": "California", "code": "CA" }, { "name": "Colorado", "code": "CO" }, { "name": "Connecticut", "code": "CT" }, { "name": "Delaware", "code": "DE" },
     { "name": "District Of Columbia", "code": "DC" }, { "name": "Florida", "code": "FL" }, { "name": "Georgia", "code": "GA" },  { "name": "Hawaii", "code": "HI" }, 
-	{ "name": "Idaho", "code": "ID" }, { "name": "Illinois", "code": "IL" }, { "name": "Indiana", "code": "IN" },   { "name": "Iowa", "code": "IA" }, 
-	{ "name": "Kansas", "code": "KS" }, { "name": "Kentucky", "code": "KY" }, { "name": "Louisiana", "code": "LA" },
+    { "name": "Idaho", "code": "ID" }, { "name": "Illinois", "code": "IL" }, { "name": "Indiana", "code": "IN" },   { "name": "Iowa", "code": "IA" }, 
+    { "name": "Kansas", "code": "KS" }, { "name": "Kentucky", "code": "KY" }, { "name": "Louisiana", "code": "LA" },
     { "name": "Maine", "code": "ME" }, { "name": "Maryland", "code": "MD" }, { "name": "Massachusetts", "code": "MA" }, { "name": "Michigan", "code": "MI" },
     { "name": "Minnesota", "code": "MN" }, { "name": "Mississippi", "code": "MS" }, { "name": "Missouri", "code": "MO" }, { "name": "Montana", "code": "MT" },
     { "name": "Nebraska", "code": "NE" }, { "name": "Nevada", "code": "NV" }, { "name": "New Hampshire", "code": "NH" }, { "name": "New Jersey", "code": "NJ" },
@@ -64,7 +68,7 @@ def globalVals(ctx):
     { "name": "Washington", "code": "WA" }, { "name": "West Virginia", "code": "WV" }, { "name": "Wisconsin", "code": "WI" }, { "name": "Wyoming", "code": "WY"    } ],
     "carriers": [ {"name":"Alltel","domain":"message.alltel.com"},{"name":"AT&T","domain":"message.alltel.com"},{"name":"Boost","domain":"myboostmobile.com"},
     {"name":"Sprint","domain":"messaging.sprintpcs.com"},{"name":"T-Mobile","domain":"tmomail.net"},{"name":"Verizon","domain":"vtext.com"},{"name":"Virgin","domain":"vmobl.com"}  ],
-	"tour": True
+    "tour": True
     }
     # Get number of days until the big day
     template_values['action']=ctx.request.get('action') 
@@ -93,22 +97,33 @@ class BaseHandler(webapp2.RequestHandler):
     @webapp2.cached_property
     def session(self):
         # Returns a session using the default cookie key.
-        return self.session_store.get_session()     
-    
+        return self.session_store.get_session() 
+
 class MainPage(BaseHandler):
     def get(self):
         template_values= globalVals(self)
         rsvp_list = get_RSVP_list()
-        template_values['rsvplist']=rsvp_list
-        rsvp_count=0
+        template_values['rsvp_list']=rsvp_list
+        template_values['rsvpcount']=get_RSVP_count(rsvp_list)
+        rsvplist={"HI":[],"CA":[],"WI":[]}
         for rsvp in rsvp_list:
+            rsvp_name=rsvp.name
+            if rsvp.attendees>1:
+                rsvp_name+="("+str(rsvp.attendees)+")"
             if rsvp.willAttend == "yes":
-                rsvp_count += rsvp.attendees
+                rsvplist["HI"].append(rsvp_name)
+            if rsvp.willAttendCA == "yes":
+                rsvplist["CA"].append(rsvp_name)
+            if rsvp.willAttendWI == "yes":
+                rsvplist["WI"].append(rsvp_name)             
             if rsvp.nickname == template_values['nickname']:
                 template_values['msg']=template_values[rsvp.willAttend]
                 template_values['emoticon']=template_values['emoti'][rsvp.willAttend]
                 template_values['rsvp'] = rsvp
-        template_values['guestcount'] = rsvp_count
+        template_values['rsvplist'] = rsvplist
+        template_values['guestcount'] = len(rsvplist.get("HI"))
+        if template_values["nickname"] in names.keys() or template_values["nickname"] in names.values() :
+            template_values["weddingparty"]="Yes"
         template = jinja_environment.get_template('index.html')
         self.response.out.write(template.render(template_values))
 
@@ -137,7 +152,9 @@ class RSVP(ndb.Model):
     carrier = ndb.StringProperty(indexed=False)
     contactMethod = ndb.StringProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
-
+    willAttendCA= ndb.TextProperty(indexed=False)
+    willAttendWI= ndb.TextProperty(indexed=False)
+   
 class Response(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('rsvp.html')
@@ -171,6 +188,8 @@ class Response(BaseHandler):
         rsvp.state= self.request.get('state')
         rsvp.zip= self.request.get('zip')
         rsvp.willAttend= self.request.get('willAttend')
+        rsvp.willAttendCA= self.request.get('willAttendCA')
+        rsvp.willAttendWI= self.request.get('willAttendWI')
         rsvp.attendees = int(self.request.get('attendees'))
         rsvp.note = self.request.get('note')
         rsvp.contactMethod = self.request.get('contactMethod')

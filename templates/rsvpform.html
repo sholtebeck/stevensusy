@@ -33,12 +33,12 @@
 			<input type="text" id="note" name="note" size="60" value="{{rsvp.note}}">
         </div>
 	<div>
-            <label for="willAttend">Attending the wedding?</label> <select id="willAttend" name="willAttend">
+	<label for="willAttend">Attending the wedding?</label> <select id="willAttend" name="willAttend">
                 <option value="yes">yes</option>
 			    <option value="no">no</option>
-				<option value="maybe">maybe</option>
-            </select>
-            <label for="attendees">Number attending:</label>
+                <option value="maybe">maybe</option>
+           </select>
+   <label for="attendees">Number attending:</label>
             <select id="attendees" name="attendees" value="{{rsvp.attendees}}">
                 <option value="0">none</option>
                 <option value="1">one</option>
@@ -49,6 +49,18 @@
                 <option value="6">six</option>
             </select>
         </div>
+		<div>
+            <label for="willAttendCA">Oakland A's game (June 4)?</label> <select id="willAttendCA" name="willAttendCA">
+			<option value=""></option>
+               <option value="yes">yes</option>
+ 			    <option value="no">no</option>
+           </select>
+		    <label for="willAttendWI">Wisconsin Party (June 8)?</label> <select id="willAttendWI" name="willAttendWI">
+			<option value=""></option>
+               <option value="yes">yes</option>
+ 			    <option value="no">no</option>
+           </select>
+</div>
      	<div>
             <label for="contactMethod">Preferred Contact Method: </label>
 			  <select id="contactMethod" name="contactMethod" value="{{rsvp.contactMethod}}">
@@ -71,6 +83,8 @@
 <script>
 $('select[name="state"] option[value="{{rsvp.state}}"]').attr("selected","selected");
 $('select[name="willAttend"] option[value="{{rsvp.willAttend}}"]').attr("selected","selected");
+$('select[name="willAttendCA"] option[value="{{rsvp.willAttendCA}}"]').attr("selected","selected");
+$('select[name="willAttendWI"] option[value="{{rsvp.willAttendWI}}"]').attr("selected","selected");
 $('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected","selected");
 $('select[name="contactMethod"] option[value="{{rsvp.contactMethod}}"]').attr("selected","selected");
 $('select[name="carrier"] option[value="{{rsvp.carrier}}"]').attr("selected","selected");
@@ -122,6 +136,18 @@ $('select[name="carrier"] option[value="{{rsvp.carrier}}"]').attr("selected","se
                 <option value="6">six</option>
             </select>
         </div>
+		<div>
+            <label for="willAttendCA">Oakland A's game (June 4)?</label> <select id="willAttendCA" name="willAttendCA">
+			<option value=""></option>
+               <option value="yes">yes</option>
+ 			    <option value="no">no</option>
+           </select>
+		    <label for="willAttendWI">Wisconsin Party (June 8)?</label> <select id="willAttendWI" name="willAttendWI">
+			<option value=""></option>
+               <option value="yes">yes</option>
+ 			    <option value="no">no</option>
+           </select>
+       </div>
      	<div>
             <label for="contactMethod">Preferred Contact Method: </label>
 			  <select id="contactMethod" name="contactMethod" value="">
@@ -144,17 +170,42 @@ $('select[name="carrier"] option[value="{{rsvp.carrier}}"]').attr("selected","se
 {% endif %}
 </form>
 
+{% if weddingparty %}
+<table width="750">
+<tr>
+<th align="left"><label>Sunday April 16th</label></th>
+<th align="left"><label>Sunday June 4th</label></th>
+<th align="left"><label>Thursday June 8th</label></th>
+</tr>
+<tr>
+<th align="left"><b>The Wedding</b>({{rsvpcount['HI']}})</th>
+<th align="left"><b>Oakland A's game</b> ({{rsvpcount['CA']}})</th>
+<th align="left"><b>Wisconsin Party</b> ({{ rsvpcount['WI']}})</th>
+</tr>
+<tr>
+<td align="top">
 {% if guestcount %}
-<label>Attending ({{guestcount}})</label></br>
-{% for rsvp in rsvplist %}
-{% if rsvp.willAttend=="yes" %}
-    {{ rsvp.name }}
-	{% if rsvp.attendees > 1 %}
-	 ({{rsvp.attendees}})
-	{% endif %}
-	<br>
-{% endif %}
+{% for name in rsvplist['HI'] %}
+    {{ name }}<br>
 {% endfor %}
+{% endif %}
+</td>
+<td align="top">
+{% if rsvplist['CA'] %}
+{% for name in rsvplist['CA'] %}
+    {{ name }}<br>
+{% endfor %}
+{% endif %}
+</td>
+<td align="top">
+{% if rsvplist['WI'] %}
+{% for name in rsvplist['WI'] %}
+    {{ name }}<br>
+{% endfor %}
+{% endif %}
+</td>
+</tr>
+</table>
 {% endif %}
 
 
