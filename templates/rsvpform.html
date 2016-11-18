@@ -28,39 +28,6 @@
 </select>
 			<label for="zip">ZIP:</label>  <input type="text" id="zip" name="zip" size="10" value="{{rsvp.zip}}">
        </div>
-	<div>
-            <label for="note">Note: </label>
-			<input type="text" id="note" name="note" size="60" value="{{rsvp.note}}">
-        </div>
-	<div>
-	<label for="willAttend">Attending the wedding?</label> <select id="willAttend" name="willAttend">
-                <option value="yes">yes</option>
-			    <option value="no">no</option>
-                <option value="maybe">maybe</option>
-           </select>
-   <label for="attendees">Number attending:</label>
-            <select id="attendees" name="attendees" value="{{rsvp.attendees}}">
-                <option value="0">none</option>
-                <option value="1">one</option>
-                <option value="2">two</option>
-                <option value="3">three</option>
-                <option value="4">four</option>
-                <option value="5">five</option>
-                <option value="6">six</option>
-            </select>
-        </div>
-		<div>
-            <label for="willAttendCA">Oakland A's game (June 4)?</label> <select id="willAttendCA" name="willAttendCA">
-			<option value=""></option>
-               <option value="yes">yes</option>
- 			    <option value="no">no</option>
-           </select>
-		    <label for="willAttendWI">Wisconsin Party (June 8)?</label> <select id="willAttendWI" name="willAttendWI">
-			<option value=""></option>
-               <option value="yes">yes</option>
- 			    <option value="no">no</option>
-           </select>
-</div>
      	<div>
             <label for="contactMethod">Preferred Contact Method: </label>
 			  <select id="contactMethod" name="contactMethod" value="{{rsvp.contactMethod}}">
@@ -74,7 +41,36 @@
 {% for carrier in carriers %}
              <option value="{{carrier.domain}}">{{carrier.name}}</option>
 {% endfor %}
-        </div>       
+        </select>
+</div>
+	<div>
+           <label for="note">Note: </label>
+			<input type="text" id="note" name="note" size="60" value="{{rsvp.note}}">
+        </div></p>			
+	 <div>
+	 <label for="willAttend">Will you be attending the Hawaii wedding on April 16?</label>
+	 <input type="radio" name="willAttend" value="yes" ><b>Yes</b><input type="radio" name="willAttend" value="no" onclick="javascript:enableAttendees();"><b>No</b><input type="radio" name="willAttend" value="maybe"><b>Maybe</b>
+	</div>
+	<div>
+ 	<label for="willAttendCA">Will you be attending the Oakland game on June 4th?</label> &nbsp;   
+	<input type="radio" name="willAttendCA" value="yes" ><b>Yes</b><input type="radio" name="willAttendCA" value="no"><b>No</b><input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
+       </div>
+		<div>
+ 	<label for="willAttendWI">Will you be attending the Wisconsin party on June 7th?</label>
+	<input type="radio" name="willAttendWI" value="yes" ><b>Yes</b><input type="radio" name="willAttendWI" value="no"><b>No</b><input type="radio" name="willAttendWI" value="maybe"><b>Maybe</b>
+ 	</div>
+	  	<div>
+            <label for="attendees">Number of guests:</label>
+            <select id="attendees" name="attendees" value="{{rsvp.attendees}}">
+                <option value="0">none</option>
+                <option value="1">one</option>
+                <option value="2">two</option>
+                <option value="3">three</option>
+                <option value="4">four</option>
+                <option value="5">five</option>
+                <option value="6">six</option>
+            </select>
+	</div>
 		<div>
             <input type="hidden" id="nickname" name="nickname" value="{{rsvp.nickname}}">
             <p><input type="submit" value="Update RSVP">
@@ -82,9 +78,9 @@
     </div>
 <script>
 $('select[name="state"] option[value="{{rsvp.state}}"]').attr("selected","selected");
-$('select[name="willAttend"] option[value="{{rsvp.willAttend}}"]').attr("selected","selected");
-$('select[name="willAttendCA"] option[value="{{rsvp.willAttendCA}}"]').attr("selected","selected");
-$('select[name="willAttendWI"] option[value="{{rsvp.willAttendWI}}"]').attr("selected","selected");
+$('input[name="willAttend"][value="{{rsvp.willAttend}}"]').prop("checked",true);
+$('input[name="willAttendCA"][value="{{rsvp.willAttendCA}}"]').prop("checked",true);
+$('input[name="willAttendWI"][value="{{rsvp.willAttendWI}}"]').prop("checked",true);
 $('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected","selected");
 $('select[name="contactMethod"] option[value="{{rsvp.contactMethod}}"]').attr("selected","selected");
 $('select[name="carrier"] option[value="{{rsvp.carrier}}"]').attr("selected","selected");
@@ -93,7 +89,7 @@ $('select[name="carrier"] option[value="{{rsvp.carrier}}"]').attr("selected","se
     <div>
         <div>
             <label for="fullName">Name:</label>
-            <input type="text" id="name" name="name" size="60" value="">
+            <input type="text" id="name" name="name" size="60" value="" required>
        </div>
 		<div>
             <label for="email">Email:</label>
@@ -115,40 +111,8 @@ $('select[name="carrier"] option[value="{{rsvp.carrier}}"]').attr("selected","se
             </select>
 			<label for="zip">ZIP:</label>  <input type="text" id="zip" name="zip" size="10">
        </div>
-	<div>
-            <label for="note">Note: </label>
-			<input type="text" id="note" name="note" size="60" value="">
-        </div>
-	<div>
-            <label for="willAttend">Attending the wedding?</label> <select id="willAttend" name="willAttend">
-                <option value="yes">yes</option>
-			    <option value="no">no</option>
-                <option value="maybe">maybe</option>
-           </select>
-            <label for="attendees">Number attending:</label>
-            <select id="attendees" name="attendees">
-                <option value="0">none</option>
-                <option value="1">one</option>
-                <option value="2">two</option>
-                <option value="3">three</option>
-                <option value="4">four</option>
-                <option value="5">five</option>
-                <option value="6">six</option>
-            </select>
-        </div>
-		<div>
-            <label for="willAttendCA">Oakland A's game (June 4)?</label> <select id="willAttendCA" name="willAttendCA">
-			<option value=""></option>
-               <option value="yes">yes</option>
- 			    <option value="no">no</option>
-           </select>
-		    <label for="willAttendWI">Wisconsin Party (June 8)?</label> <select id="willAttendWI" name="willAttendWI">
-			<option value=""></option>
-               <option value="yes">yes</option>
- 			    <option value="no">no</option>
-           </select>
-       </div>
-     	<div>
+
+      	<div>
             <label for="contactMethod">Preferred Contact Method: </label>
 			  <select id="contactMethod" name="contactMethod" value="">
                 <option value="">none</option>
@@ -161,8 +125,39 @@ $('select[name="carrier"] option[value="{{rsvp.carrier}}"]').attr("selected","se
 {% for carrier in carriers %}
              <option value="{{carrier.domain}}">{{carrier.name}}</option>
 {% endfor %}
-        </div> 
-        <div>
+</select>
+      </div> 
+	  	<div>
+            <label for="note">Note: </label>
+			<input type="text" id="note" name="note" size="60" value="">
+        </div>
+		</p>
+
+	<div>
+	<label for="willAttend">Will you be attending the Hawaii wedding on April 16?</label>
+	<input type="radio" name="willAttend" value="yes"><b>Yes</b><input type="radio" name="willAttend" value="no"><b>No</b><input type="radio" name="willAttend" value="maybe"><b>Maybe</b>
+	</div>
+	<div>
+ 	<label for="willAttendCA">Will you be attending the Oakland game on June 4th?</label> &nbsp;   
+	<input type="radio" name="willAttendCA" value="yes"><b>Yes</b><input type="radio" name="willAttendCA" value="no"><b>No</b><input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
+       </div>
+		<div>
+ 	<label for="willAttendWI">Will you be attending the Wisconsin party on June 7th?</label>
+	<input type="radio" name="willAttendWI" value="yes"><b>Yes</b><input type="radio" name="willAttendWI" value="no"><b>No</b><input type="radio" name="willAttendWI" value="maybe"><b>Maybe</b>
+ 	</div>
+	<div>
+            <label for="attendees">Number of guests attending:</label>
+            <select id="attendees" name="attendees" value="1">
+                <option value="0">none</option>
+                <option value="1">one</option>
+                <option value="2">two</option>
+                <option value="3">three</option>
+                <option value="4">four</option>
+                <option value="5">five</option>
+                <option value="6">six</option>
+            </select>
+	</div>
+       <div>
             <input type="hidden" id="nickname" name="nickname" value="{{nickname}}">
             <p><input type="submit" value="Send RSVP">
         </div>
@@ -173,9 +168,9 @@ $('select[name="carrier"] option[value="{{rsvp.carrier}}"]').attr("selected","se
 {% if weddingparty %}
 <table width="750">
 <tr>
-<th align="left"><label>Sunday April 16th</label></th>
-<th align="left"><label>Sunday June 4th</label></th>
-<th align="left"><label>Thursday June 8th</label></th>
+<th align="left"><label>Sunday April 16</label></th>
+<th align="left"><label>Sunday June 4</label></th>
+<th align="left"><label>Wednesday June 7</label></th>
 </tr>
 <tr>
 <th align="left"><b>The Wedding</b>({{rsvpcount['HI']}})</th>
@@ -183,21 +178,21 @@ $('select[name="carrier"] option[value="{{rsvp.carrier}}"]').attr("selected","se
 <th align="left"><b>Wisconsin Party</b> ({{ rsvpcount['WI']}})</th>
 </tr>
 <tr>
-<td align="top">
+<td valign="top">
 {% if guestcount %}
 {% for name in rsvplist['HI'] %}
     {{ name }}<br>
 {% endfor %}
 {% endif %}
 </td>
-<td align="top">
+<td valign="top">
 {% if rsvplist['CA'] %}
 {% for name in rsvplist['CA'] %}
     {{ name }}<br>
 {% endfor %}
 {% endif %}
 </td>
-<td align="top">
+<td valign="top">
 {% if rsvplist['WI'] %}
 {% for name in rsvplist['WI'] %}
     {{ name }}<br>

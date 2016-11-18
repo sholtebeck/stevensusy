@@ -16,6 +16,15 @@ config={'webapp2_extras.sessions' : {'secret_key': app_name } }
 jinja_environment = jinja2.Environment(autoescape=False,loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')))    
 names={'sholtebeck':'Steve','ingrahas':'Susy','mholtebeck':'Mark','aingrahamdwyer':'Andy','moxiemoo':'Janet'}
 
+def num(value, yesorno):
+    if yesorno=="yes":
+        try:
+            return int(value)
+        except ValueError:
+            return 0
+    else:
+        return 0
+
 def get_Nickname(input):
     (name,domain)=input.split('@')
     if (domain == 'gmail.com'):
@@ -40,7 +49,7 @@ def get_RSVP_count(rsvp_list):
 
 def globalVals(ctx):
     template_values= {
-    "title": "Susy & Steve's Wedding",
+    "title": "Susy & Steve's Wedding Tour",
     "date": "Easter Sunday, April 16 2017",   
     "time": "Mid-morning (9:30am HST)",
     "attire":"Casual (dress for a beach park)",
@@ -190,7 +199,7 @@ class Response(BaseHandler):
         rsvp.willAttend= self.request.get('willAttend')
         rsvp.willAttendCA= self.request.get('willAttendCA')
         rsvp.willAttendWI= self.request.get('willAttendWI')
-        rsvp.attendees = int(self.request.get('attendees'))
+        rsvp.attendees = num(self.request.get('attendees'), max(rsvp.willAttend, rsvp.willAttendCA,rsvp.willAttendWI))
         rsvp.note = self.request.get('note')
         rsvp.contactMethod = self.request.get('contactMethod')
         rsvp.carrier = self.request.get('carrier')
@@ -200,6 +209,12 @@ class Response(BaseHandler):
             message.to = rsvp.phone + "@" + rsvp.carrier
             message.bcc = "steve@susyandsteve.com"
             message.body = "Hi " + rsvp.nickname  + ". Thank you for attending our wedding. See you there! :)"
+            message.send()
+        if rsvp.contactMethod=='text' and rsvp.carrier and (rsvp.willAttendCA =='yes' or rsvp.willAttendWI =='yes'):
+            message = mail.EmailMessage(sender=globalvals['sender'], subject=globalvals['subject'])
+            message.to = rsvp.phone + "@" + rsvp.carrier
+            message.bcc = "steve@susyandsteve.com"
+            message.body = "Hi " + rsvp.nickname  + ". Thank you for joining our wedding tour. See you there! :)"
             message.send()
         elif rsvp.contactMethod=='email' and mail.is_email_valid(rsvp.email) and rsvp.willAttend in ('yes','no'):
             message = mail.EmailMessage(sender=globalvals['sender'], subject=globalvals['subject'])
