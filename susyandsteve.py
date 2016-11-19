@@ -14,7 +14,7 @@ from webapp2_extras import sessions
 app_name='susyandsteve'
 config={'webapp2_extras.sessions' : {'secret_key': app_name } }
 jinja_environment = jinja2.Environment(autoescape=False,loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')))    
-names={'sholtebeck':'Steve','ingrahas':'Susy','mholtebeck':'Mark','aingrahamdwyer':'Andy','moxiemoo':'Janet'}
+names={'sholtebeck':'Steve','ingrahas':'Susy','mholtebeck':'Mark','aingrahamdwyer':'Andy','moxiemoo':'Janet','janetid':'Janet' }
 
 def num(value, yesorno):
     if yesorno=="yes":
@@ -210,7 +210,7 @@ class Response(BaseHandler):
             message.bcc = "steve@susyandsteve.com"
             message.body = "Hi " + rsvp.nickname  + ". Thank you for attending our wedding. See you there! :)"
             message.send()
-        if rsvp.contactMethod=='text' and rsvp.carrier and (rsvp.willAttendCA =='yes' or rsvp.willAttendWI =='yes'):
+        elif rsvp.contactMethod=='text' and rsvp.carrier and (rsvp.willAttendCA =='yes' or rsvp.willAttendWI =='yes'):
             message = mail.EmailMessage(sender=globalvals['sender'], subject=globalvals['subject'])
             message.to = rsvp.phone + "@" + rsvp.carrier
             message.bcc = "steve@susyandsteve.com"
