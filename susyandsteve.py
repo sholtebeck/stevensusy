@@ -246,7 +246,7 @@ class LogMeInOrOut(BaseHandler):
         # Login the user and save in the session
         nickname = self.request.get('nickname').lower()
         # If input is gmail (xxx@gmail.com), redirect to Google login page
-        if nickname.find('@gmail.com'):
+        if nickname.find('@gmail.com')>0:
             self.redirect(self.request.get('url'))
         if nickname.title() != 'Guest':
             guestbookName = self.request.get('guestbookName', app_name)
