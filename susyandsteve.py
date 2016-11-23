@@ -258,9 +258,24 @@ class LogMeInOrOut(BaseHandler):
             login.put()
         self.redirect('/')
 
+class Guests(BaseHandler):
+    def get(self):
+        template = jinja_environment.get_template('guests.html')
+        guest_list = []
+        for rsvp in get_RSVP_list():
+            rsvp_dict={"Name":rsvp.name, "Address":rsvp.address, "City":rsvp.city,"State":rsvp.state,"Zip":rsvp.zip,"Email":rsvp.email,"Phone":rsvp.phone, "WillAttend":rsvp.willAttend,
+            "WillAttendCA":rsvp.willAttendCA, "WillAttendWI":rsvp.willAttendWI, "Attendees":rsvp.attendees}
+            guest_list.append(rsvp_dict)
+        pageVars = globalVals(self) 
+        pageVars['guest_list'] =  guest_list
+        pageVars['title'] = "Guests for " + pageVars['title']
+        pageVars['guestcount'] = 0
+        self.response.write(template.render(pageVars))
+      
         
 app = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/guests',Guests),
     ('/rsvp', Response),
     ('/login', LogMeInOrOut),
     ('/logout', LogMeInOrOut),
