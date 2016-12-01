@@ -1,8 +1,5 @@
 {% extends "layout.html" %}
 {% block title %}RSVP for {{title}}{% endblock %}
-{% block bottom_js %}
-<script src="static/wedding.js"></script>
-{% endblock %}
 {% block content %}
 <div class="container-fluid">
 <div class="col-lg-4" >
@@ -12,8 +9,9 @@
  <h1>RSVP for {{title}}</h1>
 <form action="/rsvp" method="post">
 {% if rsvp %}
+<label>Hi {{rsvp.nickname}},</label>
 {% if rsvp.willAttend=="yes" %}
-    <label>You are attending our wedding. &#9786; </label> 
+    <label> You are attending our wedding. &#9786; </label> 
 {% elif rsvp.willAttend=="maybe" %}
     <label>You might be attending our wedding.</label> 
 {% else %}
@@ -40,7 +38,11 @@
 			<label for="state">State:</label> <select id="state" name="state">
 			<option value=""></option>
 {% for state in states %}
+         {% if state.code == rsvp.state %}
+            <option value="{{state.code}}" selected>{{state.name}}</option>
+	     {% else %}
             <option value="{{state.code}}">{{state.name}}</option>
+		 {% endif %}
 {% endfor %}
 </select>
 			<label for="zip">ZIP:</label>  <input type="text" id="zip" name="zip" size="10" value="{{rsvp.zip}}">
@@ -50,44 +52,58 @@
 			  <select id="contactMethod" name="contactMethod" value="{{rsvp.contactMethod}}">
                 <option value="">none</option>
 {% for method in methods %}
-             <option value="{{method}}">{{method}}</option>
+         {% if method == rsvp.contactMethod %}
+            <option value="{{method}}" selected>{{method}}</option>
+	     {% else %}
+            <option value="{{method}}">{{method}}</option>
+		 {% endif %}
+             
 {% endfor %}				
             </select>
 				<label for="carrier">Cell Carrier: </label><select id="carrier" name="carrier">
 			<option value=""></option>
 {% for carrier in carriers %}
-             <option value="{{carrier.domain}}">{{carrier.name}}</option>
-{% endfor %}
+         {% if carrier.domain == rsvp.carrier %}
+            <option value="{{carrier.domain}}" selected>{{carrier.name}}</option>
+	     {% else %}
+            <option value="{{carrier.domain}}">{{carrier.name}}</option>
+		 {% endif %}{% endfor %}
 		<option value=" ">Landline/Other</option>
 		</select>
         </div>
 	<div>
-            <label for="note">Note: </label>
+            <label for="note">Message: </label>
 			<input type="text" id="note" name="note" size="60" value="">
     </div>
 	   </p>
 	<div>
 	<label for="willAttend">Will you be attending the Hawaii wedding on April 16?</label>
-	<input type="radio" name="willAttend" value="yes"><b>Yes</b><input type="radio" name="willAttend" value="no"><b>No</b><input type="radio" name="willAttend" value="maybe"><b>Maybe</b>
+	<input type="radio" name="willAttend" value="yes" {% if rsvp.willAttend=="yes" %}checked{% endif %}><b>Yes</b>
+	<input type="radio" name="willAttend" value="no" {% if rsvp.willAttend=="no" %}checked{% endif %}><b>No</b>
+	<input type="radio" name="willAttend" value="maybe"><b>Maybe</b>
 	</div>
 	<div>
  	<label for="willAttendCA">Will you be attending the Oakland party on June 4th?</label> &nbsp;   
-	<input type="radio" name="willAttendCA" value="yes"><b>Yes</b><input type="radio" name="willAttendCA" value="no"><b>No</b><input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
+	<input type="radio" name="willAttendCA" value="yes" {% if rsvp.willAttendCA=="yes" %}checked{% endif %}><b>Yes</b>
+	<input type="radio" name="willAttendCA" value="no"  {% if rsvp.willAttendCA=="no" %}checked{% endif %}><b>No</b>
+	<input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
        </div>
 		<div>
  	<label for="willAttendWI">Will you be attending the Wisconsin party on June 7th?</label>
-	<input type="radio" name="willAttendWI" value="yes"><b>Yes</b><input type="radio" name="willAttendWI" value="no"><b>No</b><input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
+	<input type="radio" name="willAttendWI" value="yes" {% if rsvp.willAttendWI=="yes" %}checked{% endif %}><b>Yes</b>
+	<input type="radio" name="willAttendWI" value="no"  {% if rsvp.willAttendWI=="no" %}checked{% endif %}><b>No</b>
+	<input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
  	</div>
 	<div>
             <label for="attendees">Number of guests attending:</label>
             <select id="attendees" name="attendees" value="{{rsvp.attendees}}">
                 <option value="0">none</option>
-                <option value="1">one</option>
-                <option value="2">two</option>
-                <option value="3">three</option>
-                <option value="4">four</option>
-                <option value="5">five</option>
-                <option value="6">six</option>
+                <option value="1" {% if rsvp.attendees==1 %}selected{% endif %}>one</option>
+                <option value="2" {% if rsvp.attendees==2 %}selected{% endif %}>two</option>
+                <option value="3" {% if rsvp.attendees==3 %}selected{% endif %}>three</option>
+                <option value="4" {% if rsvp.attendees==4 %}selected{% endif %}>four</option>
+                <option value="5" {% if rsvp.attendees==5 %}selected{% endif %}>five</option>
+                <option value="6" {% if rsvp.attendees==6 %}selected{% endif %}>six</option>
             </select>
 	</div>
 
@@ -96,14 +112,6 @@
             <p><input type="submit" id="update" value="Update RSVP">
         </div>
     </div>
-<script>
-$('select[name="state"] option[value="{{rsvp.state}}"]').attr("selected","selected");
-$('input[name="willAttend"][value="{{rsvp.willAttend}}"]').prop("checked",true);
-$('input[name="willAttendCA"][value="{{rsvp.willAttendCA}}"]').prop("checked",true);
-$('input[name="willAttendWI"][value="{{rsvp.willAttendWI}}"]').prop("checked",true);
-$('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected","selected");
-$('select[name="contactMethod"] option[value="{{rsvp.contactMethod}}"]').attr("selected","selected");
-</script>
 {% else %}
     <div>
 Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties in Oakland CA on Sunday June 4, 2017 and Milwaukee WI on Wednesday June 7, 2017.
@@ -132,7 +140,7 @@ Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties 
 			<label for="zip">ZIP:</label>  <input type="text" id="zip" name="zip" size="10">
        </div>
 	<div>
-            <label for="note">Note: </label>
+            <label for="note">Message: </label>
 			<input type="text" id="note" name="note" size="60" value="{{note}}">
     </div>
 		<div>
