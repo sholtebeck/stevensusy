@@ -1,0 +1,255 @@
+/* GLOBAL STYLES
+-------------------------------------------------- */
+/* Padding below the footer and lighter body text */
+
+body {
+  padding-bottom: 40px;
+  color: #5a5a5a;
+  background-color: #EEE;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 1.6em;
+  font-weight: 400;
+  padding-top: 70px; 
+}
+
+label {
+color: blue;
+font-weight: bold;
+font-size:1.1em;
+}
+
+field {
+color: blue;
+font-size:1.0em;
+}
+
+@media (min-width: 1200px) {
+  .container{
+    max-width: 900px;
+  }
+}
+
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+
+.navbar-inverse {
+  font-size: 13px;
+}
+.navbar-brand {
+  font-size: 1.5em;
+}
+.navbar-inverse .navbar-brand {
+  color: #ffffff;
+  font-weight: 500;
+}
+.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
+  color: #ffffff;
+}
+.navbar-inverse .navbar-text {
+  color: #cccccc;
+}
+.navbar-inverse .navbar-nav > li > a {
+  color: #cccccc;
+}
+.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+  color: #ffffff;
+}
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
+  color: #ffffff;
+  background-color: inherit;
+  display: block;
+  border-bottom: solid red;
+  padding-bottom: 6px;
+}
+.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+  color: #ffffff;
+  background-color: #191919;
+}
+.navbar-inverse .navbar-toggle {
+  border-color: #191919;
+}
+.navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+  background-color: #191919;
+}
+.navbar-inverse .navbar-toggle .icon-bar {
+  background-color: #cccccc;
+}
+.navbar-inverse .navbar-collapse,
+.navbar-inverse .navbar-form {
+  border-color: #cccccc;
+}
+.navbar-inverse .navbar-link {
+  color: #cccccc;
+}
+.navbar-inverse .navbar-link:hover {
+  color: #ffffff;
+}
+
+.nav a{
+    font-size: 1.4em !important;
+    }
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+/* Carousel base class */
+.carousel {
+  height: 500px;
+  margin-top: -50px;
+  margin-bottom: 60px;
+}
+/* Since positioning the image, we need to help out the caption */
+.carousel-caption {
+  z-index: 10;
+  top: 30%;
+  text-shadow: -1px -1px 0 #000,  1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.carousel-tight {
+  left: 30%;
+  width: 40%;
+}
+
+/* Declare heights because of positioning of img element */
+.carousel .item {
+  height: 500px;
+}
+
+/* Large desktop */
+.carousel-inner > .item > img {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-left: -800px;
+    min-width: 1600px;
+}
+
+
+/* MARKETING CONTENT
+-------------------------------------------------- */
+
+/* Pad the edges of the mobile views a bit */
+.marketing {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+/* Center align the text within the three columns below the carousel */
+.marketing .col-lg-4 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+.marketing h2 {
+  font-weight: normal;
+}
+.marketing .col-lg-4 p {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+/* Tiles
+------------------------- */
+
+a.thumbnail:hover,
+a.thumbnail:focus {
+  text-decoration: none;
+
+}
+.thumbnail > img {
+  margin-top: 10px;
+}
+
+/* Featurettes
+------------------------- */
+
+/* Thin out the headings */
+.featurette-heading {
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.featurette-image {
+  padding: 0;
+}
+img.featurette-image {
+  width: 100%;
+}
+
+/* 404
+-------------------------- */
+
+.not-found {
+  color: #a30000;
+  position:absolute;
+  top:100px;
+  left:250px;
+  text-shadow: 1px 1px 2px #EEE
+}
+
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+
+@media (min-width: 768px) {
+
+  /* Remove the edge padding needed for mobile */
+  .marketing {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  /* Bump up size of carousel content */
+  .carousel-caption p {
+    margin-bottom: 20px;
+    font-size: 21px;
+    line-height: 1.4;
+  }
+}
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 992px) {
+  .carousel-inner > .item > img {
+    left: -18%;
+    margin-left: 0;
+    min-width: 140%;
+  }
+}
+
+/* /1* Landscape phone to portrait tablet *1/ */
+@media (max-width: 767px) {
+  .carousel {
+    height: 400px;
+    margin-bottom: 40px;
+  }
+  .carousel .item {
+    height: 400px;
+  }
+  .carousel-inner > .item > img {
+    top: 50px;
+    left: -30%;
+    margin-left: 0;
+    min-width: 160%;
+    min-height: 0;
+  }
+  .carousel-caption {
+    width: 40%;
+    left: 30%;
+    top: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel {
+    height: 300px;
+  }
+  .carousel .item {
+    height: 300px;
+  }
+  .carousel-caption {
+    width: 60%;
+    left: 20%;
+    top: 20px;
+  }
+}
+
+.container-form {
+    margin-left: 100;
+}

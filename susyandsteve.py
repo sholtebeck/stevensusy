@@ -49,9 +49,9 @@ def get_RSVP_count(rsvp_list):
 
 def globalVals(ctx):
     template_values= {
-    "title": "Susy & Steve's Wedding Tour",
+    "title": "Susy & Steve's Wedding",
     "date": "Easter Sunday, April 16 2017",   
-    "time": "Mid-morning (9:30am HST)",
+    "time": "9:30am HST",
     "attire":"Casual (dress for a beach park)",
     "location": "Magic Island Lagoon, Ala Moana Beach Park, Honolulu HI",
     "map_key": "AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk",
@@ -60,8 +60,10 @@ def globalVals(ctx):
     "no": "You are not attending",
     "maybe": "You might be attending",
     "emoti": {"yes":"&#9786;","no":"&#9785;","maybe":""},
+    "request" : ctx.request,
     "sender":"Susy & Steve <us@susyandsteve.appspotmail.com>",
     "subject":"Thank You for your RSVP",
+    "pages": [ {"name":"Tour","url":"/weddingtour"},  {"name":"RSVP","url":"/rsvp"}, {"name":"Registry","url":"/registry"}, {"name":"Travel","url":"/travel"},{"name":"Guestbook","url":"/guestbook"}, {"name":"Wedlog","url":"/wedlog"}],
     "states":[ { "name": "Alabama", "code": "AL" }, { "name": "Alaska", "code": "AK" }, { "name": "Arizona", "code": "AZ" }, { "name": "Arkansas", "code": "AR" },
     { "name": "California", "code": "CA" }, { "name": "Colorado", "code": "CO" }, { "name": "Connecticut", "code": "CT" }, { "name": "Delaware", "code": "DE" },
     { "name": "District Of Columbia", "code": "DC" }, { "name": "Florida", "code": "FL" }, { "name": "Georgia", "code": "GA" },  { "name": "Hawaii", "code": "HI" }, 
@@ -133,7 +135,8 @@ class MainPage(BaseHandler):
         template_values['guestcount'] = len(rsvplist.get("HI"))
         if template_values["nickname"] in names.keys() or template_values["nickname"] in names.values() :
             template_values["weddingparty"]="Yes"
-        template = jinja_environment.get_template('index.html')
+ #      template = jinja_environment.get_template('index.html')
+        template = jinja_environment.get_template('ceremony.html')
         self.response.out.write(template.render(template_values))
 
 def login_key(guestbookName=app_name):
@@ -145,6 +148,12 @@ class Login(ndb.Model):
     nickname = ndb.StringProperty(indexed=False)
     login_date = ndb.DateTimeProperty(auto_now_add=True)
 
+class Greeting(ndb.Model):
+    """Models an individual Guestbook entry."""
+    author = ndb.StringProperty()
+    content = ndb.StringProperty(indexed=False)
+    date = ndb.DateTimeProperty(auto_now_add=True)   
+ 
 class RSVP(ndb.Model):
     """Models an individual RSVP entry."""
     nickname= ndb.StringProperty()
@@ -172,7 +181,6 @@ class Response(BaseHandler):
         rsvp_list = rsvp_query.fetch(100)
         pageVars = globalVals(self) 
         pageVars['rsvplist'] =  rsvp_list
-        pageVars['title'] = "RSVP to " + pageVars['title']
         pageVars['guestcount'] = 0
         for rsvp in rsvp_list:
 #            if rsvp.willAttend == "yes":
@@ -258,6 +266,47 @@ class LogMeInOrOut(BaseHandler):
             login.put()
         self.redirect('/')
 
+class Ceremony(BaseHandler):
+    def get(self):
+        template = jinja_environment.get_template('ceremony.html')
+        pageVars = globalVals(self) 
+        self.response.write(template.render(pageVars))
+
+def guestbook_key(guestbookName=app_name):
+    """Constructs a Datastore key for a Guestbook entity with guestbookName."""
+    return ndb.Key('Guestbook', guestbookName)
+    
+class Guestbook(BaseHandler):
+    def get(self):
+        template = jinja_environment.get_template('guestbook.html')
+        pageVars = globalVals(self) 
+        guestbookName = self.request.get('guestbookName',app_name)
+        greetings_query = Greeting.query(ancestor=guestbook_key(guestbookName)).order(-Greeting.date)
+        greetings = greetings_query.fetch(100)
+        pageVars = globalVals(self)
+        pageVars['greetings'] =  greetings
+        pageVars['guestbookName'] = urllib.quote_plus(guestbookName)
+        self.response.write(template.render(pageVars)) 
+        
+    def post(self):
+        # We set the same parent key on the 'Greeting' to ensure each Greeting
+        # is in the same entity group. Queries across the single entity group
+        # will be consistent. However, the write rate to a single entity group
+        # should be limited to ~1/second.
+        guestbookName = self.request.get('guestbookName', app_name)
+        greeting = Greeting(parent=guestbook_key(guestbookName))
+        greeting.author = self.request.get('author')
+        greeting.content = self.request.get('content')
+        greeting.put()
+        queryParams = {'guestbookName': guestbookName}
+        self.redirect('/guestbook')
+        
+class Registry(BaseHandler):
+    def get(self):
+        template = jinja_environment.get_template('registry.html')
+        pageVars = globalVals(self) 
+        self.response.write(template.render(pageVars))       
+        
 class Guests(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('guests.html')
@@ -271,12 +320,35 @@ class Guests(BaseHandler):
         pageVars['title'] = "Guests for " + pageVars['title']
         pageVars['guestcount'] = 0
         self.response.write(template.render(pageVars))
-      
+
+class Travel(BaseHandler):
+    def get(self):
+        template = jinja_environment.get_template('travel.html')
+        pageVars = globalVals(self) 
+        self.response.write(template.render(pageVars))        
+             
+class WeddingBlog(BaseHandler):
+    def get(self):
+        template = jinja_environment.get_template('wedlog.html')
+        pageVars = globalVals(self) 
+        self.response.write(template.render(pageVars))        
+        
+class WeddingTour(BaseHandler):
+    def get(self):
+        template = jinja_environment.get_template('weddingtour.html')
+        pageVars = globalVals(self) 
+        self.response.write(template.render(pageVars))
         
 app = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/ceremony',Ceremony),
     ('/guests',Guests),
+    ('/guestbook',Guestbook),
+    ('/registry', Registry),
     ('/rsvp', Response),
     ('/login', LogMeInOrOut),
     ('/logout', LogMeInOrOut),
+    ('/travel',Travel), 
+    ('/wedlog',WeddingBlog), 
+    ('/weddingtour',WeddingTour),
 ], config=config,debug=True)

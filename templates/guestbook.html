@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+
+<div class="col-lg-4" >
+<img src="/app/invitation.jpg" align="left">
+</div>
+<div class="col-lg-8" >
+<h1>{{title}}: Sign Our Guestbook</h1>
+<table><tr>
+<th>Your Name</th><th>Message</th><th>Date</th>
+</tr>
+{% for greeting in greetings  %}
+<tr>
+<td>{{ greeting.author }}</td>
+<td>{{ greeting.content }}</td>
+<td>{{ greeting.date.strftime('%Y-%m-%d %H:%M') }}</td>
+</tr>
+{% endfor  %}
+<tr>
+<form action="/guestbook" method="post">
+<td><input type="text" id="author" name="author" size="20" value="{{nickname}}"></td>
+<td><input type="text" id="content" name="content" size="50" required></td>
+<td><input type="submit" value="Post New Message"> </td>
+</form>
+</tr>
+</table>
+</div>
+</div>
+{% endblock %}

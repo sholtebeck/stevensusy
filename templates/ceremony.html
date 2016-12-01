@@ -1,5 +1,23 @@
-<img src="/app/stevensusy.jpg" width="50%" align="left" style="PADDING-RIGHT: 10px">
+{% extends "layout.html" %}
+{% block title %}{{title}}{% endblock %}
+{% block bottom_js %}
+<script src="static/wedding.js"></script>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+<div class="col-md-12" >
+<h2 align="center">We're getting married! Come to Hawaii to celebrate our wedding!</h2>
+<div>
+<div class="col-md-6" >
+<img src="/app/homeinhawaii.jpg" width="450" style="PADDING-RIGHT: 10px" align="right">
+</div>
+<div class="col-md-6" >
 <label>Date: </label> {{date}} (just <label>{{days}}</label> days away!)<br/>
 <label>Time: </label> {{time}}<br/>
 <label>Location: </label> {{location}}<br/>
-<p><iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJQ1w7cvhtAHwR43SPyQbzpus&key=AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk" allowfullscreen></iframe>
+<label>Attire: </label> {{attire}}<br/>
+<p>
+<iframe width="620" height="460" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJQ1w7cvhtAHwR43SPyQbzpus&key=AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk" allowfullscreen></iframe>
+</div>
+</div>
+{% endblock %}
