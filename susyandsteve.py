@@ -1,4 +1,4 @@
-# This is our wedding app
+# This is our wedding site
 
 import os
 import cgi
@@ -37,14 +37,22 @@ def get_RSVP_list():
     return rsvp_list
     
 def get_RSVP_count(rsvp_list):
-    rsvp_count={"HI":0,"CA":0,"WI":0}
+    rsvp_count={}
+    for state in ("CA","HI",'WI'):
+        rsvp_count[state]={"count":0,"guestlist":[]}
     for rsvp in rsvp_list:
+        rsvp_name=rsvp.name
+        if rsvp.attendees>1:
+            rsvp_name+="("+str(rsvp.attendees)+")"
         if rsvp.willAttend == "yes":
-            rsvp_count['HI'] += max(rsvp.attendees,1)
+            rsvp_count["HI"]["guestlist"].append(rsvp_name)
+            rsvp_count["HI"]["count"] += max(rsvp.attendees,1)
         if rsvp.willAttendCA == "yes":
-            rsvp_count['CA'] += max(rsvp.attendees,1)
+            rsvp_count["CA"]["guestlist"].append(rsvp_name)
+            rsvp_count["CA"]["count"] += max(rsvp.attendees,1)
         if rsvp.willAttendWI == "yes":
-            rsvp_count['WI'] += max(rsvp.attendees,1)
+            rsvp_count["WI"]["guestlist"].append(rsvp_name)
+            rsvp_count["WI"]["count"] += max(rsvp.attendees,1)
     return rsvp_count
 
 def globalVals(ctx):
@@ -53,7 +61,7 @@ def globalVals(ctx):
     "date": "Easter Sunday, April 16 2017",   
     "time": "9:30am HST",
     "attire":"Casual (dress for a beach park)",
-    "location": "Magic Island Lagoon, Ala Moana Beach Park, Honolulu HI",
+    "location": "Magic Island, Ala Moana Beach Park, Honolulu HI",
     "map_key": "AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk",
     "methods": ["email","facebook","mail","text"],
     "yes": "You are attending",
@@ -115,27 +123,11 @@ class MainPage(BaseHandler):
         template_values= globalVals(self)
         rsvp_list = get_RSVP_list()
         template_values['rsvp_list']=rsvp_list
-        template_values['rsvpcount']=get_RSVP_count(rsvp_list)
-        rsvplist={"HI":[],"CA":[],"WI":[]}
-        for rsvp in rsvp_list:
-            rsvp_name=rsvp.name
-            if rsvp.attendees>1:
-                rsvp_name+="("+str(rsvp.attendees)+")"
-            if rsvp.willAttend == "yes":
-                rsvplist["HI"].append(rsvp_name)
-            if rsvp.willAttendCA == "yes":
-                rsvplist["CA"].append(rsvp_name)
-            if rsvp.willAttendWI == "yes":
-                rsvplist["WI"].append(rsvp_name)             
-            if rsvp.nickname == template_values['nickname']:
-                template_values['msg']=template_values[rsvp.willAttend]
-                template_values['emoticon']=template_values['emoti'][rsvp.willAttend]
-                template_values['rsvp'] = rsvp
-        template_values['rsvplist'] = rsvplist
-        template_values['guestcount'] = len(rsvplist.get("HI"))
+        rsvp_count=get_RSVP_count(rsvp_list)
+        template_values['rsvpcount']=rsvp_count
+        template_values['guestcount'] = rsvp_count.get("HI").get("count",0)
         if template_values["nickname"] in names.keys() or template_values["nickname"] in names.values() :
             template_values["weddingparty"]="Yes"
- #      template = jinja_environment.get_template('index.html')
         template = jinja_environment.get_template('ceremony.html')
         self.response.out.write(template.render(template_values))
 
@@ -176,18 +168,18 @@ class RSVP(ndb.Model):
 class Response(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('rsvp.html')
-        guestbookName = self.request.get('guestbookName', app_name)
-        rsvp_query = RSVP.query(ancestor=login_key(guestbookName))
-        rsvp_list = rsvp_query.fetch(100)
-        pageVars = globalVals(self) 
-        pageVars['rsvplist'] =  rsvp_list
-        pageVars['guestcount'] = 0
+        template_values = globalVals(self) 
+        rsvp_list = get_RSVP_list()
+        template_values['rsvp_list']=rsvp_list
+        rsvp_count=get_RSVP_count(rsvp_list)
+        template_values['rsvpcount']=rsvp_count
+        template_values['guestcount']=rsvp_count.get("HI").get("count",0)
         for rsvp in rsvp_list:
-#            if rsvp.willAttend == "yes":
-#                pageVars['guestcount'] += rsvp.attendees
-            if rsvp.nickname == pageVars['nickname']:
-                pageVars['rsvp'] = rsvp
-        self.response.write(template.render(pageVars))
+            if rsvp.nickname == template_values['nickname']:
+                template_values['rsvp'] = rsvp
+        if template_values["nickname"] in names.keys() or template_values["nickname"] in names.values() :
+            template_values["weddingparty"]="Yes"
+        self.response.write(template.render(template_values))
 
     def post(self):
         globalvals=globalVals(self)
@@ -212,6 +204,12 @@ class Response(BaseHandler):
         rsvp.contactMethod = self.request.get('contactMethod')
         rsvp.carrier = self.request.get('carrier')
         rsvp.put()
+        # Add a Greeting if the note is filled in 
+        if rsvp.note:
+            greeting = Greeting(parent=guestbook_key(guestbookName))
+            greeting.author = rsvp_key
+            greeting.content = rsvp.note
+            greeting.put()          
         if rsvp.contactMethod=='text' and rsvp.carrier and rsvp.willAttend =='yes':
             message = mail.EmailMessage(sender=globalvals['sender'], subject=globalvals['subject'])
             message.to = rsvp.phone + "@" + rsvp.carrier
@@ -269,24 +267,33 @@ class LogMeInOrOut(BaseHandler):
 class Ceremony(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('ceremony.html')
-        pageVars = globalVals(self) 
-        self.response.write(template.render(pageVars))
+        template_values = globalVals(self) 
+        self.response.write(template.render(template_values))
 
 def guestbook_key(guestbookName=app_name):
     """Constructs a Datastore key for a Guestbook entity with guestbookName."""
     return ndb.Key('Guestbook', guestbookName)
-    
+
+def delete_greeting(id):
+    greeting=ndb.Key('Guestbook', id=int(id))
+    if greeting:
+        greeting.delete()
+        
 class Guestbook(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('guestbook.html')
-        pageVars = globalVals(self) 
+        template_values = globalVals(self) 
+        greeting_id=self.request.get('id')
+        if greeting_id:
+            delete_greeting(greeting_id)
+            self.redirect('/guestbook')
         guestbookName = self.request.get('guestbookName',app_name)
-        greetings_query = Greeting.query(ancestor=guestbook_key(guestbookName)).order(-Greeting.date)
+        greetings_query = Greeting.query(ancestor=guestbook_key(guestbookName)).order(Greeting.date)
         greetings = greetings_query.fetch(100)
-        pageVars = globalVals(self)
-        pageVars['greetings'] =  greetings
-        pageVars['guestbookName'] = urllib.quote_plus(guestbookName)
-        self.response.write(template.render(pageVars)) 
+        template_values = globalVals(self)
+        template_values['greetings'] =  greetings
+        template_values['guestbookName'] = urllib.quote_plus(guestbookName)
+        self.response.write(template.render(template_values)) 
         
     def post(self):
         # We set the same parent key on the 'Greeting' to ensure each Greeting
@@ -304,8 +311,8 @@ class Guestbook(BaseHandler):
 class Registry(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('registry.html')
-        pageVars = globalVals(self) 
-        self.response.write(template.render(pageVars))       
+        template_values = globalVals(self) 
+        self.response.write(template.render(template_values))       
         
 class Guests(BaseHandler):
     def get(self):
@@ -315,29 +322,29 @@ class Guests(BaseHandler):
             rsvp_dict={"Name":rsvp.name, "Address":rsvp.address, "City":rsvp.city,"State":rsvp.state,"Zip":rsvp.zip,"Email":rsvp.email,"Phone":rsvp.phone, "WillAttend":rsvp.willAttend,
             "WillAttendCA":rsvp.willAttendCA, "WillAttendWI":rsvp.willAttendWI, "Attendees":rsvp.attendees}
             guest_list.append(rsvp_dict)
-        pageVars = globalVals(self) 
-        pageVars['guest_list'] =  guest_list
-        pageVars['title'] = "Guests for " + pageVars['title']
-        pageVars['guestcount'] = 0
-        self.response.write(template.render(pageVars))
+        template_values = globalVals(self) 
+        template_values['guest_list'] =  guest_list
+        template_values['title'] = "Guests for " + template_values['title']
+        template_values['guestcount'] = 0
+        self.response.write(template.render(template_values))
 
 class Travel(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('travel.html')
-        pageVars = globalVals(self) 
-        self.response.write(template.render(pageVars))        
+        template_values = globalVals(self) 
+        self.response.write(template.render(template_values))        
              
 class WeddingBlog(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('wedlog.html')
-        pageVars = globalVals(self) 
-        self.response.write(template.render(pageVars))        
+        template_values = globalVals(self) 
+        self.response.write(template.render(template_values))        
         
 class WeddingTour(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('weddingtour.html')
-        pageVars = globalVals(self) 
-        self.response.write(template.render(pageVars))
+        template_values = globalVals(self) 
+        self.response.write(template.render(template_values))
         
 app = webapp2.WSGIApplication([
     ('/', MainPage),

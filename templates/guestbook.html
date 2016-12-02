@@ -1,31 +1,44 @@
 {% extends "layout.html" %}
-{% block title %}{{title}}{% endblock %}
+{% block title %}{{title}}:Guestbook{% endblock %}
 {% block content %}
 <div class="container-fluid">
 
-<div class="col-lg-4" >
+<div class="col-lg-3" >
 <img src="/app/invitation.jpg" width="100%" align="left">
+<img src="/app/stoneheart.jpg" width="100%" align="left">
 </div>
-<div class="col-lg-8" >
-<h1>{{title}}: Sign Our Guestbook</h1>
+
+<div class="col-lg-9" >
+<label>Leave a Message in our Guestbook</label>
 <table><tr>
-<th>Your Name</th><th>Message</th><th>Date</th>
+<th>Your Name</th><th>Your Message</th><th></th>
 </tr>
-{% for greeting in greetings  %}
-<tr>
-<td>{{ greeting.author }}</td>
-<td>{{ greeting.content }}</td>
-<td>{{ greeting.date.strftime('%Y-%m-%d %H:%M') }}</td>
-</tr>
-{% endfor  %}
-<tr>
+<tr><tr>
 <form action="/guestbook" method="post">
 <td><input type="text" id="author" name="author" size="20" value="{{nickname}}"></td>
-<td><input type="text" id="content" name="content" size="50" required></td>
+<td><input type="text" id="content" name="content" size="60" required></td>
 <td><input type="submit" value="Post New Message"> </td>
 </form>
 </tr>
+
 </table>
+<br>
 </div>
+
+{% if greetings %}
+<div class="col-lg-8" >
+<label>Messages ({{ greetings|length }}):</label></br>
+{% for greeting in greetings  %}
+{% if greeting.author=="admin" %}
+<a href="/guestbook?id={{greeting.key.id() }}">X</a>
+{% endif %}
+{{ greeting.author }} on {{ greeting.date.strftime('%Y-%m-%d') }}: <field>{{ greeting.content }}</field>
+
+</br>
+{% endfor  %}
+</div>
+{% endif %}
+
+
 </div>
 {% endblock %}

@@ -1,12 +1,18 @@
 {% extends "layout.html" %}
 {% block title %}RSVP for {{title}}{% endblock %}
 {% block content %}
+<script type="text/javascript">
+function yesCheck() {       document.getElementById('will-attend').style.visibility = 'visible';    } 
+function noCheck() {        document.getElementById('will-attend').style.visibility = 'hidden';    }
+</script>
 <div class="container-fluid">
-<div class="col-lg-4" >
+<div class="col-lg-3" >
 <img src="/app/invitation.jpg" width="100%" align="left">
+<img src="/app/stoneheart.jpg" width="100%" align="left">
+
 </div>
-<div class="col-lg-8" >
- <h1>RSVP for {{title}}</h1>
+<div class="col-lg-9" >
+ <h1>RSVP for {{title}} Tour</h1>
 <form action="/rsvp" method="post">
 {% if rsvp %}
 <label>Hi {{rsvp.nickname}},</label>
@@ -71,16 +77,16 @@
 		<option value=" ">Landline/Other</option>
 		</select>
         </div>
-	<div>
-            <label for="note">Message: </label>
-			<input type="text" id="note" name="note" size="60" value="">
-    </div>
+		<div>
+		    <label for="note">Note: </label>
+			<input type="text" id="note" name="note" size="60" placeholder="Optional message for the Guestbook">
+		</div>
 	   </p>
 	<div>
 	<label for="willAttend">Will you be attending the Hawaii wedding on April 16?</label>
-	<input type="radio" name="willAttend" value="yes" {% if rsvp.willAttend=="yes" %}checked{% endif %}><b>Yes</b>
-	<input type="radio" name="willAttend" value="no" {% if rsvp.willAttend=="no" %}checked{% endif %}><b>No</b>
-	<input type="radio" name="willAttend" value="maybe"><b>Maybe</b>
+	<input type="radio" onclick="javascript:yesCheck();" id="willAttend" name="willAttend" value="yes" {% if rsvp.willAttend=="yes" %}checked{% endif %}><b>Yes</b>
+	<input type="radio" onclick="javascript:noCheck();" id="willNotAttend" name="willAttend" value="no" {% if rsvp.willAttend=="no" %}checked{% endif %}><b>No</b>
+	<input type="radio" name="willAttend" value="maybe" {% if rsvp.willAttend=="maybe" %}checked{% endif %}><b>Maybe</b>
 	</div>
 	<div>
  	<label for="willAttendCA">Will you be attending the Oakland party on June 4th?</label> &nbsp;   
@@ -94,10 +100,9 @@
 	<input type="radio" name="willAttendWI" value="no"  {% if rsvp.willAttendWI=="no" %}checked{% endif %}><b>No</b>
 	<input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
  	</div>
-	<div>
+		<div>
             <label for="attendees">Number of guests attending:</label>
             <select id="attendees" name="attendees" value="{{rsvp.attendees}}">
-                <option value="0">none</option>
                 <option value="1" {% if rsvp.attendees==1 %}selected{% endif %}>one</option>
                 <option value="2" {% if rsvp.attendees==2 %}selected{% endif %}>two</option>
                 <option value="3" {% if rsvp.attendees==3 %}selected{% endif %}>three</option>
@@ -105,8 +110,44 @@
                 <option value="5" {% if rsvp.attendees==5 %}selected{% endif %}>five</option>
                 <option value="6" {% if rsvp.attendees==6 %}selected{% endif %}>six</option>
             </select>
-	</div>
-
+			<label>Food allergies or diet restrictions:</label> <input type="text" id="food" name="food" size="20" value="">
+    </div>
+{% if rsvp.willAttend=="cantseethis" %}
+<div id='will-attend'>
+<div>
+<label>I/We will need assistance from the parking lot to the wedding site (~1/3 mile paved walkway)</label> <input type="checkbox" name="needAssistance"> 
+</div>
+<div>
+<label>I/We will not be able to stand for the 15-20 minute ceremony. Please have</label>  <select id="chairs" name="chairs" >
+                <option value=""></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select> <label>chair(s) available.</label>
+			</div><div>
+<label>We will need</label> <select id="highchairs" name="highchairs" >
+                <option value=""></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select> 
+<label>highchair(s) and</label> <select id="boosters" name="boosters" >
+                <option value=""></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select> <label>booster seat(s) for our keiki(kids) at the picnic brunch</label>			
+</div>
+<div>
+<label>Willing to help out on the day of the wedding with</label> 
+<input type="checkbox" name="setup"><b>Setup</b> <input type="checkbox" name="cleanup"><b>Cleanup</b> <input type="checkbox" name="assisting"><b>Assisting other guests</b>			
+</div>
+</div>
+{% endif %}
+</div>
 		<div>
             <input type="hidden" id="nickname" name="nickname" value="{{rsvp.nickname}}">
             <p><input type="submit" id="update" value="Update RSVP">
@@ -114,7 +155,7 @@
     </div>
 {% else %}
     <div>
-Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties in Oakland CA on Sunday June 4, 2017 and Milwaukee WI on Wednesday June 7, 2017.
+Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties in Oakland CA on Sunday June 4, 2017 and Oak Creek WI on Wednesday June 7, 2017.
 <p>     <div>
             <label for="fullName">Name:</label>
             <input type="text" id="name" name="name" size="60" value="">
@@ -139,10 +180,6 @@ Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties 
            </select>
 			<label for="zip">ZIP:</label>  <input type="text" id="zip" name="zip" size="10">
        </div>
-	<div>
-            <label for="note">Message: </label>
-			<input type="text" id="note" name="note" size="60" value="{{note}}">
-    </div>
 		<div>
             <label for="contactMethod">Preferred Contact Method: </label>
 			  <select id="contactMethod" name="attendees" value="">
@@ -160,10 +197,14 @@ Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties 
 		<option value=" ">Landline/Other</option>
 		</select>
         </div>
+			<div>
+            <label for="note">Guestbook Message: </label>
+			<input type="text" id="note" name="note" size="60" value="{{note}}">
+    </div>
 	</p>
 	<div>
 	<label for="willAttend">Will you be attending the Hawaii wedding on April 16?</label>
-	<input type="radio" name="willAttend" value="yes"><b>Yes</b><input type="radio" name="willAttend" value="no" id="noCheck"><b>No</b><input type="radio" name="willAttend" value="maybe"><b>Maybe</b>
+	<input type="radio" id="willAttend" onclick="javascript:yesCheck();" name="willAttend" value="yes"><b>Yes</b><input type="radio" name="willAttend" value="no" id="noCheck"><b>No</b><input type="radio" name="willAttend" value="maybe"><b>Maybe</b>
 	</div>
 	<div>
  	<label for="willAttendCA">Will you be attending the Oakland party on June 4th?</label> &nbsp;   
@@ -185,7 +226,6 @@ Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties 
                 <option value="6">six</option>
             </select>
 	</div>
-
         <div>
 		    <input type="hidden" id="nickname" name="nickname" value="{{nickname}}">
             <input type="submit" value="Send RSVP">
@@ -194,44 +234,38 @@ Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties 
 	
 {% endif %}
 </form>
-
+</div>
 {% if weddingparty %}
-<table width="750">
-<tr>
-<th align="left"><label>Sunday April 16</label></th>
-<th align="left"><label>Sunday June 4</label></th>
-<th align="left"><label>Wednesday June 7</label></th>
-</tr>
-<tr>
-<th align="left"><b>The Wedding</b>({{rsvpcount['HI']}})</th>
-<th align="left"><b>Oakland A's party</b> ({{rsvpcount['CA']}})</th>
-<th align="left"><b>Wisconsin Party</b> ({{ rsvpcount['WI']}})</th>
-</tr>
-<tr>
-<td align="top">
-{% if guestcount %}
-{% for name in rsvplist['HI'] %}
+<div class="col-lg-3" >
+<br><label>Sunday April 16</label></br>
+<b>The Wedding</b> ({{rsvpcount['HI']['count']}})</br>
+{% if rsvpcount['HI']['guestlist']  %}
+{% for name in rsvpcount['HI']['guestlist'] %}
     {{ name }}<br>
 {% endfor %}
-{% endif %}
-</td>
-<td align="top">
-{% if rsvplist['CA'] %}
-{% for name in rsvplist['CA'] %}
-    {{ name }}<br>
-{% endfor %}
-{% endif %}
-</td>
-<td align="top">
-{% if rsvplist['WI'] %}
-{% for name in rsvplist['WI'] %}
-    {{ name }}<br>
-{% endfor %}
-{% endif %}
-</td>
-</tr>
-</table>
 {% endif %}
 </div>
+<div class="col-lg-3" >
+<br><label>Sunday June 4</label></br>
+<b>Oakland A's party</b> ({{rsvpcount['CA']['count']}})</br>
+{% if rsvpcount['CA']['guestlist'] %}
+{% for name in rsvpcount['CA']['guestlist'] %}
+    {{ name }}<br>
+{% endfor %}
+{% endif %}
 </div>
+<div class="col-lg-3" >
+<br><label>Wednesday June 7</label></br>
+<b>Wisconsin party</b> ({{rsvpcount['WI']['count']}})</br>
+{% if rsvpcount['WI']['guestlist'] %}
+{% for name in rsvpcount['WI']['guestlist'] %}
+    {{ name }}<br>
+{% endfor %}
+{% endif %}
+</div>
+{% endif %}
+
+</div>
+
+
 {% endblock %}
