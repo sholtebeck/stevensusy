@@ -1,206 +1,38 @@
-
-<form action="/rsvp" method="post">
-{% if rsvp %}
-<label>{{msg}} {{emoticon}}</label> 
-<p/>
-    <div>
-        <div>
-            <label for="fullName">Name:</label>
-            <input type="text" id="name" name="name" size="60" value="{{rsvp.name}}">
-       </div>
-		<div>
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="email" size="30" value="{{rsvp.email}}">
-            <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="phone" size="15" value="{{rsvp.phone}}">
-     </div>
-		<div>
-            <label for="address">Address:</label>
-            <input type="text" id="address" name="address" size="60" value="{{rsvp.address}}">
-       </div>
-	   		<div>
-            <label for="city">City:</label> <input type="text" id="city" name="city" size="20" value="{{rsvp.city}}">
-			<label for="state">State:</label> <select id="state" name="state">
-			<option value=""></option>
-{% for state in states %}
-            <option value="{{state.code}}">{{state.name}}</option>
-{% endfor %}
-</select>
-			<label for="zip">ZIP:</label>  <input type="text" id="zip" name="zip" size="10" value="{{rsvp.zip}}">
-       </div>
-     	<div>
-            <label for="contactMethod">Preferred Contact Method: </label>
-			  <select id="contactMethod" name="contactMethod" value="{{rsvp.contactMethod}}">
-                <option value="">none</option>
-{% for method in methods %}
-              <option value="{{method}}">{{method}}</option>
-{% endfor %} 
-            </select>
-			<label for="carrier">Cell Carrier: </label><select id="carrier" name="carrier">
-			<option value=""></option>
-{% for carrier in carriers %}
-             <option value="{{carrier.domain}}">{{carrier.name}}</option>
-{% endfor %}
-        </select>
+<label>Special accomodations/requests for wedding attendees:</label>
+<div style="margin-left:15px;background-color:lightgray">
+<label>Will you need assistance from the parking lot to the wedding site (~1/3 mile paved walkway)?</label> 
+	<input type="radio" name="needAssistance" value="yes" ><B>Yes</B>
+	<input type="radio" name="needAssistance" value="no"><B>No</B>
+<br><label>Will you be able to stand for the 15-20 minute ceremony?</label> 
+	<input type="radio" name="canStand" value="yes"><B>Yes</B>
+	<input type="radio" name="canStand" value="no" ><B>No</B>
+	<br><label>We will need </label> <select id="chairs" name="chairs" >
+                <option value=""></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+     </select> 
+<label>chairs, </label> <select id="highchairs" name="highchairs" >
+                <option value=""></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select> 
+<label>highchairs, and </label> <select id="boosters" name="boosters" >
+                <option value=""></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select> <label>booster seats for the ceremony/picnic.</label>			
+<br><label>Willing to help out on the day of the wedding with</label> 
+<input type="checkbox" name="setup"><B>Setup</B>
+<input type="checkbox" name="cleanup"><B>Cleanup</B> 
+<input type="checkbox" name="assisting"><B>Assisting other guests</B>			
+<br><label for="songspeech">We would like to gift you with a song/recitation/speech at the wedding, such as</label>
+            <input type="text" id="song" name="song" size="30" value="{{song}}">
+<label>Please list any food allergies or diet restrictions:</label> <input type="text" id="food" name="food" size="20" value="">
 </div>
-	<div>
-           <label for="note">Note: </label>
-			<input type="text" id="note" name="note" size="60" value="{{rsvp.note}}">
-        </div></p>			
-	 <div>
-	 <label for="willAttend">Will you be attending the Hawaii wedding on April 16?</label>
-	 <input type="radio" name="willAttend" value="yes" ><b>Yes</b><input type="radio" name="willAttend" value="no"><b>No</b><input type="radio" name="willAttend" value="maybe"><b>Maybe</b>
-	</div>
-	<div>
- 	<label for="willAttendCA">Will you be attending the Oakland game on June 4th?</label> &nbsp;   
-	<input type="radio" name="willAttendCA" value="yes" ><b>Yes</b><input type="radio" name="willAttendCA" value="no"><b>No</b><input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
-       </div>
-		<div>
- 	<label for="willAttendWI">Will you be attending the Wisconsin party on June 7th?</label>
-	<input type="radio" name="willAttendWI" value="yes" ><b>Yes</b><input type="radio" name="willAttendWI" value="no"><b>No</b><input type="radio" name="willAttendWI" value="maybe"><b>Maybe</b>
- 	</div>
-	  	<div>
-            <label for="attendees">Number of guests:</label>
-            <select id="attendees" name="attendees" value="{{rsvp.attendees}}">
-                <option value="0">none</option>
-                <option value="1">one</option>
-                <option value="2">two</option>
-                <option value="3">three</option>
-                <option value="4">four</option>
-                <option value="5">five</option>
-                <option value="6">six</option>
-            </select>
-	</div>
-		<div>
-            <input type="hidden" id="nickname" name="nickname" value="{{rsvp.nickname}}">
-            <p><input type="submit" value="Update RSVP">
-        </div>
-    </div>
-<script>
-$('select[name="state"] option[value="{{rsvp.state}}"]').attr("selected","selected");
-$('input[name="willAttend"][value="{{rsvp.willAttend}}"]').prop("checked",true);
-$('input[name="willAttendCA"][value="{{rsvp.willAttendCA}}"]').prop("checked",true);
-$('input[name="willAttendWI"][value="{{rsvp.willAttendWI}}"]').prop("checked",true);
-$('select[name="attendees"] option[value="{{rsvp.attendees}}"]').attr("selected","selected");
-$('select[name="contactMethod"] option[value="{{rsvp.contactMethod}}"]').attr("selected","selected");
-$('select[name="carrier"] option[value="{{rsvp.carrier}}"]').attr("selected","selected");
-</script>
-{% else %}
-    <div>
-        <div>
-            <label for="fullName">Name:</label>
-            <input type="text" id="name" name="name" size="60" value="" required>
-       </div>
-		<div>
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="email" size="30" value="">
-            <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="phone" size="15" value="">
-     </div>
-		<div>
-            <label for="address">Address:</label>
-            <input type="text" id="address" name="address" size="60" value="">
-       </div>
-	   		<div>
-            <label for="city">City:</label> <input type="text" id="city" name="city" size="20" value="">
-			<label for="state">State:</label> <select id="state" name="state">
-			<option value=""></option>
-{% for state in states %}
-            <option value="{{state.code}}">{{state.name}}</option>
-{% endfor %}
-            </select>
-			<label for="zip">ZIP:</label>  <input type="text" id="zip" name="zip" size="10">
-       </div>
-
-      	<div>
-            <label for="contactMethod">Preferred Contact Method: </label>
-			  <select id="contactMethod" name="contactMethod" value="">
-                <option value="">none</option>
-{% for method in methods %}
-              <option value="{{method}}">{{method}}</option>
-{% endfor %} 				
-            </select>
-			<label for="carrier">Cell Carrier: </label><select id="carrier" name="carrier">
-			<option value=""></option>
-{% for carrier in carriers %}
-             <option value="{{carrier.domain}}">{{carrier.name}}</option>
-{% endfor %}
-</select>
-      </div> 
-	  	<div>
-            <label for="note">Note: </label>
-			<input type="text" id="note" name="note" size="60" value="">
-        </div>
-		</p>
-
-	<div>
-	<label for="willAttend">Will you be attending the Hawaii wedding on April 16?</label>
-	<input type="radio" name="willAttend" value="yes"><b>Yes</b><input type="radio" name="willAttend" value="no"><b>No</b><input type="radio" name="willAttend" value="maybe"><b>Maybe</b>
-	</div>
-	<div>
- 	<label for="willAttendCA">Will you be attending the Oakland game on June 4th?</label> &nbsp;   
-	<input type="radio" name="willAttendCA" value="yes"><b>Yes</b><input type="radio" name="willAttendCA" value="no"><b>No</b><input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
-       </div>
-		<div>
- 	<label for="willAttendWI">Will you be attending the Wisconsin party on June 7th?</label>
-	<input type="radio" name="willAttendWI" value="yes"><b>Yes</b><input type="radio" name="willAttendWI" value="no"><b>No</b><input type="radio" name="willAttendWI" value="maybe"><b>Maybe</b>
- 	</div>
-	<div>
-            <label for="attendees">Number of guests attending:</label>
-            <select id="attendees" name="attendees" value="1">
-                <option value="0">none</option>
-                <option value="1">one</option>
-                <option value="2">two</option>
-                <option value="3">three</option>
-                <option value="4">four</option>
-                <option value="5">five</option>
-                <option value="6">six</option>
-            </select>
-	</div>
-       <div>
-            <input type="hidden" id="nickname" name="nickname" value="{{nickname}}">
-            <p><input type="submit" value="Send RSVP">
-        </div>
-    </div>
-{% endif %}
-</form>
-
-{% if weddingparty %}
-<table width="750">
-<tr>
-<th align="left"><label>Sunday April 16</label></th>
-<th align="left"><label>Sunday June 4</label></th>
-<th align="left"><label>Wednesday June 7</label></th>
-</tr>
-<tr>
-<th align="left"><b>The Wedding</b>({{rsvpcount['HI']}})</th>
-<th align="left"><b>Oakland A's game</b> ({{rsvpcount['CA']}})</th>
-<th align="left"><b>Wisconsin Party</b> ({{ rsvpcount['WI']}})</th>
-</tr>
-<tr>
-<td valign="top">
-{% if guestcount %}
-{% for name in rsvplist['HI'] %}
-    {{ name }}<br>
-{% endfor %}
-{% endif %}
-</td>
-<td valign="top">
-{% if rsvplist['CA'] %}
-{% for name in rsvplist['CA'] %}
-    {{ name }}<br>
-{% endfor %}
-{% endif %}
-</td>
-<td valign="top">
-{% if rsvplist['WI'] %}
-{% for name in rsvplist['WI'] %}
-    {{ name }}<br>
-{% endfor %}
-{% endif %}
-</td>
-</tr>
-</table>
-{% endif %}
-
-
+<br>

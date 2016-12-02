@@ -2,8 +2,8 @@
 {% block title %}RSVP for {{title}}{% endblock %}
 {% block content %}
 <script type="text/javascript">
-function yesCheck() {       document.getElementById('will-attend').style.visibility = 'visible';    } 
-function noCheck() {        document.getElementById('will-attend').style.visibility = 'hidden';    }
+function yesCheck() {       document.getElementById('attendees').value = 1;  document.getElementById('will-attend').style.visibility = 'visible';    } 
+function noCheck() {       document.getElementById('attendees').value = 0;   document.getElementById('will-attend').style.visibility = 'hidden';   }
 </script>
 <div class="container-fluid">
 <div class="col-lg-3" >
@@ -15,14 +15,8 @@ function noCheck() {        document.getElementById('will-attend').style.visibil
  <h1>RSVP for {{title}} Tour</h1>
 <form action="/rsvp" method="post">
 {% if rsvp %}
-<label>Hi {{rsvp.nickname}},</label>
-{% if rsvp.willAttend=="yes" %}
-    <label> You are attending our wedding. &#9786; </label> 
-{% elif rsvp.willAttend=="maybe" %}
-    <label>You might be attending our wedding.</label> 
-{% else %}
-    <label>You are not attending our wedding. &#9785;</label>
-{% endif %}
+<label>Thank you {{nickname}}, {{msg}}{{emoticon}}.  Please review your information.</label>
+<br>
    <div>
         <div>
             <label for="fullName">Name:</label>
@@ -101,8 +95,9 @@ function noCheck() {        document.getElementById('will-attend').style.visibil
 	<input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
  	</div>
 		<div>
-            <label for="attendees">Number of guests attending:</label>
+            <label for="attendees">Number of guests attending (including yourself):</label>
             <select id="attendees" name="attendees" value="{{rsvp.attendees}}">
+                <option value="0" >none</option>
                 <option value="1" {% if rsvp.attendees==1 %}selected{% endif %}>one</option>
                 <option value="2" {% if rsvp.attendees==2 %}selected{% endif %}>two</option>
                 <option value="3" {% if rsvp.attendees==3 %}selected{% endif %}>three</option>
@@ -110,47 +105,15 @@ function noCheck() {        document.getElementById('will-attend').style.visibil
                 <option value="5" {% if rsvp.attendees==5 %}selected{% endif %}>five</option>
                 <option value="6" {% if rsvp.attendees==6 %}selected{% endif %}>six</option>
             </select>
-			<label>Food allergies or diet restrictions:</label> <input type="text" id="food" name="food" size="20" value="">
     </div>
-{% if rsvp.willAttend=="cantseethis" %}
 <div id='will-attend'>
-<div>
-<label>I/We will need assistance from the parking lot to the wedding site (~1/3 mile paved walkway)</label> <input type="checkbox" name="needAssistance"> 
-</div>
-<div>
-<label>I/We will not be able to stand for the 15-20 minute ceremony. Please have</label>  <select id="chairs" name="chairs" >
-                <option value=""></option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select> <label>chair(s) available.</label>
-			</div><div>
-<label>We will need</label> <select id="highchairs" name="highchairs" >
-                <option value=""></option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select> 
-<label>highchair(s) and</label> <select id="boosters" name="boosters" >
-                <option value=""></option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select> <label>booster seat(s) for our keiki(kids) at the picnic brunch</label>			
-</div>
-<div>
-<label>Willing to help out on the day of the wedding with</label> 
-<input type="checkbox" name="setup"><b>Setup</b> <input type="checkbox" name="cleanup"><b>Cleanup</b> <input type="checkbox" name="assisting"><b>Assisting other guests</b>			
-</div>
-</div>
+{% if rsvp.willAttend=="yes" %}
+{% include "rsvpform.html" %}
 {% endif %}
 </div>
 		<div>
             <input type="hidden" id="nickname" name="nickname" value="{{rsvp.nickname}}">
-            <p><input type="submit" id="update" value="Update RSVP">
+            <p><input type="submit" class="btn btn-primary" id="update" value="Update RSVP">
         </div>
     </div>
 {% else %}
@@ -198,24 +161,27 @@ Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties 
 		</select>
         </div>
 			<div>
-            <label for="note">Guestbook Message: </label>
-			<input type="text" id="note" name="note" size="60" value="{{note}}">
+            <label for="note">Note: </label>
+			<input type="text" id="note" name="note" size="60" placeholder="Optional message for the Guestbook">
     </div>
 	</p>
 	<div>
 	<label for="willAttend">Will you be attending the Hawaii wedding on April 16?</label>
-	<input type="radio" id="willAttend" onclick="javascript:yesCheck();" name="willAttend" value="yes"><b>Yes</b><input type="radio" name="willAttend" value="no" id="noCheck"><b>No</b><input type="radio" name="willAttend" value="maybe"><b>Maybe</b>
+	<input type="radio" id="willAttend" onclick="javascript:yesCheck();" name="willAttend" value="yes"><b>Yes</b>
+	<input type="radio" name="willAttend" onclick="javascript:noCheck();" value="no" id="noCheck"><b>No</b><input type="radio" name="willAttend" value="maybe"><b>Maybe</b>
 	</div>
 	<div>
  	<label for="willAttendCA">Will you be attending the Oakland party on June 4th?</label> &nbsp;   
-	<input type="radio" name="willAttendCA" value="yes"><b>Yes</b><input type="radio" name="willAttendCA" value="no"><b>No</b><input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
+	<input type="radio" name="willAttendCA" onclick="javascript:yesCheck();" value="yes"><b>Yes</b>
+	<input type="radio" name="willAttendCA" value="no"><b>No</b><input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
        </div>
 		<div>
  	<label for="willAttendWI">Will you be attending the Wisconsin party on June 7th?</label>
-	<input type="radio" name="willAttendWI" value="yes"><b>Yes</b><input type="radio" name="willAttendWI" value="no"><b>No</b><input type="radio" name="willAttendWI" value="maybe"><b>Maybe</b>
+	<input type="radio" name="willAttendWI" onclick="javascript:yesCheck();" value="yes"><b>Yes</b>
+	<input type="radio" name="willAttendWI" value="no"><b>No</b><input type="radio" name="willAttendWI" value="maybe"><b>Maybe</b>
  	</div>
 	<div id="ifYes">
-            <label for="attendees">Number of guests attending:</label>
+            <label for="attendees">Number of guests attending (including yourself):</label>
             <select id="attendees" name="attendees" value="1">
                 <option value="0">none</option>
                 <option value="1">one</option>
@@ -226,9 +192,12 @@ Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties 
                 <option value="6">six</option>
             </select>
 	</div>
+<div id="will-attend2" visibility="hidden">
+{% include "rsvpform.html" %}
+</div>
         <div>
 		    <input type="hidden" id="nickname" name="nickname" value="{{nickname}}">
-            <input type="submit" value="Send RSVP">
+            <input type="submit" class="btn btn-primary" value="Send RSVP">
         </div>
     </div>
 	

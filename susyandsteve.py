@@ -164,6 +164,7 @@ class RSVP(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add=True)
     willAttendCA= ndb.TextProperty(indexed=False)
     willAttendWI= ndb.TextProperty(indexed=False)
+    request = ndb.JsonProperty()
    
 class Response(BaseHandler):
     def get(self):
@@ -175,8 +176,11 @@ class Response(BaseHandler):
         template_values['rsvpcount']=rsvp_count
         template_values['guestcount']=rsvp_count.get("HI").get("count",0)
         for rsvp in rsvp_list:
-            if rsvp.nickname == template_values['nickname']:
+            if rsvp.nickname in (template_values['nickname'], self.request.get('nickname')):
                 template_values['rsvp'] = rsvp
+                reply = max(rsvp.willAttend,rsvp.willAttendCA,rsvp.willAttendWI)
+                template_values['msg'] = template_values.get(reply,"")
+                template_values['emoticon'] = template_values['emoti'].get(reply,"")
         if template_values["nickname"] in names.keys() or template_values["nickname"] in names.values() :
             template_values["weddingparty"]="Yes"
         self.response.write(template.render(template_values))
@@ -203,6 +207,10 @@ class Response(BaseHandler):
         rsvp.note = self.request.get('note')
         rsvp.contactMethod = self.request.get('contactMethod')
         rsvp.carrier = self.request.get('carrier')
+        rsvp.request = {}
+        for arg in self.request.arguments():
+            if self.request.get(arg):
+                rsvp.request[arg]=self.request.get(arg)
         rsvp.put()
         # Add a Greeting if the note is filled in 
         if rsvp.note:
@@ -245,7 +253,7 @@ class LogMeInOrOut(BaseHandler):
             login.nickname = nickname
             self.session['nickname'] = nickname
             login.put()
-            self.redirect('/')
+            self.redirect('/rsvp')
             
 
     def post(self):
@@ -317,12 +325,16 @@ class Registry(BaseHandler):
 class Guests(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('guests.html')
+        template_values = globalVals(self) 
+        rsvp_list = get_RSVP_list()
+        template_values['rsvp_list']=rsvp_list
+        rsvp_count=get_RSVP_count(rsvp_list)
+        template_values['rsvpcount']=rsvp_count
         guest_list = []
-        for rsvp in get_RSVP_list():
+        for rsvp in rsvp_list:
             rsvp_dict={"Name":rsvp.name, "Address":rsvp.address, "City":rsvp.city,"State":rsvp.state,"Zip":rsvp.zip,"Email":rsvp.email,"Phone":rsvp.phone, "WillAttend":rsvp.willAttend,
             "WillAttendCA":rsvp.willAttendCA, "WillAttendWI":rsvp.willAttendWI, "Attendees":rsvp.attendees}
             guest_list.append(rsvp_dict)
-        template_values = globalVals(self) 
         template_values['guest_list'] =  guest_list
         template_values['title'] = "Guests for " + template_values['title']
         template_values['guestcount'] = 0

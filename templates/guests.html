@@ -8,6 +8,7 @@
 </head>
 <body>
   <p>
+  <div class="col-lg-12" >
   <table border=1>
     <thead>
       <tr>
@@ -42,6 +43,34 @@
 {% endfor %}
     </tbody>
   </table>
+ </div>
+
+<div class="col-lg-4" >
+<br><b>Sunday April 16</b></br>
+<b>The Wedding</b> ({{rsvpcount['HI']['count']}})</br>
+{% if rsvpcount['HI']['guestlist']  %}
+{% for name in rsvpcount['HI']['guestlist'] %}
+    {{ name }}<br>
+{% endfor %}
+{% endif %}
 </div>
+<div class="col-lg-4" >
+<br><b>Sunday June 4</b></br>
+<b>Oakland A's party</b> ({{rsvpcount['CA']['count']}})</br>
+{% if rsvpcount['CA']['guestlist'] %}
+{% for name in rsvpcount['CA']['guestlist'] %}
+    {{ name }}<br>
+{% endfor %}
+{% endif %}
+</div>
+<div class="col-lg-4" >
+<br><b>Wednesday June 7</b></br>
+<b>Wisconsin party</b> ({{rsvpcount['WI']['count']}})</br>
+{% if rsvpcount['WI']['guestlist'] %}
+{% for name in rsvpcount['WI']['guestlist'] %}
+    {{ name }}<br>
+{% endfor %}
+{% endif %}
+</div>  
 
 

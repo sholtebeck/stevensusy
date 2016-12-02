@@ -17,7 +17,7 @@
 <form action="/guestbook" method="post">
 <td><input type="text" id="author" name="author" size="20" value="{{nickname}}"></td>
 <td><input type="text" id="content" name="content" size="60" required></td>
-<td><input type="submit" value="Post New Message"> </td>
+<td><input type="submit" class="btn btn-primary btn-medium" value="Post Message"> </td>
 </form>
 </tr>
 
@@ -32,9 +32,7 @@
 {% if greeting.author=="admin" %}
 <a href="/guestbook?id={{greeting.key.id() }}">X</a>
 {% endif %}
-{{ greeting.author }} on {{ greeting.date.strftime('%Y-%m-%d') }}: <field>{{ greeting.content }}</field>
-
-</br>
+<field>{{ greeting.content }}</field> ({{ greeting.author }} on {{ greeting.date.strftime('%Y-%m-%d') }})</br>
 {% endfor  %}
 </div>
 {% endif %}
