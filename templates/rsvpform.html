@@ -1,38 +1,38 @@
 <label>Special accomodations/requests for wedding attendees:</label>
 <div style="margin-left:15px;background-color:lightgray">
 <label>Will you need assistance from the parking lot to the wedding site (~1/3 mile paved walkway)?</label> 
-	<input type="radio" name="needAssistance" value="yes" ><B>Yes</B>
-	<input type="radio" name="needAssistance" value="no"><B>No</B>
+	<input type="radio" name="needAssistance" value="yes" {% if needAssistance=="yes" %}checked{% endif %} ><B>Yes</B>
+	<input type="radio" name="needAssistance" value="no" {% if needAssistance=="no" %}checked{% endif %}  ><B>No</B>
 <br><label>Will you be able to stand for the 15-20 minute ceremony?</label> 
-	<input type="radio" name="canStand" value="yes"><B>Yes</B>
-	<input type="radio" name="canStand" value="no" ><B>No</B>
+	<input type="radio" name="canStand" value="yes" {% if canStand=="yes" %}checked{% endif %}><B>Yes</B>
+	<input type="radio" name="canStand" value="no" {% if canStand=="no" %}checked{% endif %}><B>No</B>
 	<br><label>We will need </label> <select id="chairs" name="chairs" >
                 <option value=""></option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+                <option value="1" {% if chairs=="1" %}selected{% endif %}>1</option>
+                <option value="2" {% if chairs=="2" %}selected{% endif %}>2</option>
+                <option value="3" {% if chairs=="3" %}selected{% endif %}>3</option>
+                <option value="4" {% if chairs=="4" %}selected{% endif %}>4</option>
      </select> 
 <label>chairs, </label> <select id="highchairs" name="highchairs" >
                 <option value=""></option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+                <option value="1" {% if highchairs=="1" %}selected{% endif %}>1</option>
+                <option value="2" {% if highchairs=="2" %}selected{% endif %}>2</option>
+                <option value="3" {% if highchairs=="3" %}selected{% endif %}>3</option>
+                <option value="4" {% if highchairs=="4" %}selected{% endif %}>4</option>
             </select> 
 <label>highchairs, and </label> <select id="boosters" name="boosters" >
                 <option value=""></option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+                <option value="1" {% if boosters=="1" %}selected{% endif %}>1</option>
+                <option value="2" {% if boosters=="2" %}selected{% endif %}>2</option>
+                <option value="3" {% if boosters=="3" %}selected{% endif %}>3</option>
+                <option value="4" {% if boosters=="4" %}selected{% endif %}>4</option>
             </select> <label>booster seats for the ceremony/picnic.</label>			
 <br><label>Willing to help out on the day of the wedding with</label> 
-<input type="checkbox" name="setup"><B>Setup</B>
-<input type="checkbox" name="cleanup"><B>Cleanup</B> 
-<input type="checkbox" name="assisting"><B>Assisting other guests</B>			
+<input type="checkbox" name="setup" {% if setup=="on" %}checked{% endif %}><B>Setup</B>
+<input type="checkbox" name="cleanup" {% if cleanup=="on" %}checked{% endif %}><B>Cleanup</B> 
+<input type="checkbox" name="assisting" {% if assisting=="on" %}checked{% endif %}><B>Assisting other guests</B>			
 <br><label for="songspeech">We would like to gift you with a song/recitation/speech at the wedding, such as</label>
             <input type="text" id="song" name="song" size="30" value="{{song}}">
-<label>Please list any food allergies or diet restrictions:</label> <input type="text" id="food" name="food" size="20" value="">
+<label>Please list any food allergies or diet restrictions:</label> <input type="text" id="food" name="food" size="20" value="{{food}}">
 </div>
 <br>

@@ -20,39 +20,39 @@ function noCheck() {       document.getElementById('attendees').value = 0;   doc
    <div>
         <div>
             <label for="fullName">Name:</label>
-            <input type="text" id="name" name="name" size="60" value="{{rsvp.name}}">
+            <input type="text" id="name" name="name" size="60" value="{{name}}">
        </div>
 		<div>
             <label for="email">Email:</label>
-            <input type="text" id="email" name="email" size="30" value="{{rsvp.email}}">
+            <input type="text" id="email" name="email" size="30" value="{{email}}">
             <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="phone" size="15" value="{{rsvp.phone}}">
+            <input type="text" id="phone" name="phone" size="15" value="{{phone}}">
 </select> 
      </div>
 		<div>
             <label for="address">Address:</label>
-            <input type="text" id="address" name="address" size="60" value="{{rsvp.address}}">
+            <input type="text" id="address" name="address" size="60" value="{{address}}">
        </div>
 	   		<div>
-            <label for="city">City:</label> <input type="text" id="city" name="city" size="20" value="{{rsvp.city}}">
+            <label for="city">City:</label> <input type="text" id="city" name="city" size="20" value="{{city}}">
 			<label for="state">State:</label> <select id="state" name="state">
 			<option value=""></option>
-{% for state in states %}
-         {% if state.code == rsvp.state %}
-            <option value="{{state.code}}" selected>{{state.name}}</option>
+{% for s in states %}
+         {% if s.code == state %}
+            <option value="{{s.code}}" selected>{{s.name}}</option>
 	     {% else %}
-            <option value="{{state.code}}">{{state.name}}</option>
+            <option value="{{s.code}}">{{s.name}}</option>
 		 {% endif %}
 {% endfor %}
 </select>
-			<label for="zip">ZIP:</label>  <input type="text" id="zip" name="zip" size="10" value="{{rsvp.zip}}">
+			<label for="zip">ZIP:</label>  <input type="text" id="zip" name="zip" size="10" value="{{zip}}">
        </div>
 	   	<div>
             <label for="contactMethod">Preferred Contact Method: </label>
-			  <select id="contactMethod" name="contactMethod" value="{{rsvp.contactMethod}}">
+			  <select id="contactMethod" name="contactMethod" value="{{contactMethod}}">
                 <option value="">none</option>
 {% for method in methods %}
-         {% if method == rsvp.contactMethod %}
+         {% if method == contactMethod %}
             <option value="{{method}}" selected>{{method}}</option>
 	     {% else %}
             <option value="{{method}}">{{method}}</option>
@@ -62,57 +62,57 @@ function noCheck() {       document.getElementById('attendees').value = 0;   doc
             </select>
 				<label for="carrier">Cell Carrier: </label><select id="carrier" name="carrier">
 			<option value=""></option>
-{% for carrier in carriers %}
-         {% if carrier.domain == rsvp.carrier %}
-            <option value="{{carrier.domain}}" selected>{{carrier.name}}</option>
+{% for c in carriers %}
+         {% if c.domain == carrier %}
+            <option value="{{c.domain}}" selected>{{c.name}}</option>
 	     {% else %}
-            <option value="{{carrier.domain}}">{{carrier.name}}</option>
+            <option value="{{c.domain}}">{{c.name}}</option>
 		 {% endif %}{% endfor %}
 		<option value=" ">Landline/Other</option>
 		</select>
         </div>
 		<div>
 		    <label for="note">Note: </label>
-			<input type="text" id="note" name="note" size="60" placeholder="Optional message for the Guestbook">
+			<input type="text" id="note" name="note" size="60" placeholder="Optional message for the Guestbook" value="{{note}}">
 		</div>
 	   </p>
 	<div>
 	<label for="willAttend">Will you be attending the Hawaii wedding on April 16?</label>
-	<input type="radio" onclick="javascript:yesCheck();" id="willAttend" name="willAttend" value="yes" {% if rsvp.willAttend=="yes" %}checked{% endif %}><b>Yes</b>
-	<input type="radio" onclick="javascript:noCheck();" id="willNotAttend" name="willAttend" value="no" {% if rsvp.willAttend=="no" %}checked{% endif %}><b>No</b>
-	<input type="radio" name="willAttend" value="maybe" {% if rsvp.willAttend=="maybe" %}checked{% endif %}><b>Maybe</b>
+	<input type="radio" onclick="javascript:yesCheck();" id="willAttend" name="willAttend" value="yes" {% if willAttend=="yes" %}checked{% endif %}><b>Yes</b>
+	<input type="radio" onclick="javascript:noCheck();" id="willNotAttend" name="willAttend" value="no" {% if willAttend=="no" %}checked{% endif %}><b>No</b>
+	<input type="radio" name="willAttend" value="maybe" {% if willAttend=="maybe" %}checked{% endif %}><b>Maybe</b>
 	</div>
 	<div>
  	<label for="willAttendCA">Will you be attending the Oakland party on June 4th?</label> &nbsp;   
-	<input type="radio" name="willAttendCA" value="yes" {% if rsvp.willAttendCA=="yes" %}checked{% endif %}><b>Yes</b>
-	<input type="radio" name="willAttendCA" value="no"  {% if rsvp.willAttendCA=="no" %}checked{% endif %}><b>No</b>
-	<input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
+	<input type="radio" name="willAttendCA" value="yes" {% if willAttendCA=="yes" %}checked{% endif %}><b>Yes</b>
+	<input type="radio" name="willAttendCA" value="no"  {% if willAttendCA=="no" %}checked{% endif %}><b>No</b>
+	<input type="radio" name="willAttendCA" value="maybe" {% if willAttendCA=="maybe" %}checked{% endif %}><b>Maybe</b>
        </div>
 		<div>
  	<label for="willAttendWI">Will you be attending the Wisconsin party on June 7th?</label>
-	<input type="radio" name="willAttendWI" value="yes" {% if rsvp.willAttendWI=="yes" %}checked{% endif %}><b>Yes</b>
-	<input type="radio" name="willAttendWI" value="no"  {% if rsvp.willAttendWI=="no" %}checked{% endif %}><b>No</b>
-	<input type="radio" name="willAttendCA" value="maybe"><b>Maybe</b>
+	<input type="radio" name="willAttendWI" value="yes" {% if willAttendWI=="yes" %}checked{% endif %}><b>Yes</b>
+	<input type="radio" name="willAttendWI" value="no"  {% if willAttendWI=="no" %}checked{% endif %}><b>No</b>
+	<input type="radio" name="willAttendCA" value="maybe" {% if willAttendWI=="maybe" %}checked{% endif %}><b>Maybe</b>
  	</div>
 		<div>
             <label for="attendees">Number of guests attending (including yourself):</label>
-            <select id="attendees" name="attendees" value="{{rsvp.attendees}}">
+            <select id="attendees" name="attendees" value="{{attendees}}">
                 <option value="0" >none</option>
-                <option value="1" {% if rsvp.attendees==1 %}selected{% endif %}>one</option>
-                <option value="2" {% if rsvp.attendees==2 %}selected{% endif %}>two</option>
-                <option value="3" {% if rsvp.attendees==3 %}selected{% endif %}>three</option>
-                <option value="4" {% if rsvp.attendees==4 %}selected{% endif %}>four</option>
-                <option value="5" {% if rsvp.attendees==5 %}selected{% endif %}>five</option>
-                <option value="6" {% if rsvp.attendees==6 %}selected{% endif %}>six</option>
+                <option value="1" {% if attendees==1 %}selected{% endif %}>one</option>
+                <option value="2" {% if attendees==2 %}selected{% endif %}>two</option>
+                <option value="3" {% if attendees==3 %}selected{% endif %}>three</option>
+                <option value="4" {% if attendees==4 %}selected{% endif %}>four</option>
+                <option value="5" {% if attendees==5 %}selected{% endif %}>five</option>
+                <option value="6" {% if attendees==6 %}selected{% endif %}>six</option>
             </select>
     </div>
 <div id='will-attend'>
-{% if rsvp.willAttend=="yes" %}
+{% if willAttend=="yes" %}
 {% include "rsvpform.html" %}
 {% endif %}
 </div>
 		<div>
-            <input type="hidden" id="nickname" name="nickname" value="{{rsvp.nickname}}">
+            <input type="hidden" id="nickname" name="nickname" value="{{nickname}}">
             <p><input type="submit" class="btn btn-primary" id="update" value="Update RSVP">
         </div>
     </div>
@@ -121,24 +121,24 @@ function noCheck() {       document.getElementById('attendees').value = 0;   doc
 Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties in Oakland CA on Sunday June 4, 2017 and Oak Creek WI on Wednesday June 7, 2017.
 <p>     <div>
             <label for="fullName">Name:</label>
-            <input type="text" id="name" name="name" size="60" value="">
+            <input type="text" id="name" name="name" size="60" value="{{name}}">
        </div>
 		<div>
             <label for="email">Email:</label>
-            <input type="text" id="email" name="email" size="30" value="">
+            <input type="text" id="email" name="email" size="30" value="{{email}}">
             <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="phone" size="15" value="">
+            <input type="text" id="phone" name="phone" size="15" value="{{phone}}">
      </div>
 		<div>
             <label for="address">Address:</label>
-            <input type="text" id="address" name="address" size="60" value="">
+            <input type="text" id="address" name="address" size="60" value="{{address}}">
        </div>
 	   		<div>
-            <label for="city">City:</label> <input type="text" id="city" name="city" size="20" value="">
+            <label for="city">City:</label> <input type="text" id="city" name="city" size="20" value="{{city}}">
 			<label for="state">State:</label> <select id="state" name="state">
 			<option value=""></option>
-{% for state in states %}
-            <option value="{{state.code}}">{{state.name}}</option>
+{% for s in states %}
+            <option value="{{state.code}}">{{s.name}}</option>
 {% endfor %}
            </select>
 			<label for="zip">ZIP:</label>  <input type="text" id="zip" name="zip" size="10">
