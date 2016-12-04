@@ -178,6 +178,8 @@ class Response(BaseHandler):
         for rsvp in rsvp_list:
             if rsvp.nickname in (template_values['nickname'], self.request.get('nickname')):
                 template_values['rsvp'] = rsvp
+                if not rsvp.request:
+				    rsvp.request={}
                 template_values.update(rsvp.request)
                 reply = max(rsvp.willAttend,rsvp.willAttendCA,rsvp.willAttendWI)
                 template_values['msg'] = template_values.get(reply,"")

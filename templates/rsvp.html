@@ -78,32 +78,32 @@ function noCheck() {       document.getElementById('attendees').value = 0;   doc
 	   </p>
 	<div>
 	<label for="willAttend">Will you be attending the Hawaii wedding on April 16?</label>
-	<input type="radio" onclick="javascript:yesCheck();" id="willAttend" name="willAttend" value="yes" {% if willAttend=="yes" %}checked{% endif %}><b>Yes</b>
-	<input type="radio" onclick="javascript:noCheck();" id="willNotAttend" name="willAttend" value="no" {% if willAttend=="no" %}checked{% endif %}><b>No</b>
-	<input type="radio" name="willAttend" value="maybe" {% if willAttend=="maybe" %}checked{% endif %}><b>Maybe</b>
+	<input type="radio" onclick="javascript:yesCheck();" id="willAttend" name="willAttend" value="yes" {% if rsvp.willAttend=="yes" %}checked{% endif %}><b>Yes</b>
+	<input type="radio" onclick="javascript:noCheck();" id="willNotAttend" name="willAttend" value="no" {% if rsvp.willAttend=="no" %}checked{% endif %}><b>No</b>
+	<input type="radio" name="willAttend" value="maybe" {% if rsvp.willAttend=="maybe" %}checked{% endif %}><b>Maybe</b>
 	</div>
 	<div>
  	<label for="willAttendCA">Will you be attending the Oakland party on June 4th?</label> &nbsp;   
-	<input type="radio" name="willAttendCA" value="yes" {% if willAttendCA=="yes" %}checked{% endif %}><b>Yes</b>
-	<input type="radio" name="willAttendCA" value="no"  {% if willAttendCA=="no" %}checked{% endif %}><b>No</b>
-	<input type="radio" name="willAttendCA" value="maybe" {% if willAttendCA=="maybe" %}checked{% endif %}><b>Maybe</b>
+	<input type="radio" name="willAttendCA" value="yes" {% if rsvp.willAttendCA=="yes" %}checked{% endif %}><b>Yes</b>
+	<input type="radio" name="willAttendCA" value="no"  {% if rsvp.willAttendCA=="no" %}checked{% endif %}><b>No</b>
+	<input type="radio" name="willAttendCA" value="maybe" {% if rsvp.willAttendCA=="maybe" %}checked{% endif %}><b>Maybe</b>
        </div>
 		<div>
  	<label for="willAttendWI">Will you be attending the Wisconsin party on June 7th?</label>
-	<input type="radio" name="willAttendWI" value="yes" {% if willAttendWI=="yes" %}checked{% endif %}><b>Yes</b>
-	<input type="radio" name="willAttendWI" value="no"  {% if willAttendWI=="no" %}checked{% endif %}><b>No</b>
-	<input type="radio" name="willAttendCA" value="maybe" {% if willAttendWI=="maybe" %}checked{% endif %}><b>Maybe</b>
+	<input type="radio" name="willAttendWI" value="yes" {% if rsvp.willAttendWI=="yes" %}checked{% endif %}><b>Yes</b>
+	<input type="radio" name="willAttendWI" value="no"  {% if rsvp.willAttendWI=="no" %}checked{% endif %}><b>No</b>
+	<input type="radio" name="willAttendCA" value="maybe" {% if rsvp.willAttendWI=="maybe" %}checked{% endif %}><b>Maybe</b>
  	</div>
 		<div>
             <label for="attendees">Number of guests attending (including yourself):</label>
             <select id="attendees" name="attendees" value="{{attendees}}">
                 <option value="0" >none</option>
-                <option value="1" {% if attendees==1 %}selected{% endif %}>one</option>
-                <option value="2" {% if attendees==2 %}selected{% endif %}>two</option>
-                <option value="3" {% if attendees==3 %}selected{% endif %}>three</option>
-                <option value="4" {% if attendees==4 %}selected{% endif %}>four</option>
-                <option value="5" {% if attendees==5 %}selected{% endif %}>five</option>
-                <option value="6" {% if attendees==6 %}selected{% endif %}>six</option>
+                <option value="1" {% if rsvp.attendees==1 %}selected{% endif %}>one</option>
+                <option value="2" {% if rsvp.attendees==2 %}selected{% endif %}>two</option>
+                <option value="3" {% if rsvp.attendees==3 %}selected{% endif %}>three</option>
+                <option value="4" {% if rsvp.attendees==4 %}selected{% endif %}>four</option>
+                <option value="5" {% if rsvp.attendees==5 %}selected{% endif %}>five</option>
+                <option value="6" {% if rsvp.attendees==6 %}selected{% endif %}>six</option>
             </select>
     </div>
 <div id='will-attend'>
