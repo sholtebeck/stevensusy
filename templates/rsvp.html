@@ -20,25 +20,25 @@ function noCheck() {       document.getElementById('attendees').value = 0;   doc
    <div>
         <div>
             <label for="fullName">Name:</label>
-            <input type="text" id="name" name="name" size="60" value="{{name}}">
+            <input type="text" id="name" name="name" size="60" value="{{rsvp.name}}">
        </div>
 		<div>
             <label for="email">Email:</label>
-            <input type="text" id="email" name="email" size="30" value="{{email}}">
+            <input type="text" id="email" name="email" size="30" value="{{rsvp.email}}">
             <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="phone" size="15" value="{{phone}}">
+            <input type="text" id="phone" name="phone" size="15" value="{{rsvp.phone}}">
 </select> 
      </div>
 		<div>
             <label for="address">Address:</label>
-            <input type="text" id="address" name="address" size="60" value="{{address}}">
+            <input type="text" id="address" name="address" size="60" value="{{rsvp.address}}">
        </div>
 	   		<div>
-            <label for="city">City:</label> <input type="text" id="city" name="city" size="20" value="{{city}}">
+            <label for="city">City:</label> <input type="text" id="city" name="city" size="20" value="{{rsvp.city}}">
 			<label for="state">State:</label> <select id="state" name="state">
 			<option value=""></option>
 {% for s in states %}
-         {% if s.code == state %}
+         {% if s.code == rsvp.state %}
             <option value="{{s.code}}" selected>{{s.name}}</option>
 	     {% else %}
             <option value="{{s.code}}">{{s.name}}</option>
@@ -52,7 +52,7 @@ function noCheck() {       document.getElementById('attendees').value = 0;   doc
 			  <select id="contactMethod" name="contactMethod" value="{{contactMethod}}">
                 <option value="">none</option>
 {% for method in methods %}
-         {% if method == contactMethod %}
+         {% if method == rsvp.contactMethod %}
             <option value="{{method}}" selected>{{method}}</option>
 	     {% else %}
             <option value="{{method}}">{{method}}</option>
