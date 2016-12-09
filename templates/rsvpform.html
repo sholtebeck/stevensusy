@@ -13,7 +13,8 @@
                 <option value="3" {% if chairs=="3" %}selected{% endif %}>3</option>
                 <option value="4" {% if chairs=="4" %}selected{% endif %}>4</option>
      </select> 
-<label>chairs, </label> <select id="highchairs" name="highchairs" >
+<label>chairs for the ceremony </label>
+	<br><label>We will need </label> <select id="highchairs" name="highchairs" >
                 <option value=""></option>
                 <option value="1" {% if highchairs=="1" %}selected{% endif %}>1</option>
                 <option value="2" {% if highchairs=="2" %}selected{% endif %}>2</option>
@@ -26,13 +27,13 @@
                 <option value="2" {% if boosters=="2" %}selected{% endif %}>2</option>
                 <option value="3" {% if boosters=="3" %}selected{% endif %}>3</option>
                 <option value="4" {% if boosters=="4" %}selected{% endif %}>4</option>
-            </select> <label>booster seats for the ceremony/picnic.</label>			
+            </select> <label>booster seats for the brunch/picnic.</label>			
 <br><label>Willing to help out on the day of the wedding with</label> 
 <input type="checkbox" name="setup" {% if setup=="on" %}checked{% endif %}><B>Setup</B>
 <input type="checkbox" name="cleanup" {% if cleanup=="on" %}checked{% endif %}><B>Cleanup</B> 
 <input type="checkbox" name="assisting" {% if assisting=="on" %}checked{% endif %}><B>Assisting other guests</B>			
 <br><label for="songspeech">We would like to gift you with a song/recitation/speech at the wedding, such as</label>
-            <input type="text" id="song" name="song" size="30" value="{{song}}">
+            <input type="text" id="song" name="song" size="20" value="{{song}}">
 <label>Please list any food allergies or diet restrictions:</label> <input type="text" id="food" name="food" size="20" value="{{food}}">
 </div>
 <br>
