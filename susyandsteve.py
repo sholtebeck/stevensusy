@@ -178,7 +178,8 @@ class Response(BaseHandler):
         for rsvp in rsvp_list:
             if rsvp.nickname in (template_values['nickname'], self.request.get('nickname')):
                 template_values['rsvp'] = rsvp
-                template_values.update(rsvp.request)
+                if rsvp.request:
+                    template_values.update(rsvp.request)
                 reply = max(rsvp.willAttend,rsvp.willAttendCA,rsvp.willAttendWI)
                 template_values['msg'] = template_values.get(reply,"")
                 template_values['emoticon'] = template_values['emoti'].get(reply,"")
@@ -243,12 +244,20 @@ class Response(BaseHandler):
 
 class LogMeInOrOut(BaseHandler):
     def get(self):
-        nickname = self.request.get('nickname')
-        if not nickname or nickname in ('Guest','None','undefined'):
-            if self.session.get('nickname'):
-                del self.session['nickname']
-            self.redirect(users.create_logout_url('/'))
+        if self.request.url.endswith("logout") and self.session.get("nickname"):
+            del self.session["nickname"]
+            nickname=None
         else:
+            nickname = self.request.get('nickname')
+            if not nickname or nickname in ('Guest','None','undefined'):
+                nickname = self.session.get('nickname')
+        if not nickname:
+            template = jinja_environment.get_template('index.html')
+            template_values = globalVals(self) 
+            template_values['request']=self.request
+            self.response.write(template.render(template_values))
+        else:
+            nickname=nickname.title()
             guestbookName = self.request.get('guestbookName', app_name)
             login = Login(parent=login_key(guestbookName), id=nickname)
             login.nickname = nickname

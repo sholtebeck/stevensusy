@@ -23,46 +23,6 @@ $(document).ready(function() {
 </head>
 <body>
 <div id="container">
- {% if nickname %}
- <form action="/logout" method="get">
-Welcome, <label>{{ nickname }}</label>: {{msg}}{{emoticon}}
-<input type="submit" value="Logout"></form>
-<h1>{{title}}</h1>
-  <ul class="tabs"> 
-        <li class="active" rel="tab0">Ceremony</li>
-       <li rel="tab2">Wedding Tour</li>
-       <li rel="tab1">RSVP</li>
-       <li rel="tab3">Registry</li>
-       <li rel="tab4">Travel/Accommodations</li>
-       <li rel="tab5">Wedlog</li>
-  </ul>
-  
-<div class="tab_container"> 
-
-<div id="tab0" class="tab_content"> 
-{% include "ceremony.html" %}
-</div><!-- #tab0 -->
-
-<div id="tab1" class="tab_content"> 
-{% include "rsvpform.html" %}
-</div><!-- #tab2 -->
-
-<div id="tab2" class="tab_content"> 
-{% include "weddingtour.html" %}
-</div><!-- #tab1 -->
-
-<div id="tab3" class="tab_content"> 
-{% include "registry.html" %}
-</div><!-- #tab3 -->
-
-<div id="tab4" class="tab_content">
-{% include "travel.html" %}
-</div><!-- #tab4 -->
-
-<div id="tab5" class="tab_content"> 
-<iframe width='1250' height='800' frameborder='0' src='http://susyandsteve.blogspot.com'></iframe>
-</div><!-- #tab5 -->
-{% else %}
  <form action="/login" method="post">
 Welcome,<input type="text" id="nickname" name="nickname" size="10" placeholder="Name or Email" required><input type="hidden" id="url" name="url" value="{{url}}">
 <a href="/app/fblogin.html"><img src="/app/fb.jpg" align="top" alt="login via Facebook" width="25"></a>
@@ -71,6 +31,6 @@ Welcome,<input type="text" id="nickname" name="nickname" size="10" placeholder="
 </form>
 <h1>{{title}}</h1>
 <br><img src="/app/magicisland.jpg" align="top">
-{% endif %}
+</div>
 </html>
 
