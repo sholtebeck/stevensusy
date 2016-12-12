@@ -178,14 +178,9 @@ class Response(BaseHandler):
         for rsvp in rsvp_list:
             if rsvp.nickname in (template_values['nickname'], self.request.get('nickname')):
                 template_values['rsvp'] = rsvp
-<<<<<<< HEAD
-                if rsvp.request:
-                    template_values.update(rsvp.request)
-=======
                 if not rsvp.request:
 				    rsvp.request={}
                 template_values.update(rsvp.request)
->>>>>>> a811000b5f61a2661ce76fa6e6264def2344b0f9
                 reply = max(rsvp.willAttend,rsvp.willAttendCA,rsvp.willAttendWI)
                 template_values['msg'] = template_values.get(reply,"")
                 template_values['emoticon'] = template_values['emoti'].get(reply,"")
