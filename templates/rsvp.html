@@ -92,18 +92,31 @@ function noCheck() {       document.getElementById('attendees').value = 0;   doc
  	<label for="willAttendWI">Will you be attending the Wisconsin party on June 7th?</label>
 	<input type="radio" name="willAttendWI" value="yes" {% if rsvp.willAttendWI=="yes" %}checked{% endif %}><b>Yes</b>
 	<input type="radio" name="willAttendWI" value="no"  {% if rsvp.willAttendWI=="no" %}checked{% endif %}><b>No</b>
+<<<<<<< HEAD
 	<input type="radio" name="willAttendCA" value="maybe" {% if willAttendWI=="maybe" %}checked{% endif %}><b>Maybe</b>
+=======
+	<input type="radio" name="willAttendCA" value="maybe" {% if rsvp.willAttendWI=="maybe" %}checked{% endif %}><b>Maybe</b>
+>>>>>>> a811000b5f61a2661ce76fa6e6264def2344b0f9
  	</div>
 		<div>
             <label for="attendees">Number of guests attending (including yourself):</label>
             <select id="attendees" name="attendees" value="{{rsvp.attendees}}">
                 <option value="0" >none</option>
+<<<<<<< HEAD
                 <option value="1" {% if rsvp.attendees=="1" %}selected{% endif %}>one</option>
                 <option value="2" {% if rsvp.attendees=="2" %}selected{% endif %}>two</option>
                 <option value="3" {% if rsvp.attendees=="3" %}selected{% endif %}>three</option>
                 <option value="4" {% if rsvp.attendees=="4" %}selected{% endif %}>four</option>
                 <option value="5" {% if rsvp.attendees=="5" %}selected{% endif %}>five</option>
                 <option value="6" {% if rsvp.attendees=="6" %}selected{% endif %}>six</option>
+=======
+                <option value="1" {% if rsvp.attendees==1 %}selected{% endif %}>one</option>
+                <option value="2" {% if rsvp.attendees==2 %}selected{% endif %}>two</option>
+                <option value="3" {% if rsvp.attendees==3 %}selected{% endif %}>three</option>
+                <option value="4" {% if rsvp.attendees==4 %}selected{% endif %}>four</option>
+                <option value="5" {% if rsvp.attendees==5 %}selected{% endif %}>five</option>
+                <option value="6" {% if rsvp.attendees==6 %}selected{% endif %}>six</option>
+>>>>>>> a811000b5f61a2661ce76fa6e6264def2344b0f9
             </select>
     </div>
 <div id='will-attend'>
