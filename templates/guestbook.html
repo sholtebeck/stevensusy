@@ -27,13 +27,14 @@
 
 {% if greetings %}
 <div class="col-lg-8" >
-<label>Messages ({{ greetings|length }}):</label></br>
+<table class="table table-condensed">
+<tbody>
+<tr><th><label>Messages ({{ greetings|length }}):</label></th></tr>
 {% for greeting in greetings  %}
-{% if greeting.author=="admin" %}
-<a href="/guestbook?id={{greeting.key.id() }}">X</a>
-{% endif %}
-<field>{{ greeting.content }}</field> ({{ greeting.author }} on {{ greeting.date.strftime('%Y-%m-%d') }})</br>
+<tr><td><field>{{ greeting.content }}</field> ({{ greeting.author }} on {{ greeting.date.strftime('%Y-%m-%d') }})</field></td></tr>
 {% endfor  %}
+</tbody>
+</table>
 </div>
 {% endif %}
 
