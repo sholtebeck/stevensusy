@@ -95,7 +95,7 @@ function noCheck() {       document.getElementById('attendees').value = 0;   doc
 	<input type="radio" name="willAttendCA" value="maybe" {% if willAttendWI=="maybe" %}checked{% endif %}><b>Maybe</b>
  	</div>
 		<div>
-            <label for="attendees">Number of guests attending (including yourself):</label>
+            <label for="attendees">Number of guests attending events (including yourself):</label>
             <select id="attendees" name="attendees" value="{{rsvp.attendees}}">
                 <option value="0" >none</option>
                 <option value="1" {% if rsvp.attendees=="1" %}selected{% endif %}>one</option>
@@ -181,7 +181,7 @@ Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties 
 	<input type="radio" name="willAttendWI" value="no"><b>No</b><input type="radio" name="willAttendWI" value="maybe"><b>Maybe</b>
  	</div>
 	<div id="ifYes">
-            <label for="attendees">Number of guests attending (including yourself):</label>
+            <label for="attendees">Number of guests attending events (including yourself):</label>
             <select id="attendees" name="attendees" value="1">
                 <option value="0">none</option>
                 <option value="1">one</option>
