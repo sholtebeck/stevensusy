@@ -2,8 +2,8 @@
 {% block title %}RSVP for {{title}}{% endblock %}
 {% block content %}
 <script type="text/javascript">
-function yesCheck() {       document.getElementById('attendees').value = 1;  document.getElementById('will-attend').style.visibility = 'visible';    } 
-function noCheck() {       document.getElementById('attendees').value = 0;   document.getElementById('will-attend').style.visibility = 'hidden';   }
+function yesCheck() {      document.getElementById('will-attend').style.visibility = 'visible';    } 
+function noCheck() {       document.getElementById('will-attend').style.visibility = 'hidden';   }
 </script>
 <div class="container-fluid">
 <div class="col-lg-3" >
@@ -15,7 +15,7 @@ function noCheck() {       document.getElementById('attendees').value = 0;   doc
  <h1>RSVP for {{title}} Tour</h1>
 <form action="/rsvp" method="post">
 {% if rsvp %}
-<label>Thank you {{nickname}}, {{msg}}{{emoticon}}.  Please review your information.</label>
+<label>Thank you {{rsvp.name}}, {{msg}}{{emoticon}}.  Please review your information.</label>
 <br>
    <div>
         <div>
@@ -98,12 +98,12 @@ function noCheck() {       document.getElementById('attendees').value = 0;   doc
             <label for="attendees">Number of guests attending events (including yourself):</label>
             <select id="attendees" name="attendees" value="{{rsvp.attendees}}">
                 <option value="0" >none</option>
-                <option value="1" {% if rsvp.attendees=="1" %}selected{% endif %}>one</option>
-                <option value="2" {% if rsvp.attendees=="2" %}selected{% endif %}>two</option>
-                <option value="3" {% if rsvp.attendees=="3" %}selected{% endif %}>three</option>
-                <option value="4" {% if rsvp.attendees=="4" %}selected{% endif %}>four</option>
-                <option value="5" {% if rsvp.attendees=="5" %}selected{% endif %}>five</option>
-                <option value="6" {% if rsvp.attendees=="6" %}selected{% endif %}>six</option>
+                <option value="1" {% if rsvp.attendees==1 %}selected{% endif %}>one</option>
+                <option value="2" {% if rsvp.attendees==2 %}selected{% endif %}>two</option>
+                <option value="3" {% if rsvp.attendees==3 %}selected{% endif %}>three</option>
+                <option value="4" {% if rsvp.attendees==4 %}selected{% endif %}>four</option>
+                <option value="5" {% if rsvp.attendees==5 %}selected{% endif %}>five</option>
+                <option value="6" {% if rsvp.attendees==6 %}selected{% endif %}>six</option>
             </select>
     </div>
 <div id='will-attend'>
@@ -180,8 +180,7 @@ Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties 
 	<input type="radio" name="willAttendWI" onclick="javascript:yesCheck();" value="yes"><b>Yes</b>
 	<input type="radio" name="willAttendWI" value="no"><b>No</b><input type="radio" name="willAttendWI" value="maybe"><b>Maybe</b>
  	</div>
-	<div id="ifYes">
-            <label for="attendees">Number of guests attending events (including yourself):</label>
+           <label for="attendees">Number of guests attending events (including yourself):</label>
             <select id="attendees" name="attendees" value="1">
                 <option value="0">none</option>
                 <option value="1">one</option>
@@ -191,8 +190,7 @@ Our wedding will be on {{date}} in Honolulu HI.<br>We are also planning parties 
                 <option value="5">five</option>
                 <option value="6">six</option>
             </select>
-	</div>
-<div id="will-attend2" visibility="hidden">
+	<div id="will-attend2" visibility="hidden">
 {% include "rsvpform.html" %}
 </div>
         <div>

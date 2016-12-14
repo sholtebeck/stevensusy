@@ -193,7 +193,7 @@ class Response(BaseHandler):
         guestbookName = self.request.get('guestbookName', app_name)
         rsvp_key = self.request.get('nickname')
         if not rsvp_key or rsvp_key in ('None','Guest'):
-            rsvp_key = self.request.get('name').split(" ")[0]
+            rsvp_key = self.request.get('name')
         rsvp = RSVP(parent=login_key(guestbookName),id=rsvp_key)
         rsvp.nickname = rsvp_key
         rsvp.name= self.request.get('name')
