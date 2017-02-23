@@ -6,8 +6,7 @@ import urllib
 import jinja2
 import webapp2
 from datetime import date
-from google.appengine.api import users
-from google.appengine.api import mail
+from google.appengine.api import users,mail,memcache
 from google.appengine.ext import ndb
 from webapp2_extras import sessions
 
@@ -32,8 +31,11 @@ def get_Nickname(input):
     return output
 
 def get_RSVP_list():
-    rsvp_query = RSVP.query(ancestor=login_key(app_name)).order(RSVP.date)
-    rsvp_list = rsvp_query.fetch(100)
+    rsvp_list = memcache.get("RSVP")
+    if not rsvp_list:
+        rsvp_query = RSVP.query(ancestor=login_key(app_name)).order(RSVP.date)
+        rsvp_list = rsvp_query.fetch(100)
+        memcache.add("RSVP", rsvp_list)
     return rsvp_list
     
 def get_RSVP_count(rsvp_list):
@@ -97,6 +99,7 @@ def globalVals(ctx):
         template_values['nickname'] = names[users.get_current_user().nickname()]
         ctx.session['nickname'] = template_values['nickname']
     if template_values.get('nickname'):
+        template_values['nickname']=template_values['nickname'].title()
         template_values['url'] = users.create_logout_url(ctx.request.uri)
     else:
         template_values['url'] = users.create_login_url(ctx.request.uri)
@@ -179,7 +182,7 @@ class Response(BaseHandler):
             if rsvp.nickname in (template_values['nickname'], self.request.get('nickname')):
                 template_values['rsvp'] = rsvp
                 if not rsvp.request:
-				    rsvp.request={}
+                    rsvp.request={}
                 template_values.update(rsvp.request)
                 reply = max(rsvp.willAttend,rsvp.willAttendCA,rsvp.willAttendWI)
                 template_values['msg'] = template_values.get(reply,"")
@@ -215,12 +218,14 @@ class Response(BaseHandler):
             if self.request.get(arg):
                 rsvp.request[arg]=self.request.get(arg)
         rsvp.put()
+        memcache.delete("RSVP")
         # Add a Greeting if the note is filled in 
         if rsvp.note:
             greeting = Greeting(parent=guestbook_key(guestbookName))
             greeting.author = rsvp_key
             greeting.content = rsvp.note
-            greeting.put()          
+            greeting.put() 
+            memcache.delete("greetings")            
         if rsvp.contactMethod=='text' and rsvp.carrier and rsvp.willAttend =='yes':
             message = mail.EmailMessage(sender=globalvals['sender'], subject=globalvals['subject'])
             message.to = rsvp.phone + "@" + rsvp.carrier
@@ -293,25 +298,41 @@ def guestbook_key(guestbookName=app_name):
     """Constructs a Datastore key for a Guestbook entity with guestbookName."""
     return ndb.Key('Guestbook', guestbookName)
 
-def delete_greeting(id):
-    greeting=ndb.Key('Guestbook', id=int(id))
-    if greeting:
-        greeting.delete()
-        
+# Function to tag invalid greetings
+def valid_greeting(author,content,filter):
+    is_valid=True
+    if not author or not author[0].isupper() or author in ('None','Guest'):
+        is_valid=False
+    if not content or filter in content:
+        is_valid=False
+    return is_valid
+
+def delete_greetings(filter):
+    greetings_query = Greeting.query(ancestor=guestbook_key(app_name)).order(-Greeting.date)
+    greetings = greetings_query.fetch(1000)
+    for greeting in greetings:
+        if not valid_greeting(greeting.author,greeting.content,filter):
+            greeting.key.delete()
+    memcache.delete("greetings")            
+    
+def get_greetings():
+    greetings=memcache.get("greetings")
+    if not greetings:
+        greetings_query = Greeting.query(ancestor=guestbook_key(app_name)).order(Greeting.date)
+        greetings = greetings_query.fetch(50)
+        memcache.add("greetings",greetings)
+    return greetings
+    
 class Guestbook(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('guestbook.html')
         template_values = globalVals(self) 
-        greeting_id=self.request.get('id')
-        if greeting_id:
-            delete_greeting(greeting_id)
-            self.redirect('/guestbook')
         guestbookName = self.request.get('guestbookName',app_name)
-        greetings_query = Greeting.query(ancestor=guestbook_key(guestbookName)).order(Greeting.date)
-        greetings = greetings_query.fetch(100)
+        greetings = get_greetings()
         template_values = globalVals(self)
         template_values['greetings'] =  greetings
         template_values['guestbookName'] = urllib.quote_plus(guestbookName)
+        template_values['postmessage']=True
         self.response.write(template.render(template_values)) 
         
     def post(self):
@@ -319,13 +340,19 @@ class Guestbook(BaseHandler):
         # is in the same entity group. Queries across the single entity group
         # will be consistent. However, the write rate to a single entity group
         # should be limited to ~1/second.
-        guestbookName = self.request.get('guestbookName', app_name)
-        greeting = Greeting(parent=guestbook_key(guestbookName))
-        greeting.author = self.request.get('author')
-        greeting.content = self.request.get('content')
-        greeting.put()
+        author=self.request.get('author')
+        content = self.request.get('content')
+        guestbookName = self.request.get('guestbookName', app_name)      
+        if valid_greeting(author,content,'href'):
+            memcache.delete("greetings")
+            greeting = Greeting(parent=guestbook_key(guestbookName))
+            greeting.author = author
+            greeting.content = content
+            greeting.put()
+        elif author=='delete':
+            delete_greetings(content)   
         queryParams = {'guestbookName': guestbookName}
-        self.redirect('/guestbook')
+        self.redirect('/guestbook?guestbookName=nopost')
         
 class Registry(BaseHandler):
     def get(self):
