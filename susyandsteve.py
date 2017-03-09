@@ -374,7 +374,7 @@ class Guests(BaseHandler):
             rsvp_dict={"Name":rsvp.name, "Address":rsvp.address, "City":rsvp.city,"State":rsvp.state,"Zip":rsvp.zip,"Email":rsvp.email,"Phone":rsvp.phone, "WillAttend":rsvp.willAttend,
             "WillAttendCA":rsvp.willAttendCA, "WillAttendWI":rsvp.willAttendWI, "Attendees":rsvp.attendees,"Other":''}
             for key in template_values['extras']:
-                 if rsvp.request.get(key):
+                 if rsvp.request and rsvp.request.get(key):
                      rsvp_dict['Other']+=' '+key.title()
                      if rsvp.request[key]!='on':
                          rsvp_dict['Other']+=':'+str(rsvp.request[key])
