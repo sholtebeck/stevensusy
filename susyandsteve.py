@@ -70,6 +70,7 @@ def globalVals(ctx):
     "no": "You are not attending",
     "maybe": "You might be attending",
     "emoti": {"yes":"&#9786;","no":"&#9785;","maybe":""},
+    "extras":["setup","cleanup","assisting","chairs","highchairs","boosters","song","food"],
     "request" : ctx.request,
     "sender":"Susy & Steve <us@susyandsteve.appspotmail.com>",
     "subject":"Thank You for your RSVP",
@@ -371,7 +372,12 @@ class Guests(BaseHandler):
         guest_list = []
         for rsvp in rsvp_list:
             rsvp_dict={"Name":rsvp.name, "Address":rsvp.address, "City":rsvp.city,"State":rsvp.state,"Zip":rsvp.zip,"Email":rsvp.email,"Phone":rsvp.phone, "WillAttend":rsvp.willAttend,
-            "WillAttendCA":rsvp.willAttendCA, "WillAttendWI":rsvp.willAttendWI, "Attendees":rsvp.attendees, "Request":rsvp.request }
+            "WillAttendCA":rsvp.willAttendCA, "WillAttendWI":rsvp.willAttendWI, "Attendees":rsvp.attendees,"Other":''}
+            for key in template_values['extras']:
+                 if rsvp.request.get(key):
+                     rsvp_dict['Other']+=' '+key.title()
+                     if rsvp.request[key]!='on':
+                         rsvp_dict['Other']+=':'+str(rsvp.request[key])
             guest_list.append(rsvp_dict)
         template_values['guest_list'] =  guest_list
         template_values['title'] = "Guests for " + template_values['title']
@@ -396,7 +402,7 @@ class WeddingList(BaseHandler):
         template_values = globalVals(self) 
         rsvp_list = get_RSVP_list()
         template_values['rsvp_list']=rsvp_list
-        self.response.write(template.render(template_values))        	
+        self.response.write(template.render(template_values))           
         
 class WeddingTour(BaseHandler):
     def get(self):
