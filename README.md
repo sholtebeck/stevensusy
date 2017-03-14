@@ -1,4 +1,4 @@
-App Wedding
+App Wedding (Susy & Steve)
 -----------
 
 A simple google appengine based wedding website. Should be easy to fork and 
@@ -19,8 +19,8 @@ Examples
 
 **run locally**
 
-    google_appengine/dev_appserver.py app-wedding/
+    google_appengine/dev_appserver.py susyandsteve/
 
 **deployment**
 
-    google_appengine/appcfg.py update app-wedding/
+    google_appengine/appcfg.py update susyandsteve/

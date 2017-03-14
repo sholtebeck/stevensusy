@@ -369,7 +369,8 @@ class Registry(BaseHandler):
 class Guests(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('guests.html')
-        template_values = globalVals(self) 
+        template_values = globalVals(self)
+        attending=self.request.get('attending')      
         if not template_values['nickname']:
             self.redirect(template_values['url'])
         else:
@@ -379,14 +380,15 @@ class Guests(BaseHandler):
             template_values['rsvpcount']=rsvp_count
             guest_list = []
             for rsvp in rsvp_list:
-                rsvp_dict={"Name":rsvp.name, "Address":rsvp.address, "City":rsvp.city,"State":rsvp.state,"Zip":rsvp.zip,"Email":rsvp.email,"Phone":rsvp.phone, "WillAttend":rsvp.willAttend,
-                "WillAttendCA":rsvp.willAttendCA, "WillAttendWI":rsvp.willAttendWI, "Attendees":rsvp.attendees,"Other":''}
-                for key in template_values['extras']:
-                    if rsvp.request and rsvp.request.get(key):
-                        rsvp_dict['Other']+=' '+key.title()
-                        if rsvp.request[key]!='on':
-                            rsvp_dict['Other']+=':'+str(rsvp.request[key])+'<br>'
-                guest_list.append(rsvp_dict)
+                if (attending and rsvp.willAttend=="yes") or (not attending):
+                    rsvp_dict={"Name":rsvp.name, "Address":rsvp.address, "City":rsvp.city,"State":rsvp.state,"Zip":rsvp.zip,"Email":rsvp.email,"Phone":rsvp.phone, "WillAttend":rsvp.willAttend,
+                    "WillAttendCA":rsvp.willAttendCA, "WillAttendWI":rsvp.willAttendWI, "Attendees":rsvp.attendees,"Other":''}
+                    for key in template_values['extras']:
+                        if rsvp.request and rsvp.request.get(key):
+                            rsvp_dict['Other']+=' '+key.title()
+                            if rsvp.request[key]!='on':
+                                rsvp_dict['Other']+=':'+str(rsvp.request[key])+'<br>'
+                    guest_list.append(rsvp_dict)
             template_values['guest_list'] =  guest_list
             template_values['title'] = "Guests for " + template_values['title']
             template_values['guestcount'] = 0
