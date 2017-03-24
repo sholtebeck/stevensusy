@@ -5,7 +5,7 @@ import cgi
 import urllib
 import jinja2
 import webapp2
-from datetime import date
+from datetime import date,datetime
 from google.appengine.api import users,mail,memcache
 from google.appengine.ext import ndb
 from webapp2_extras import sessions
@@ -61,7 +61,7 @@ def globalVals(ctx):
     template_values= {
     "title": "Susy & Steve's Wedding",
     "date": "Easter Sunday, April 16 2017",   
-    "time": "9:30am HST",
+    "time": "10:00am HST",
     "attire":"Casual (dress for a beach park)",
     "location": "Magic Island, Ala Moana Beach Park, Honolulu HI",
     "map_key": "AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk",
@@ -94,7 +94,8 @@ def globalVals(ctx):
     }
     # Get number of days until the big day
     template_values['action']=ctx.request.get('action') 
-    template_values['days']=(date(2017,4,16)-date.today()).days
+    template_values['days']=int((datetime(2017,4,16,20,0)-datetime.now()).total_seconds()/86400+0.5)
+    template_values['hours']=int((datetime(2017,4,16,20,0)-datetime.now()).total_seconds()/3600)
     template_values['nickname']=ctx.session_store.get_session().get('nickname') 
     if users.get_current_user() and names.get(users.get_current_user().nickname()):
         template_values['nickname'] = names[users.get_current_user().nickname()]
