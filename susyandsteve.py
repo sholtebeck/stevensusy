@@ -343,7 +343,7 @@ def getEvent(event_id):
         if event:
             event_data=event.event_json
         else:
-            event_data=None
+            event_data=default_event(event_id)
     return event_data   
     
 def updateEvent(event_data):
