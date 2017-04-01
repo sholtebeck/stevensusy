@@ -1,5 +1,4 @@
 # This is our wedding site
-
 import os
 import cgi
 import urllib
@@ -9,6 +8,7 @@ from datetime import date,datetime
 from google.appengine.api import users,mail,memcache
 from google.appengine.ext import ndb
 from webapp2_extras import sessions
+from skipflog import *
 
 app_name='susyandsteve'
 config={'webapp2_extras.sessions' : {'secret_key': app_name } }
@@ -140,6 +140,12 @@ def login_key(guestbookName=app_name):
     """Constructs a Datastore key for a Login entity with guestbookName."""
     return ndb.Key('Login', guestbookName)
 
+class Event(ndb.Model):
+    event_id = ndb.IntegerProperty(required=True)
+    pick_no = ndb.IntegerProperty(indexed=False)
+    event_name = ndb.StringProperty()
+    event_json = ndb.JsonProperty()
+    
 class Login(ndb.Model):
     """Models an individual Login entry."""
     nickname = ndb.StringProperty(indexed=False)
@@ -330,6 +336,78 @@ def get_greetings():
         memcache.add("greetings",greetings)
     return greetings
     
+def getEvent(event_id):
+    event_data=memcache.get("event")
+    if not event_data:
+        event=Event.get_by_id(int(event_id))
+        if event:
+            event_data=event.event_json
+        else:
+            event_data=None
+    return event_data   
+    
+def updateEvent(event_data):
+    event_id = int(event_data["event_id"])
+    event=Event(id=event_id,event_id=event_id,event_name=event_data["event_name"],pick_no=event_data["pick_no"],event_json=event_data)
+    event.put()
+    memcache.delete("event")
+    memcache.add("event",event_data)
+
+class EventHandler(BaseHandler):
+    def get(self):     
+        event_id = int(self.request.get('event_id',currentEvent()))
+        event = getEvent(event_id)
+        self.response.write(json.dumps(event))
+    
+class GolfPicks(BaseHandler):
+    def get(self):     
+        event_id = int(self.request.get('event_id',currentEvent()))
+        event = getEvent(event_id)
+        pick_no = event["pick_no"]
+        picknum = pick_ord[pick_no]
+        # get next player
+        if picknum != "Done":
+            event["next"]=event["pickers"][0] if mypicks.count(pick_no)>0 else event["pickers"][1]
+        else:
+            event["next"]="Done"
+    
+        if users.get_current_user():
+            user = names[users.get_current_user().nickname()]
+            url = users.create_logout_url(self.request.uri)
+            url_linktext = 'Logout'
+        else:
+            user = ""
+            url = users.create_login_url(self.request.uri)
+            url_linktext = 'Login'
+     
+        template_values = {
+            'event': event,
+            'pick_no': pick_no,
+            'picknum': picknum,
+            'url': url,
+            'url_linktext': url_linktext,
+            'user': user
+        }
+        template = jinja_environment.get_template('index.html')
+        self.response.out.write(template.render(template_values))
+        
+    def post(self):
+        event_id=self.request.get('event_id')
+        event=getEvent(event_id)     
+        who= self.request.get('who')
+        pick_no = int(self.request.get('pick_no'))
+        player = self.request.get('player')
+        # update event (add to picks, remove from field)
+        event = getEvent(event_id)
+        if player in event["picks"]["Available"]:
+            event["picks"]["Available"].remove(player)
+            event["picks"]["Picked"].append(player)
+            event["picks"][who].append(player)
+            event["lastpick"]=who+" picked "+player
+            event["pick_no"]+=1
+            updateEvent(event)
+        self.redirect('/golfpicks?event_id=' +event_id) 
+    
 class Guestbook(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('guestbook.html')
@@ -424,6 +502,8 @@ class WeddingTour(BaseHandler):
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/ceremony',Ceremony),
+    ('/golfevent',EventHandler),
+    ('/golfpicks',GolfPicks),
     ('/guests',Guests),
     ('/guestbook',Guestbook),
     ('/registry', Registry),
