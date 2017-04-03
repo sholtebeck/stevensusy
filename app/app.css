@@ -19,7 +19,7 @@ ul.tabs li {
 		border: 1px solid #999999;
 		border-left: none;
 		font-weight: bold;
-	        font-size: 1.2em;
+        font-size: 1.2em;
 		background: #EEEEEE;
 		overflow: hidden;
 		position: relative;
@@ -41,20 +41,20 @@ ul.tabs li.active{
 }
 .tab_content {
 	padding: 15px;
-	font-size: 1.1em;
+	font-size: 1.2em;
 	display: none;
 }
 	body {
 	  font-family: Verdana, Arial, sans-serif;	
-      font-size: 1.0em;
+      font-size: 1.1em;
 	  background-color: #DDDDDD;
 	}
 	select {
 	  font-family: Verdana, Arial, sans-serif;
-	  font-size: 1.0em;
+	  font-size: 1.1em;
         }
 	#container {
-		width: 1300px;
+		width: 1000px;
 		margin: 0 auto;	
 	}
 body {
@@ -108,25 +108,14 @@ div.jumbo {
     padding-right: 5px;
 }
 
-label {
-color: blue;
-font-weight: bold;
-font-size:1.1em;
-}
-
-field {
-color: blue;
-font-size:1.0em;
-}
-
 table { 
 color: #333; /* Lighten up font color */
 font-family: Helvetica, Arial, sans-serif; /* Nicer font */
-border: 0;
 border-collapse: 
+collapse; border-spacing: 0; 
 }
 
-td, th { valign: top; border: 0; width: 500px; } /* Make cells a bit taller */
+td, th { border: solid; } /* Make cells a bit taller */
 
 th {
 background: #F3F3F3; /* Light grey background */
@@ -137,35 +126,8 @@ td {
 background: #FAFAFA; /* Lighter grey background */
 }
 
-input
-{
-    font-size:1.1em;
-}
-select
-{
-    font-size:1.1em;
-}
-#map {
-	height: 100%;
+select {
+  font-family: inherit;
 }
 
-a {
-	text-decoration: none;
-}
-
-.applist { 
-  
-}
-
-.applist li { 
-   counter-increment: item;
-}
-
-.applist li:before { 
-  content: counter(item) ') ';
-}
-ol { 
-    counter-reset: item;
-    list-style-type: none;
-}
 

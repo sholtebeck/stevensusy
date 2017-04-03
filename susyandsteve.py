@@ -356,8 +356,14 @@ def updateEvent(event_data):
 class EventHandler(BaseHandler):
     def get(self):     
         event_id = int(self.request.get('event_id',currentEvent()))
-        event = getEvent(event_id)
-        self.response.write(json.dumps(event))
+        output=self.request.get('output')
+        if output=="results":
+            template_values = { 'results': get_results(event_id) }
+            template = jinja_environment.get_template('results.html')
+            self.response.out.write(template.render(template_values))
+        else:
+            event = getEvent(event_id)
+            self.response.write(json.dumps(event))
     
 class GolfPicks(BaseHandler):
     def get(self):     

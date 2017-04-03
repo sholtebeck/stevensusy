@@ -106,8 +106,8 @@ def get_points(rank):
 # Get a default event dictionary
 def default_event(event_id=currentEvent()):
     event={"event_id":event_id }
-    event["event_year"]=2000+(event_id/100)
-    event["event_name"]=str(event["event_year"])+" "+events.get(event_id%100)
+    event["event_year"]=2000+(int(event_id)/100)
+    event["event_name"]=str(event["event_year"])+" "+events.get(int(event_id)%100)
     event["pickers"]=skip_pickers
     event["next"]=skip_pickers[0]
     event["picks"]={"Picked":[],"Available":[] }
@@ -141,6 +141,8 @@ def get_picks(event_id):
         for picker in skip_pickers:
             picklist=pickdict["picks"][picker][:10]
             picks[picker]={'Name':picker,'Count':len(picklist),'Picks':picklist,'Points':0}
+            for pick in picklist:
+                picks[str(pick)]=picker
     return picks
 
 def open_worksheet(spread,work):

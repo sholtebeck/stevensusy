@@ -184,7 +184,7 @@ $(document).ready(function() {
 <div id="tab3" class="tab_content"> 
 
 {% if event["results"] %}
-<iframe width='1250' height='800' frameborder='0' src='https://docs.google.com/spreadsheet/pub?key=0Ahf3eANitEpndGhpVXdTM1AzclJCRW9KbnRWUzJ1M2c&single=true&gid=0&output=html&widget=true'></iframe>
+<iframe width='1250' height='800' frameborder='0' src='{{event.results}}'></iframe>
 {% else %}
 No results yet
 {% endif %}
