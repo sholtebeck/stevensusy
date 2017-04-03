@@ -344,7 +344,17 @@ def getEvent(event_id):
             event_data=event.event_json
         else:
             event_data=default_event(event_id)
-    return event_data   
+    return event_data  
+    
+def getResults(event_id):
+    results=memcache.get("results")
+    if not results:
+        results=get_results(int(event_id))
+        try:
+            memcache.set("results",results)
+        except:
+            memcache.delete("results")
+    return results
     
 def updateEvent(event_data):
     event_id = int(event_data["event_id"])
@@ -358,7 +368,7 @@ class EventHandler(BaseHandler):
         event_id = int(self.request.get('event_id',currentEvent()))
         output=self.request.get('output')
         if output=="results":
-            template_values = { 'results': get_results(event_id) }
+            template_values = { 'results': getResults(event_id) }
             template = jinja_environment.get_template('results.html')
             self.response.out.write(template.render(template_values))
         else:

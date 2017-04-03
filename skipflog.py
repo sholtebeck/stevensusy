@@ -31,6 +31,7 @@ skip_user="skipfloguser"
 skip_picks={}
 skip_pickers=["Susy","Steve"]
 skip_points=[0, 100, 60, 40, 35, 30, 25, 20, 15, 10, 9, 9, 8, 8, 7, 7, 7, 6, 6, 5, 5, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+res_keys=['POS', 'Name', 'PLAYER', 'TO PAR', 'TODAY', 'THRU', 'R1', 'R2', 'R3', 'R4', 'Scores', 'Points','Total','TOT']
 
 # Misc urls
 espn_url="http://www.espn.com/golf/leaderboard"
@@ -82,6 +83,8 @@ def debug_values(number, string):
 def xstr(string):
     if string is None:
         return None 
+    elif type(string)!=type(""):
+        return string
     elif string.isdigit():
         return int(string)
     else:
@@ -139,7 +142,7 @@ def get_picks(event_id):
     pickdict=json_results(picks_url+str(event_id))
     if pickdict['picks']:
         for picker in skip_pickers:
-            picklist=pickdict["picks"][picker][:10]
+            picklist=[str(pick) for pick in pickdict["picks"][picker][:10]]
             picks[picker]={'Name':picker,'Count':len(picklist),'Picks':picklist,'Points':0}
             for pick in picklist:
                 picks[str(pick)]=picker
@@ -182,7 +185,7 @@ def fetch_headers(soup):
     else:
         headers['Last Update']= current_time()
     thead=soup.find('thead')
-    headers['Status']=soup.find("span",{"class":"tournament-status"}).string
+    headers['Status']=str(soup.find("span",{"class":"tournament-status"}).string)
     if headers['Status'].startswith("Round "):
         headers['Round']=headers['Status'][6]
     headers['Round']=dt.datetime.today().weekday()-2
@@ -215,6 +218,10 @@ def fetch_results(row, columns):
         for col,val in zip(columns,values):
             if col not in ("None",None):
                 results[col]=str(val)
+        # Change CUT to MC
+        if results.get("TO PAR")=="CUT" or results.get("THRU")=="CUT" :
+            results["POS"]="MC"
+            results["TO PAR"]="MC"
         # Get Rank and Points
         results['Rank']=get_rank(results.get('POS','99'))
         results['Points']=get_points(results['Rank'])
@@ -235,12 +242,18 @@ def fetch_results(row, columns):
             results['Total']='('+results['TO PAR']+') thru '+results['THRU']
         elif results['THRU'][-2:] in ('AM','PM'):
             results['Time']='@ '+results['THRU']
-        elif results['THRU'] in ('MC','CUT'):
+        elif results['THRU'] in ('MC','CUT','WD','DQ'):
             results['Rank']=results['THRU']
             results['Today']=results['THRU']
         # Get Total
         if results.get('TOT') not in (None,"--"):
             results['Total']=results['TOT']+'('+results['TO PAR']+')'
+        # Validate/Filter results
+        for key in results.keys():
+            if key not in res_keys or results[key] in (None,"None","-","--"):
+                del results[key]
+            else:
+                results[key]=xstr(results[key])
     return results
 
 def fetch_scores(url):
@@ -295,7 +308,8 @@ def get_players(playlist):
 def get_results(event_id):
     picks=get_picks(event_id)
     for name in skip_pickers:
-        picks[name]["Count"]=0
+       picks[name]["Count"]=0
+       picks[name]["Points"]=0
     page=soup_results(espn_url)
     results={}
     results['event']=fetch_headers(page)
@@ -308,7 +322,7 @@ def get_results(event_id):
             res['Picker']=picker
             picks[picker]['Count']+=1
             picks[picker]['Points']+=res['Points']
-        if res.get('Points')>10 or res.get('Picker'):
+        if res.get('Points')>20 or res.get('Picker'):
             if res.get('R1'):
                 results['players'].append(res)
     results['pickers']=[picks[key] for key in picks.keys() if key in picks.values()]
