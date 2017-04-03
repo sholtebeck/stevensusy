@@ -386,7 +386,8 @@ class GolfPicks(BaseHandler):
             event["next"]=event["pickers"][0] if mypicks.count(pick_no)>0 else event["pickers"][1]
         else:
             event["next"]="Done"
-    
+        # check results
+        event["results"]=results_url
         if users.get_current_user():
             user = names[users.get_current_user().nickname()]
             url = users.create_logout_url(self.request.uri)
