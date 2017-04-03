@@ -313,10 +313,13 @@ def guestbook_key(guestbookName=app_name):
 
 # Function to tag invalid greetings
 def valid_greeting(author,content,filter):
+    filters=["href","http"]
     is_valid=True
     if not author or not author[0].isupper() or author in ('None','Guest'):
         is_valid=False
-    if not content or filter in content:
+    elif not content:
+        is_valid=False
+    elif any(filter in content for filter in filters):
         is_valid=False
     return is_valid
 
@@ -324,7 +327,7 @@ def delete_greetings(filter):
     greetings_query = Greeting.query(ancestor=guestbook_key(app_name)).order(-Greeting.date)
     greetings = greetings_query.fetch(1000)
     for greeting in greetings:
-        if not valid_greeting(greeting.author,greeting.content,filter):
+        if not valid_greeting(greeting.author,greeting.content):
             greeting.key.delete()
     memcache.delete("greetings")            
     
