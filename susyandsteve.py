@@ -370,7 +370,7 @@ class EventHandler(BaseHandler):
     def get(self):     
         event_id = int(self.request.get('event_id',currentEvent()))
         output=self.request.get('output')
-        if output=="results":
+        if "results" in self.request.url:
             template_values = { 'results': getResults(event_id) }
             template = jinja_environment.get_template('results.html')
             self.response.out.write(template.render(template_values))
@@ -523,6 +523,7 @@ app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/ceremony',Ceremony),
     ('/golfevent',EventHandler),
+    ('/golfresults',EventHandler),
     ('/golfpicks',GolfPicks),
     ('/guests',Guests),
     ('/guestbook',Guestbook),

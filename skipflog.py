@@ -139,7 +139,7 @@ def get_rankings(size):
 # Get the picks for an event
 def get_picks(event_id):
     picks={}
-    pickdict=json_results(picks_url+str(event_id)+'&output=picks')
+    pickdict=json_results(picks_url+str(event_id))
     if pickdict['picks']:
         for picker in skip_pickers:
             picklist=[str(pick) for pick in pickdict["picks"][picker][:10]]
