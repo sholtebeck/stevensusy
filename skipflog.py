@@ -31,7 +31,7 @@ skip_user="skipfloguser"
 skip_picks={}
 skip_pickers=["Susy","Steve"]
 skip_points=[0, 100, 60, 40, 35, 30, 25, 20, 15, 10, 9, 9, 8, 8, 7, 7, 7, 6, 6, 5, 5, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-res_keys=['POS', 'Name', 'PLAYER', 'TO PAR', 'TODAY', 'THRU', 'R1', 'R2', 'R3', 'R4', 'Scores', 'Points','Total','TOT']
+res_keys=['POS', 'Name', 'PLAYER', 'TO PAR', 'TODAY', 'THRU', 'R1', 'R2', 'R3', 'R4', 'Scores', 'Points','Rank','Total','TOT']
 
 # Misc urls
 espn_url="http://www.espn.com/golf/leaderboard"
@@ -139,7 +139,7 @@ def get_rankings(size):
 # Get the picks for an event
 def get_picks(event_id):
     picks={}
-    pickdict=json_results(picks_url+str(event_id))
+    pickdict=json_results(picks_url+str(event_id)+'&output=picks')
     if pickdict['picks']:
         for picker in skip_pickers:
             picklist=[str(pick) for pick in pickdict["picks"][picker][:10]]
@@ -304,7 +304,7 @@ def get_players(playlist):
             players.append([current_rank,player['Name'],player['Avg'],player['Week'],player['Rank'],player['Points'],player['Picker']])
             current_rank+=1
     return players
-
+ 
 def get_results(event_id):
     picks=get_picks(event_id)
     for name in skip_pickers:
@@ -312,6 +312,7 @@ def get_results(event_id):
        picks[name]["Points"]=0
     page=soup_results(espn_url)
     results={}
+    tie={"Points":100,"Players":[]}
     results['event']=fetch_headers(page)
     results['players']=[]
     rows=fetch_rows(page)
@@ -320,12 +321,21 @@ def get_results(event_id):
         if res.get('Name') in picks.keys():
             picker=xstr(picks[res['Name']])
             res['Picker']=picker
-            picks[picker]['Count']+=1
-            picks[picker]['Points']+=res['Points']
-        if res.get('Points')>20 or res.get('Picker'):
-            if res.get('R1'):
-                results['players'].append(res)
-    results['pickers']=[picks[key] for key in picks.keys() if key in picks.values()]
+        if res.get('Points')>10:
+            if res["Points"]!=tie.get("Points"):
+                if len(tie["Players"])>1:
+                   tie["Points"]=float(sum([skip_points[p+1] for p in tie["Players"]]))/len(tie["Players"])
+                   for p in tie["Players"]:
+                        results["players"][p]["Points"]=tie["Points"]
+                tie={"Players": [len(results['players'])], "Points":res["Points"], "POS":res["POS"]}
+            else:
+                tie["Players"].append(len(results['players']))
+        if res.get('Picker') or res.get('Points')>10:
+            results['players'].append(res)
+    for picker in skip_pickers:
+        picks[picker]["Count"]=len([player for player in results.get("players") if player.get("Picker")==picker])
+        picks[picker]["Points"]=sum([player["Points"] for player in results.get("players") if player.get("Picker")==picker])
+    results['pickers']=[picks[key] for key in picks.keys() if key in skip_pickers]
     if results['pickers'][1]['Points']>results['pickers'][0]['Points']:
         results['pickers'].reverse()
     results['pickers'][0]['Rank']=1
