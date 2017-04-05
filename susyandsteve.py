@@ -377,7 +377,21 @@ class EventHandler(BaseHandler):
         else:
             event = getEvent(event_id)
             self.response.write(json.dumps(event))
-    
+
+class MailHandler(BaseHandler):
+    def get(self):     
+        event_id = int(self.request.get('event_id',currentEvent()))
+        event = getEvent(event_id)
+        results = getResults(event_id)
+        template_values= globalVals(self)
+        if event and results:
+            message = mail.EmailMessage(sender=globalvals['sender'], subject=event["event_name"]+" ("+results["event"]["Status"]+")")
+            message.to = "susy@susyandsteve.com"
+            message.cc = "steve@susyandsteve.com"
+            result = urllib2.urlopen(results_url)
+            message.html=result.read()
+            message.send()
+
 class GolfPicks(BaseHandler):
     def get(self):     
         event_id = int(self.request.get('event_id',currentEvent()))
@@ -531,6 +545,7 @@ app = webapp2.WSGIApplication([
     ('/rsvp', Response),
     ('/login', LogMeInOrOut),
     ('/logout', LogMeInOrOut),
+    ('/mail', MailHandler),
     ('/travel',Travel), 
     ('/wedlist',WeddingList), 
     ('/wedlog',WeddingBlog), 
