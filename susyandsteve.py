@@ -354,7 +354,7 @@ def getResults(event_id):
     if not results:
         results=get_results(int(event_id))
         try:
-            memcache.set("results",results)
+            memcache.add("results",results,180)
         except:
             memcache.delete("results")
     return results
