@@ -376,7 +376,15 @@ class EventHandler(BaseHandler):
             self.response.out.write(template.render(template_values))
         else:
             event = getEvent(event_id)
+            self.response.headers['Content-Type'] = 'application/json'
             self.response.write(json.dumps(event))
+            
+    def post(self):     
+        event_data = self.request.get('event_data')
+        event_json = json.loads(event_data)
+        updateEvent(event_json)
+        event_id = str(event_json["event_id"])
+        self.redirect('/golfevent?event_id=' +event_id) 
 
 class MailHandler(BaseHandler):
     def get(self):     
@@ -391,7 +399,7 @@ class MailHandler(BaseHandler):
             result = urllib2.urlopen(results_url)
             message.html=result.read()
             message.send()
-
+                   
 class GolfPicks(BaseHandler):
     def get(self):     
         event_id = int(self.request.get('event_id',currentEvent()))
