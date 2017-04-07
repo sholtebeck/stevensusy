@@ -391,9 +391,8 @@ class MailHandler(BaseHandler):
         event_id = int(self.request.get('event_id',currentEvent()))
         event = getEvent(event_id)
         results = getResults(event_id)
-        template_values= globalVals(self)
         if event and results:
-            message = mail.EmailMessage(sender=globalvals['sender'], subject=event["event_name"]+" ("+results["event"]["Status"]+")")
+            message = mail.EmailMessage(sender='admin@susyandsteve.appspotmail.com', subject=event["event_name"]+" ("+results["event"]["Status"]+")")
             message.to = "susy@susyandsteve.com"
             message.cc = "steve@susyandsteve.com"
             result = urllib2.urlopen(results_url)
@@ -545,7 +544,7 @@ app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/ceremony',Ceremony),
     ('/golfevent',EventHandler),
-    ('/golfresults',EventHandler),
+    ('/results',EventHandler),
     ('/golfpicks',GolfPicks),
     ('/guests',Guests),
     ('/guestbook',Guestbook),
