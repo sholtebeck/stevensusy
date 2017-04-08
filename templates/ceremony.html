@@ -12,7 +12,11 @@
 <div class="col-md-6" >
 <label>Date: </label> {{date}} {% if days > 1 %} (just <label>{{days}}</label> days away!) {% endif %}<br/>
 <label>Time: </label> {{time}}  {% if hours > 0 %} (just <label>{{hours}}</label> hours from now!) {% endif %}<br/>
-<label>Location: </label> {{location}}<br/>
-<p><iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=Magic%20Island%2C%20Honolulu%20HI&key=AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk" allowfullscreen></iframe>
+<label>Location: </label> {{location}} <label>*</label><br/>
+<p>
+<a href="https://www.google.com/maps/embed/v1/place?q=Magic%20Island%2C%20Honolulu%20HI&key=AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk"  target="_blank">
+<img src="/app/magicisland.jpg" width="580">
+</a>
+<br><label>*</label> At picnic site #36 under the banyan tree. Click above for an interactive map.
 </div>
 {% endblock %}
