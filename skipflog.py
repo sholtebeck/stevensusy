@@ -190,7 +190,8 @@ def fetch_headers(soup):
     if headers['Status'].startswith("Round "):
         headers['Round']=headers['Status'][6]
     headers['Round']=dt.datetime.today().weekday()-2
-    headers['Columns']=[str(th.string) for th in soup.findAll('th')]
+    table=soup.findAll("table")[-1]
+    headers['Columns']=[str(th.string) for th in table.findAll('th')]
     return headers
 
 def fetch_rankings(row):
