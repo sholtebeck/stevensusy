@@ -74,7 +74,7 @@ def globalVals(ctx):
     "request" : ctx.request,
     "sender":"Susy & Steve <us@susyandsteve.appspotmail.com>",
     "subject":"Thank You for your RSVP",
-    "pages": [ {"name":"Tour","url":"/weddingtour"},  {"name":"RSVP","url":"/rsvp"}, {"name":"Registry","url":"/registry"}, {"name":"Travel","url":"/travel"},{"name":"Guestbook","url":"/guestbook"}, {"name":"Wedlog","url":"/wedlog"}],
+    "pages": [ {"name":"Tour","url":"/weddingtour"},  {"name":"Wedding Program","url":"/program"}, {"name":"Registry","url":"/registry"}, {"name":"Travel","url":"/travel"},{"name":"Guestbook","url":"/guestbook"}, {"name":"Wedlog","url":"/wedlog"}],
     "states":[ { "name": "Alabama", "code": "AL" }, { "name": "Alaska", "code": "AK" }, { "name": "Arizona", "code": "AZ" }, { "name": "Arkansas", "code": "AR" },
     { "name": "California", "code": "CA" }, { "name": "Colorado", "code": "CO" }, { "name": "Connecticut", "code": "CT" }, { "name": "Delaware", "code": "DE" },
     { "name": "District Of Columbia", "code": "DC" }, { "name": "Florida", "code": "FL" }, { "name": "Georgia", "code": "GA" },  { "name": "Hawaii", "code": "HI" }, 
@@ -513,6 +513,12 @@ class Guests(BaseHandler):
             template_values['title'] = "Guests for " + template_values['title']
             template_values['guestcount'] = 0
             self.response.write(template.render(template_values))
+             
+class Program(BaseHandler):
+    def get(self):
+        template = jinja_environment.get_template('program.html')
+        template_values = globalVals(self) 
+        self.response.write(template.render(template_values))        
 
 class Travel(BaseHandler):
     def get(self):
@@ -548,6 +554,7 @@ app = webapp2.WSGIApplication([
     ('/golfpicks',GolfPicks),
     ('/guests',Guests),
     ('/guestbook',Guestbook),
+    ('/program', Program),
     ('/registry', Registry),
     ('/rsvp', Response),
     ('/login', LogMeInOrOut),
