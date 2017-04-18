@@ -59,7 +59,7 @@ def get_RSVP_count(rsvp_list):
 
 def globalVals(ctx):
     template_values= {
-    "title": "Susy & Steve's Wedding",
+    "title": "Susy & Steve's Wedding Tour",
     "date": "Easter Sunday, April 16 2017",   
     "time": "10:00am HST",
     "attire":"Casual (dress for a beach park)",
@@ -74,7 +74,7 @@ def globalVals(ctx):
     "request" : ctx.request,
     "sender":"Susy & Steve <us@susyandsteve.appspotmail.com>",
     "subject":"Thank You for your RSVP",
-    "pages": [ {"name":"Tour","url":"/weddingtour"},  {"name":"RSVP","url":"/rsvp"}, {"name":"Registry","url":"/registry"}, {"name":"Travel","url":"/travel"},{"name":"Guestbook","url":"/guestbook"}, {"name":"Wedlog","url":"/wedlog"}],
+    "pages": [ {"name":"Tour","url":"/weddingtour"},  {"name":"RSVP","url":"/rsvp"}, {"name":"Registry","url":"/registry"}, {"name":"Guestbook","url":"/guestbook"}, {"name":"Program","url":"/program"}, {"name":"Photos","url":"/photos"}],
     "states":[ { "name": "Alabama", "code": "AL" }, { "name": "Alaska", "code": "AK" }, { "name": "Arizona", "code": "AZ" }, { "name": "Arkansas", "code": "AR" },
     { "name": "California", "code": "CA" }, { "name": "Colorado", "code": "CO" }, { "name": "Connecticut", "code": "CT" }, { "name": "Delaware", "code": "DE" },
     { "name": "District Of Columbia", "code": "DC" }, { "name": "Florida", "code": "FL" }, { "name": "Georgia", "code": "GA" },  { "name": "Hawaii", "code": "HI" }, 
@@ -479,13 +479,19 @@ class Guestbook(BaseHandler):
             delete_greetings(content)   
         queryParams = {'guestbookName': guestbookName}
         self.redirect('/guestbook?guestbookName=nopost')
-        
+
+class Photos(BaseHandler):
+    def get(self):
+        template = jinja_environment.get_template('photos.html')
+        template_values = globalVals(self) 
+        self.response.write(template.render(template_values))       
+		
 class Registry(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('registry.html')
         template_values = globalVals(self) 
         self.response.write(template.render(template_values))       
-        
+       
 class Guests(BaseHandler):
     def get(self):
         template = jinja_environment.get_template('guests.html')
@@ -516,9 +522,7 @@ class Guests(BaseHandler):
 			
 class Program(BaseHandler):
     def get(self):
-        template = jinja_environment.get_template('program.html')
-        template_values = globalVals(self) 
-        self.response.write(template.render(template_values))        
+        self.redirect("/app/WeddingProgram.pdf")      
 
 class Travel(BaseHandler):
     def get(self):
@@ -555,6 +559,7 @@ app = webapp2.WSGIApplication([
     ('/guests',Guests),
     ('/guestbook',Guestbook),
     ('/program', Program), 
+    ('/photos', Photos),
     ('/registry', Registry),
     ('/rsvp', Response),
     ('/login', LogMeInOrOut),

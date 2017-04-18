@@ -6,17 +6,15 @@
 {% block content %}
 <div class="container-fluid">
 <div class="col-md-6 text-right" >
-<label>We're getting married! Come to Hawaii to celebrate our wedding.</label>
-<img src="/app/stevensusy.jpg" width="540" style="PADDING-RIGHT: 10px" align="right">
+<label>We're married! Thanks to everyone who came to celebrate with us.</label>
+<img src="/app/weddingvows2.jpg" width="540" style="PADDING-RIGHT: 10px" align="right">
 </div>
 <div class="col-md-6" >
-<label>Date: </label> {{date}} {% if days > 1 %} (just <label>{{days}}</label> days away!) {% endif %}<br/>
-<label>Time: </label> {{time}}  {% if hours > 0 %} (just <label>{{hours}}</label> hours from now!) {% endif %}<br/>
-<label>Location: </label> {{location}} <label>*</label><br/>
+<label>Date: </label> {{date}} <label>Time: </label> {{time}}<br/>
+<label>Location: </label> {{location}}<br/>
 <p>
 <a href="https://www.google.com/maps/embed/v1/place?q=Magic%20Island%2C%20Honolulu%20HI&key=AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk"  target="_blank">
-<img src="/app/magicisland.jpg" width="580">
+<img src="/app/magicisland.jpg" width="600">
 </a>
-<br><label>*</label> At picnic site #36 under the banyan tree. Click above for an interactive map.
 </div>
 {% endblock %}
