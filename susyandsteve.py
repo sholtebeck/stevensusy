@@ -513,6 +513,12 @@ class Guests(BaseHandler):
             template_values['title'] = "Guests for " + template_values['title']
             template_values['guestcount'] = 0
             self.response.write(template.render(template_values))
+			
+class Program(BaseHandler):
+    def get(self):
+        template = jinja_environment.get_template('program.html')
+        template_values = globalVals(self) 
+        self.response.write(template.render(template_values))        
 
 class Travel(BaseHandler):
     def get(self):
@@ -548,6 +554,7 @@ app = webapp2.WSGIApplication([
     ('/golfpicks',GolfPicks),
     ('/guests',Guests),
     ('/guestbook',Guestbook),
+    ('/program', Program), 
     ('/registry', Registry),
     ('/rsvp', Response),
     ('/login', LogMeInOrOut),
