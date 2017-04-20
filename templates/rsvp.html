@@ -77,12 +77,7 @@ function noCheck() {       document.getElementById('will-attend').style.visibili
 		</div>
 	   </p>
 	<div>
-	<label for="willAttend">Will you be attending the Hawaii wedding on April 16?</label>
-	<input type="radio" onclick="javascript:yesCheck();" id="willAttend" name="willAttend" value="yes" {% if rsvp.willAttend=="yes" %}checked{% endif %}><b>Yes</b>
-	<input type="radio" onclick="javascript:noCheck();" id="willNotAttend" name="willAttend" value="no" {% if rsvp.willAttend=="no" %}checked{% endif %}><b>No</b>
-	<input type="radio" name="willAttend" value="maybe" {% if rsvp.willAttend=="maybe" %}checked{% endif %}><b>Maybe</b>
-	</div>
-	<div>
+	<input type="hidden" id="willAttend" name="willAttend" value="NA">
  	<label for="willAttendCA">Will you be attending the Oakland party on June 4th?</label> &nbsp;   
 	<input type="radio" name="willAttendCA" value="yes" {% if rsvp.willAttendCA=="yes" %}checked{% endif %}><b>Yes</b>
 	<input type="radio" name="willAttendCA" value="no"  {% if rsvp.willAttendCA=="no" %}checked{% endif %}><b>No</b>
@@ -107,9 +102,6 @@ function noCheck() {       document.getElementById('will-attend').style.visibili
             </select>
     </div>
 <div id='will-attend'>
-{% if rsvp.willAttend=="yes" %}
-{% include "rsvpform.html" %}
-{% endif %}
 </div>
 		<div>
             <input type="hidden" id="nickname" name="nickname" value="{{nickname}}">
