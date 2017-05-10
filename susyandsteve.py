@@ -69,7 +69,8 @@ def globalVals(ctx):
     "yes": "You are attending",
     "no": "You are not attending",
     "maybe": "You might be attending",
-    "emoti": {"yes":"&#9786;","no":"&#9785;","maybe":""},
+    "NA": "You could not attend",
+    "emoti": {"yes":"&#9786;","no":"&#9785;","maybe":"","NA":""},
     "extras":["setup","cleanup","assisting","chairs","highchairs","boosters","song","food"],
     "request" : ctx.request,
     "sender":"Susy & Steve <us@susyandsteve.appspotmail.com>",
@@ -217,7 +218,7 @@ class Response(BaseHandler):
         rsvp.willAttend= self.request.get('willAttend')
         rsvp.willAttendCA= self.request.get('willAttendCA')
         rsvp.willAttendWI= self.request.get('willAttendWI')
-        rsvp.attendees = num(self.request.get('attendees'), max(rsvp.willAttend, rsvp.willAttendCA,rsvp.willAttendWI))
+        rsvp.attendees = int(self.request.get('attendees',0))
         rsvp.note = self.request.get('note')
         rsvp.contactMethod = self.request.get('contactMethod')
         rsvp.carrier = self.request.get('carrier')
