@@ -218,7 +218,7 @@ class Response(BaseHandler):
         rsvp.willAttend= self.request.get('willAttend')
         rsvp.willAttendCA= self.request.get('willAttendCA')
         rsvp.willAttendWI= self.request.get('willAttendWI')
-        rsvp.attendees = int(self.request.get('attendees',0))
+        rsvp.attendees = int(self.request.get('attendees',1))
         rsvp.note = self.request.get('note')
         rsvp.contactMethod = self.request.get('contactMethod')
         rsvp.carrier = self.request.get('carrier')
