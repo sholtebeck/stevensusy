@@ -105,7 +105,7 @@ function noCheck() {       document.getElementById('will-attend').style.visibili
 </div>
 		<div>
             <input type="hidden" id="nickname" name="nickname" value="{{nickname}}">
-            <p><input type="submit" class="btn btn-primary" id="update" value="Update RSVP">
+            <p><input type="submit" class="btn btn-primary" disabled="disabled" id="update" value="Update RSVP">
         </div>
     </div>
 {% else %}
@@ -180,7 +180,7 @@ Our wedding was on {{date}} in Honolulu HI &#9786; <br>We are also planning part
             </select>
         <div>
 		    <input type="hidden" id="nickname" name="nickname" value="{{nickname}}">
-            <input type="submit" class="btn btn-primary" value="Send RSVP">
+            <input type="submit" class="btn btn-primary" disabled="disabled" value="Send RSVP">
         </div>
     </div>
 	
