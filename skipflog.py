@@ -117,8 +117,7 @@ def default_event(event_id=currentEvent()):
     event["picks"]={"Picked":[],"Available":[] }
     for picker in skip_pickers:
         event["picks"][picker]=[]
-    soup=soup_results(invite_url)
-    event["picks"]["Available"]= [p["fname"]+" "+p["lname"] for p in soup.findAll("player")] 
+    event["picks"]["Available"]=fetch_players(espn_url)
     event["pick_no"]=1  
     return event
 
@@ -193,6 +192,17 @@ def fetch_headers(soup):
     table=soup.findAll("table")[-1]
     headers['Columns']=[str(th.string) for th in table.findAll('th')]
     return headers
+
+def fetch_players(url):
+    players=[]
+    soup=soup_results(url)
+    for row in soup.findAll('tr'):
+        name = row.find('a')
+        if name:
+            player_name=str(name.string)
+            players.append(player_name)
+    players.sort()
+    return players
 
 def fetch_rankings(row):
     name = row.find('a')
