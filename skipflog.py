@@ -74,7 +74,17 @@ def current_year():
 def current_time():
     right_now=strftime("%H%M",gmtime())
     return str(right_now) 
-
+	
+# determine the cut rank for the various majors (Masters=50, US=60, Open,PGA=70)
+def cut_rank():
+    this_month=current_month()
+    if this_month == 4:
+        return 50
+    elif this_month == 6:
+        return 60
+    else:
+        return 70
+     
 # debug values
 def debug_values(number, string):
     if debug:
@@ -102,7 +112,7 @@ def get_rank(position):
 def get_points(rank):
     if rank < len(skip_points):
         return skip_points[rank]
-    elif rank <= 60:
+    elif rank <= cut_rank:
         return 1
     else:
         return 0
