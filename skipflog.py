@@ -317,6 +317,22 @@ def fetch_rows(page):
 #   return page.find('table').findAll('tr')    
     return page.findAll('tr')    
 
+# fetch the url for an event
+def fetch_url(event_id):
+    url={
+	1604: 'http://www.espn.com/golf/leaderboard?tournamentId=2493', 
+	1606: 'http://www.espn.com/golf/leaderboard?tournamentId=2501', 
+	1607: 'http://www.espn.com/golf/leaderboard?tournamentId=2505', 
+	1608: 'http://www.espn.com/golf/leaderboard?tournamentId=2507',
+	1704: 'http://www.espn.com/golf/leaderboard?tournamentId=2700', 
+	1706: 'http://www.espn.com/golf/leaderboard?tournamentId=3066', 
+	1707: 'http://www.espn.com/golf/leaderboard?tournamentId=2710', 
+	1708: 'http://www.espn.com/golf/leaderboard'}
+    if url.get(event_id):
+        return url[event_id]
+    else:
+        return None
+
 # Get the list of players
 def get_players(playlist):
     current_rank=1
@@ -332,7 +348,8 @@ def get_results(event_id):
     for name in skip_pickers:
        picks[name]["Count"]=0
        picks[name]["Points"]=0
-    page=soup_results(espn_url)
+    event_url=fetch_url(event_id)
+    page=soup_results(event_url)
     results={}
     tie={"Points":100,"Players":[]}
     results['event']=fetch_headers(page)

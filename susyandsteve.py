@@ -351,15 +351,19 @@ def getEvent(event_id):
     return event_data  
     
 def getResults(event_id):
-    results=memcache.get("results")
-    if not results:
-        results=get_results(int(event_id))
+    results_key='results'+str(event_id)
+    resultstr = memcache.get(results_key)
+    if resultstr:
+        results=json.loads(resultstr)
+    else:		
         try:
-            memcache.add("results",results,180)
+            results=get_results(int(event_id))
+            resultstr=str(json.dumps(results))
+            memcache.add(results_key,resultstr,240)
         except:
-            memcache.delete("results")
+            memcache.delete(results_key)    
     return results
-    
+
 def updateEvent(event_data):
     event_id = int(event_data["event_id"])
     event=Event(id=event_id,event_id=event_id,event_name=event_data["event_name"],pick_no=event_data["pick_no"],event_json=event_data)
@@ -412,7 +416,7 @@ class GolfPicks(BaseHandler):
         else:
             event["next"]="Done"
         # check results
-        event["results"]=results_url
+        event["results"]=results_url+"?event_id="+str(event_id)
         if users.get_current_user():
             user = names[users.get_current_user().nickname()]
             url = users.create_logout_url(self.request.uri)
