@@ -11,21 +11,22 @@
 </head>
 <body ng-controller="restaurantController">
  Search: <input ng-model="query"> <p>  
-  <table>
+  <table class="table table-striped">
     <thead>
       <tr><th colspan="5">Oahu Restaurants</th></tr>
       <tr><th>#</th>
           <th><a href="#" ng-click="orderProp='Name'">Name</a></th>	
           <th><a href="#" ng-click="orderProp='Type'">Type</a></th>
           <th><a href="#" ng-click="orderProp='Address'">Address</a></th>      
-          <th><a href="#" ng-click="orderProp='Comments'">Comments</a></th>  	</tr>
+          <th>Comments</th>  	
+	   </tr>
     </thead>
     <tbody>
       <tr ng-repeat="rest in restaurants | filter:query |orderBy:orderProp">
         <td>{{$index + 1}}</td>
         <td><a href="{{rest.Website}}" target="_blank">{{rest.Name}}</a></td>
         <td>{{rest.Type }}</td>
-        <td>{{rest.Address }}</td>
+        <td><a href="{{rest.Maplink}}" target="_blank">{{rest.Address }}</a></td>
         <td>{{rest.Comments }}</td>      </tr>
    </tbody>
   </table>
