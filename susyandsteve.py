@@ -91,7 +91,8 @@ def globalVals(ctx):
     { "name": "Washington", "code": "WA" }, { "name": "West Virginia", "code": "WV" }, { "name": "Wisconsin", "code": "WI" }, { "name": "Wyoming", "code": "WY"    } ],
     "carriers": [ {"name":"Alltel","domain":"message.alltel.com"},{"name":"AT&T","domain":"message.alltel.com"},{"name":"Boost","domain":"myboostmobile.com"},
     {"name":"Sprint","domain":"messaging.sprintpcs.com"},{"name":"T-Mobile","domain":"tmomail.net"},{"name":"Verizon","domain":"vtext.com"},{"name":"Virgin","domain":"vmobl.com"}  ],
-    "tour": True
+    "tour": True,
+	"types": ['Asian', 'Barbecue', 'Breakfast', 'Brewpub', 'Burmese', 'Caribbean', 'Chinese', 'Ethiopian', 'Greek', 'Indian', 'Indian ', 'Italian', 'Japanese', 'Mediterranean', 'Mexican', 'Moroccan', 'Persian', 'Picnic', 'Pizza', 'Seafood', 'Shave Ice', 'Thai', 'Vietnamese']
     }
     # Get number of days until the big day
     template_values['action']=ctx.request.get('action') 
@@ -377,6 +378,15 @@ def getRestaurants():
             memcache.delete("restaurants")    
     return restaurants
 
+def setRestaurants(rest_type):
+    try:
+        restaurants=fetch_restaurants(rest_type)
+        reststr=str(json.dumps(restaurants))
+        memcache.add("restaurants",reststr,60)
+    except:
+        memcache.delete("restaurants")    
+    return restaurants
+	
 
 def updateEvent(event_data):
     event_id = int(event_data["event_id"])
@@ -518,10 +528,18 @@ class Restaurants(BaseHandler):
             output_format='html'
         if output_format=='json':
             restaurants = getRestaurants()
+            types=sorted(list(set([rest.get('Type').strip() for rest in restaurants])))
             self.response.headers['Content-Type'] = 'application/json'
-            self.response.write(json.dumps({"restaurants":restaurants }))
+            self.response.write(json.dumps({"restaurants":restaurants, "types":types }))
         elif output_format=='html':
-            self.redirect("/app/restaurants.html")      
+            self.redirect("/app/restaurants.html") 
+			
+    def post(self):
+        rest_type = self.request.get('rest_type') 
+        if rest_type:
+            setRestaurants(rest_type)		
+        self.redirect("/app/restaurants.html")      
+        
 		
 class Guests(BaseHandler):
     def get(self):

@@ -10,7 +10,10 @@
   <link rel="stylesheet" href="app.css">
 </head>
 <body ng-controller="restaurantController">
- Search: <input ng-model="query"> <p>  
+ Search: <input ng-model="query">    Filter By Type: <select name="type" id="type" ng-model="type">
+      <option value=""></option>
+      <option ng-repeat="type in types" value="{{type}}">{{type}}</option></select>
+<p>  
   <table class="table table-striped">
     <thead>
       <tr><th colspan="5">Oahu Restaurants</th></tr>
@@ -22,7 +25,7 @@
 	   </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="rest in restaurants | filter:query |orderBy:orderProp">
+      <tr ng-repeat="rest in restaurants | filter:query | filter:type | orderBy:orderProp">
         <td>{{$index + 1}}</td>
         <td><a href="{{rest.Website}}" target="_blank">{{rest.Name}}</a></td>
         <td>{{rest.Type }}</td>
@@ -31,4 +34,5 @@
    </tbody>
   </table>
 </body>
+<script type="text/javascript">createEditableSelect(document.forms[0].query);</script>
 </html>
