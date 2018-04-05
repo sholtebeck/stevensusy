@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>susyandsteve:restaurants</title>
+  <link rel="stylesheet" href="/app/app.css">
+</head>
+<body>
+<table>
+    <thead>
+      <tr><th colspan="3">{{results.event.Name }} ({{results.event.Status}})</th></tr>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Address</th>
+      </tr>
+    </thead>
+    <tbody>
+   {% for rest in restaurants.entries %}
+      <tr>
+        <td>{{rest.Name}}</td>
+        <td>{{rest.Type}}</td>
+        <td>{{rest.Address}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <p>
+</div>
+</body>
+</html>

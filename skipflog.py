@@ -22,11 +22,13 @@ events_url="https://docs.google.com/spreadsheet/pub?key=0AgO6LpgSovGGdDI4bVpHU05
 players_url="https://docs.google.com/spreadsheet/pub?key=0AgO6LpgSovGGdDI4bVpHU05zUDQ3R09rUnZ4LXBQS0E&single=true&gid=1&range=B2%3AB155&output=csv"
 results_tab="https://docs.google.com/spreadsheet/pub?key=0AgO6LpgSovGGdDI4bVpHU05zUDQ3R09rUnZ4LXBQS0E&single=true&gid=2&output=html"
 ranking_url="https://docs.google.com/spreadsheet/pub?key=0AgO6LpgSovGGdDI4bVpHU05zUDQ3R09rUnZ4LXBQS0E&single=true&gid=3&output=html"
+restaurants_url="https://docs.google.com/spreadsheets/d/e/2PACX-1vQNXUwwyo5UsN4d50Y2N5678rkpWOFn8UFczKt9F644d0BuWTiSZPMz86a2yCkqyCbLIg5WiEDWFofS/pub?gid=0&single=true&output=csv"
 rankings_url="http://knarflog.appspot.com/ranking"
 result_url="http://knarflog.appspot.com/results"
 results_url="http://susyandsteve.appspot.com/results"
 players_api="http://knarflog.appspot.com/api/players"
 leaderboard_url="http://sports.yahoo.com/golf/pga/leaderboard"
+mapsearch="https://www.google.com/maps/search/?api=1&query="
 skip_user="skipfloguser"
 skip_picks={}
 skip_pickers=["Susy","Steve"]
@@ -278,6 +280,21 @@ def fetch_results(row, columns):
                 results[key]=xstr(results[key])
     return results
 
+def search_query(restaurant):
+    if restaurant.get("Name"):
+        query=restaurant["Name"].lower().replace(" ","+")
+    elif restaurant.get("Address"):
+        query=restaurant["Address"].lower().replace(" ","+")
+    return query
+	
+def fetch_restaurants():
+    result = urllib2.urlopen(restaurants_url)
+    reader = csv.DictReader(result)
+    rest_list=[row for row in reader]
+    for r in range(len(rest_list)):
+        rest_list[r]["Maplink"]=mapsearch+search_query(rest_list[r])
+    return rest_list
+	
 def fetch_scores(url):
     scores=[[],[], 0,0]
     page=soup_results(url)

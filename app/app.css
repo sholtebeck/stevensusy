@@ -59,6 +59,7 @@ ul.tabs li.active{
 	}
 body {
   font-family: sans-serif;
+  font-size: 18px;
   -webkit-font-smoothing: subpixel-antialiased;
 }
 
@@ -120,10 +121,12 @@ td, th { border: solid; } /* Make cells a bit taller */
 th {
 background: #F3F3F3; /* Light grey background */
 font-weight: bold; /* Make sure they're bold */
+font-size: 18px;
 }
 
 td {
 background: #FAFAFA; /* Lighter grey background */
+font-size: 18px;
 }
 
 select {
