@@ -24,7 +24,7 @@ results_tab="https://docs.google.com/spreadsheet/pub?key=0AgO6LpgSovGGdDI4bVpHU0
 ranking_url="https://docs.google.com/spreadsheet/pub?key=0AgO6LpgSovGGdDI4bVpHU05zUDQ3R09rUnZ4LXBQS0E&single=true&gid=3&output=html"
 rankings_url="http://knarflog.appspot.com/ranking"
 result_url="http://knarflog.appspot.com/results"
-results_url="http://susyandsteve.com/results"
+results_url="http://susyandsteve.appspot.com/results"
 players_api="http://knarflog.appspot.com/api/players"
 leaderboard_url="http://sports.yahoo.com/golf/pga/leaderboard"
 skip_user="skipfloguser"
@@ -43,7 +43,7 @@ owg_url="http://www.owgr.com/en/Events/EventResult.aspx?eventid=5520"
 pga_url="http://www.pga.com/news/golf-leaderboard/pga-tour-leaderboard"
 pgatour_url="http://www.pgatour.com/leaderboard.html"
 picks_csv = "picks.csv"
-picks_url = "http://susyandsteve.com/golfevent?event_id="
+picks_url = "http://susyandsteve.appspot.com/golfevent?event_id="
 rankings_api = "http://knarflog.appspot.com/api/rankings/"
 results_api = "http://knarflog.appspot.com/api/results/"
 owg_ranking_url="http://www.owgr.com/ranking"
@@ -327,7 +327,8 @@ def fetch_url(event_id):
 	1704: 'http://www.espn.com/golf/leaderboard?tournamentId=2700', 
 	1706: 'http://www.espn.com/golf/leaderboard?tournamentId=3066', 
 	1707: 'http://www.espn.com/golf/leaderboard?tournamentId=2710', 
-	1708: 'http://www.espn.com/golf/leaderboard'}
+	1708: 'http://www.espn.com/golf/leaderboard?tournamentId=2712',
+	1804: 'http://www.espn.com/golf/leaderboard'}
     if url.get(event_id):
         return url[event_id]
     else:
