@@ -422,8 +422,8 @@ class MailHandler(BaseHandler):
         results = getResults(event_id)
         if event and results:
             message = mail.EmailMessage(sender='admin@susyandsteve.appspotmail.com', subject=event["event_name"]+" ("+results["event"]["Status"]+")")
-            message.to = "susy@susyandsteve.com"
-            message.cc = "steve@susyandsteve.com"
+            message.to = "sholtebeck@gmail.com"
+            message.cc = "ingrahas@gmail.com"
             result = urllib2.urlopen(results_url)
             message.html=result.read()
             message.send()
