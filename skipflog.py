@@ -346,11 +346,13 @@ def fetch_url(event_id):
 	1707: 'http://www.espn.com/golf/leaderboard?tournamentId=2710', 
 	1708: 'http://www.espn.com/golf/leaderboard?tournamentId=2712',
 	1804: 'http://www.espn.com/golf/leaderboard?tournamentId=401025221',
-	1806: 'http://www.espn.com/golf/leaderboard?tournamentId=401025255'}
+	1806: 'http://www.espn.com/golf/leaderboard?tournamentId=401025255',
+        1807: 'http://www.espn.com/golf/leaderboard?tournamentId=401025259' 
+    }
     if url.get(event_id):
         return url[event_id]
     else:
-        return None
+        return espn_url
 
 # Get the list of players
 def get_players(playlist):
