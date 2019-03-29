@@ -73,10 +73,14 @@ def current_year():
     this_year=strftime("%Y",gmtime())
     return int(this_year) 
 
+def current_ym():
+    this_ym=strftime("%y%m",gmtime())
+    return int(this_ym) 
+
 def current_time():
     right_now=strftime("%H%M",gmtime())
     return str(right_now) 
-	
+    
 # determine the cut rank for the various majors (Masters=50, US=60, Open,PGA=70)
 def cut_rank():
     this_month=current_month()
@@ -90,8 +94,17 @@ def cut_rank():
 # debug values
 def debug_values(number, string):
     if debug:
-        print number, string
+        print (number, string)
 
+# Get the value for a string
+def get_value(string):
+    string=string.replace(',','').replace('-','0')
+    try:
+        value=round(float(string),2)
+    except:
+        value=0.0
+    return value
+    
 # Handler for string values to ASCII or integer
 def xstr(string):
     if string is None:
@@ -197,7 +210,10 @@ def fetch_headers(soup):
     else:
         headers['Last Update']= current_time()
     thead=soup.find('thead')
-    headers['Status']=str(soup.find("span",{"class":"tournament-status"}).string)
+    try:
+        headers['Status']=str(soup.find("span",{"class":"tournament-status"}).string)
+    except:
+        headers['Status']='None'
     if headers['Status'].startswith("Round "):
         headers['Round']=headers['Status'][6]
     headers['Round']=dt.datetime.today().weekday()-2
@@ -286,7 +302,7 @@ def search_query(restaurant):
     elif restaurant.get("Address"):
         query=restaurant["Address"].lower().replace(" ","+")
     return query
-	
+    
 def fetch_restaurants():
     result = urllib2.urlopen(restaurants_url)
     reader = csv.DictReader(result)
@@ -294,7 +310,7 @@ def fetch_restaurants():
     for r in range(len(rest_list)):
         rest_list[r]["Maplink"]=mapsearch+search_query(rest_list[r])
     return rest_list
-	
+    
 def fetch_scores(url):
     scores=[[],[], 0,0]
     page=soup_results(url)
@@ -337,16 +353,16 @@ def fetch_rows(page):
 # fetch the url for an event
 def fetch_url(event_id):
     url={
-	1604: 'http://www.espn.com/golf/leaderboard?tournamentId=2493', 
-	1606: 'http://www.espn.com/golf/leaderboard?tournamentId=2501', 
-	1607: 'http://www.espn.com/golf/leaderboard?tournamentId=2505', 
-	1608: 'http://www.espn.com/golf/leaderboard?tournamentId=2507',
-	1704: 'http://www.espn.com/golf/leaderboard?tournamentId=2700', 
-	1706: 'http://www.espn.com/golf/leaderboard?tournamentId=3066', 
-	1707: 'http://www.espn.com/golf/leaderboard?tournamentId=2710', 
-	1708: 'http://www.espn.com/golf/leaderboard?tournamentId=2712',
-	1804: 'http://www.espn.com/golf/leaderboard?tournamentId=401025221',
-	1806: 'http://www.espn.com/golf/leaderboard?tournamentId=401025255',
+    1604: 'http://www.espn.com/golf/leaderboard?tournamentId=2493', 
+    1606: 'http://www.espn.com/golf/leaderboard?tournamentId=2501', 
+    1607: 'http://www.espn.com/golf/leaderboard?tournamentId=2505', 
+    1608: 'http://www.espn.com/golf/leaderboard?tournamentId=2507',
+    1704: 'http://www.espn.com/golf/leaderboard?tournamentId=2700', 
+    1706: 'http://www.espn.com/golf/leaderboard?tournamentId=3066', 
+    1707: 'http://www.espn.com/golf/leaderboard?tournamentId=2710', 
+    1708: 'http://www.espn.com/golf/leaderboard?tournamentId=2712',
+    1804: 'http://www.espn.com/golf/leaderboard?tournamentId=401025221',
+    1806: 'http://www.espn.com/golf/leaderboard?tournamentId=401025255',
     1807: 'http://www.espn.com/golf/leaderboard?tournamentId=401025259',
     1808: 'http://www.espn.com/golf/leaderboard?tournamentId=401025263'
     }
@@ -355,6 +371,33 @@ def fetch_url(event_id):
     else:
         return espn_url
 
+# Get the list of players from a spreadsheet (players tab)
+def getPlayers():
+    picks=get_picks(currentEvent()).keys()
+    players=[]
+    players_url="https://docs.google.com/spreadsheet/pub?key=0AgO6LpgSovGGdDI4bVpHU05zUDQ3R09rUnZ4LXBQS0E&single=true&gid=1&range=A2%3AF155&output=csv"
+    result = urllib2.urlopen(players_url)
+    reader = csv.reader(result)
+    rownum = 1
+    for row in reader:
+        if row:
+            rownum += 1
+            player={'rownum':rownum }
+            player['rank']=get_value(row[0])
+            player['name']=row[1]
+            player['lastname']=row[1].split(" ")[-1]
+            player['points']=get_value(row[2].replace(',','').replace('-','0'))
+            if len(row)>5:           
+                player['country']=row[3]
+                player['odds']=get_value(row[4])
+                player['picked']=picks.count(row[1])
+            else:
+                player['hotpoints']=0.0
+                player['odds']=999
+                player['picked']=0
+            players.append(player)
+    return players      
+        
 # Get the list of players
 def get_players(playlist):
     current_rank=1

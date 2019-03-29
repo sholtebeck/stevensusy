@@ -181,18 +181,17 @@ $(document).ready(function() {
 </div><!-- #tab2 -->
 
 
-<div id="tab3" class="tab_content"> 
-
-{% if event["results"] %}
+<div id="tab3" class="tab_content">
+{% if results >= 0 %}
 <iframe width='1250' height='800' frameborder='0' src='{{event.results}}'></iframe>
 {% else %}
-No results yet
+No results yet.
 {% endif %}
-
 </div><!-- #tab3 -->
+
 <div id="tab4" class="tab_content"> 
 
-<iframe width='1250' height='800' frameborder='0' src='http://skipflog.appspot.com/app/players.html'></iframe>
+<iframe width='1250' height='800' frameborder='0' src='../app/players.html'></iframe>
 
 </div><!-- #tab4 -->
 </div> <!-- .tab_container --> 

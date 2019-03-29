@@ -23,7 +23,7 @@ def num(value, yesorno):
             return 0
     else:
         return 0
-
+	
 def get_Nickname(input):
     (name,domain)=input.split('@')
     if (domain == 'gmail.com'):
@@ -451,6 +451,7 @@ class GolfPicks(BaseHandler):
             url_linktext = 'Login'
      
         template_values = {
+            'results': current_ym() - event_id,
             'event': event,
             'pick_no': pick_no,
             'picknum': picknum,
@@ -514,6 +515,22 @@ class Photos(BaseHandler):
         template = jinja_environment.get_template('photos.html')
         template_values = globalVals(self) 
         self.response.write(template.render(template_values))       
+
+class PlayersHandler(BaseHandler):   
+    def get(self):
+        event_id = self.request.get('event_id')
+        if event_id:
+            event = getEvent(event_id)
+        else:
+            event = getEvent(currentEvent())
+        output_format = self.request.get('output')
+        if not output_format:
+            output_format='html'
+        players=getPlayers()
+        self.response.headers['Content-Type'] = 'application/json'
+        template_values = { 'event': {"name":event.get('event_name') }, "players": players }
+        self.response.write(json.dumps(template_values))
+		
 		
 class Registry(BaseHandler):
     def get(self):
@@ -608,6 +625,7 @@ app = webapp2.WSGIApplication([
     ('/guests',Guests),
     ('/guestbook',Guestbook),
     ('/program', Program), 
+    ('/players', PlayersHandler), 
     ('/photos', Photos),
     ('/registry', Registry),
     ('/restaurants', Restaurants),
