@@ -211,14 +211,14 @@ def fetch_headers(soup):
         headers['Last Update']= current_time()
     thead=soup.find('thead')
     try:
-        headers['Status']=str(soup.find("span",{"class":"tournament-status"}).string)
+        headers['Status']=soup.find("div",{"class":"status"}).find('span').string
     except:
         headers['Status']='None'
     if headers['Status'].startswith("Round "):
         headers['Round']=headers['Status'][6]
     headers['Round']=dt.datetime.today().weekday()-2
     table=soup.findAll("table")[-1]
-    headers['Columns']=[str(th.string) for th in table.findAll('th')]
+    headers['Columns']=[str(th.find('a').string) for th in table.findAll('th')]
     return headers
 
 def fetch_players(url):
