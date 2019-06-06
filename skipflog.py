@@ -227,7 +227,7 @@ def fetch_players(url):
     for row in soup.findAll('tr'):
         name = row.find('a')
         if name:
-            player_name=str(name.string)
+            player_name=xstr(name.string)
             players.append(player_name)
     players.sort()
     return players
@@ -364,7 +364,8 @@ def fetch_url(event_id):
     1804: 'http://www.espn.com/golf/leaderboard?tournamentId=401025221',
     1806: 'http://www.espn.com/golf/leaderboard?tournamentId=401025255',
     1807: 'http://www.espn.com/golf/leaderboard?tournamentId=401025259',
-    1808: 'http://www.espn.com/golf/leaderboard?tournamentId=401025263'
+    1808: 'http://www.espn.com/golf/leaderboard?tournamentId=401025263',
+	1904: 'http://www.espn.com/golf/leaderboard/_/tournamentId/401056527'
     }
     if url.get(event_id):
         return url[event_id]
