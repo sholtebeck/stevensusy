@@ -17,8 +17,8 @@ yrpicks = [2,3,6,7,10,11,14,15,18,19,21]
 names={'sholtebeck':'Steve','ingrahas':'Susy'}
 numbers={'Steve':'5103005644@vtext.com','Susy':'6149848290@vmobl.com'}
 pick_ord = ["None", "First","First","Second","Second","Third","Third","Fourth","Fourth","Fifth","Fifth", "Sixth","Sixth","Seventh","Seventh","Eighth","Eighth","Ninth","Ninth","Tenth","Tenth","Alt.","Alt.","Done"]
-event_url="https://docs.google.com/spreadsheet/pub?key=0Ahf3eANitEpndGhpVXdTM1AzclJCRW9KbnRWUzJ1M2c&single=true&gid=1&output=html&widget=true"
-events_url="https://docs.google.com/spreadsheet/pub?key=0AgO6LpgSovGGdDI4bVpHU05zUDQ3R09rUnZ4LXBQS0E&single=true&gid=0&range=A2%3AE21&output=csv"
+event_url="http://susyandsteve.appspot.com/golfevent"
+events_url="https://docs.google.com/spreadsheet/pub?key=0AgO6LpgSovGGdDI4bVpHU05zUDQ3R09rUnZ4LXBQS0E&single=true&gid=0&range=A1%3AE10&output=csv"
 players_url="https://docs.google.com/spreadsheet/pub?key=0AgO6LpgSovGGdDI4bVpHU05zUDQ3R09rUnZ4LXBQS0E&single=true&gid=1&range=B2%3AB155&output=csv"
 results_tab="https://docs.google.com/spreadsheet/pub?key=0AgO6LpgSovGGdDI4bVpHU05zUDQ3R09rUnZ4LXBQS0E&single=true&gid=2&output=html"
 ranking_url="https://docs.google.com/spreadsheet/pub?key=0AgO6LpgSovGGdDI4bVpHU05zUDQ3R09rUnZ4LXBQS0E&single=true&gid=3&output=html"
@@ -144,7 +144,16 @@ def default_event(event_id=currentEvent()):
         event["picks"][picker]=[]
     event["picks"]["Available"]=fetch_players(espn_url)
     event["pick_no"]=1  
+    event["events"]=fetch_events()  
     return event
+
+def fetch_events():
+    result = urllib2.urlopen(events_url,timeout=20)
+    reader = csv.DictReader(result)
+    event_list=[]
+    for row in reader:
+        event_list.append(row)
+    return event_list
 
 # Get the rankings from the page
 def get_rankings(size):
@@ -216,6 +225,8 @@ def fetch_headers(soup):
         headers['Status']='None'
     if headers['Status'].startswith("Round "):
         headers['Round']=headers['Status'][6]
+    elif headers['Status'].endswith('Final') or headers['Status'].endswith('Complete'):
+        headers['Done']=True
     headers['Round']=dt.datetime.today().weekday()-2
     table=soup.findAll("table")[-1]
     headers['Columns']=[str(th.find('a').string) for th in table.findAll('th')]
@@ -352,21 +363,7 @@ def fetch_rows(page):
 
 # fetch the url for an event
 def fetch_url(event_id):
-    url={
-    1604: 'http://www.espn.com/golf/leaderboard?tournamentId=2493', 
-    1606: 'http://www.espn.com/golf/leaderboard?tournamentId=2501', 
-    1607: 'http://www.espn.com/golf/leaderboard?tournamentId=2505', 
-    1608: 'http://www.espn.com/golf/leaderboard?tournamentId=2507',
-    1704: 'http://www.espn.com/golf/leaderboard?tournamentId=2700', 
-    1706: 'http://www.espn.com/golf/leaderboard?tournamentId=3066', 
-    1707: 'http://www.espn.com/golf/leaderboard?tournamentId=2710', 
-    1708: 'http://www.espn.com/golf/leaderboard?tournamentId=2712',
-    1804: 'http://www.espn.com/golf/leaderboard?tournamentId=401025221',
-    1806: 'http://www.espn.com/golf/leaderboard?tournamentId=401025255',
-    1807: 'http://www.espn.com/golf/leaderboard?tournamentId=401025259',
-    1808: 'http://www.espn.com/golf/leaderboard?tournamentId=401025263',
-	1904: 'http://www.espn.com/golf/leaderboard/_/tournamentId/401056527'
-    }
+    url={int(e['ID']):e['URL'] for e in fetch_events()}
     if url.get(event_id):
         return url[event_id]
     else:
@@ -419,6 +416,7 @@ def get_results(event_id):
     results={}
     tie={"Points":100,"Players":[]}
     results['event']=fetch_headers(page)
+    results['event']['ID']=event_id
     results['players']=[]
     rows=fetch_rows(page)
     for row in rows:

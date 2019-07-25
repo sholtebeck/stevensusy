@@ -342,16 +342,22 @@ def get_greetings():
     return greetings
     
 def getEvent(event_id):
-    event_data=memcache.get("event")
-    if not event_data:
-        event=Event.get_by_id(int(event_id))
-        if event:
-            event_data=event.event_json
-        else:
-            event_data=default_event(event_id)
+    event=Event.get_by_id(int(event_id))
+    if event:
+        event_data=event.event_json
+    else:
+        event_data=default_event(event_id)
     return event_data  
+
+def getEvents():
+    events = memcache.get('events')    
+    if not events:
+        events=[{"event_id": event.event_id, "event_name": event.event_name } for event in Event.query().order(-Event.event_id).fetch(10)]
+        memcache.add("events",events)
+    return events  
     
 def getResults(event_id):
+    results=getEvent(event_id).get('results')
     results_key='results'+str(event_id)
     resultstr = memcache.get(results_key)
     if resultstr:
@@ -393,16 +399,31 @@ def updateEvent(event_data):
     event=Event(id=event_id,event_id=event_id,event_name=event_data["event_name"],pick_no=event_data["pick_no"],event_json=event_data)
     event.put()
     memcache.delete("event")
-    memcache.add("event",event_data)
+    memcache.add("event",str(json.dumps(event_data)))
+
+def updateResults(event_id,results):
+    event_data=getEvent(event_id)
+    event_data['results']=results
+    updateEvent(event_data)
 
 class EventHandler(BaseHandler):
     def get(self):     
         event_id = int(self.request.get('event_id',currentEvent()))
         output=self.request.get('output')
         if "results" in self.request.url:
-            template_values = { 'results': getResults(event_id) }
-            template = jinja_environment.get_template('results.html')
-            self.response.out.write(template.render(template_values))
+            results=getResults(event_id)
+            if results:
+                updateResults(event_id,results)
+                template_values = { 'results': getResults(event_id) }
+                template = jinja_environment.get_template('results.html')
+                self.response.out.write(template.render(template_values))
+        elif "events" in self.request.url:
+            events=memcache.get('events')
+            if not events:
+                events=fetch_events()
+                memcache.add("events",events)
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.write({"events":events})
         else:
             event = getEvent(event_id)
             self.response.headers['Content-Type'] = 'application/json'
@@ -440,7 +461,7 @@ class GolfPicks(BaseHandler):
         else:
             event["next"]="Done"
         # check results
-        event["results"]=results_url+"?event_id="+str(event_id)
+        event["results_url"]=results_url+"?event_id="+str(event_id)
         if users.get_current_user():
             user = names[users.get_current_user().nickname()]
             url = users.create_logout_url(self.request.uri)
@@ -453,6 +474,7 @@ class GolfPicks(BaseHandler):
         template_values = {
             'results': current_ym() - event_id,
             'event': event,
+			'events': getEvents(),
             'pick_no': pick_no,
             'picknum': picknum,
             'url': url,
@@ -620,6 +642,7 @@ app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/ceremony',Ceremony),
     ('/golfevent',EventHandler),
+    ('/golfevents',EventHandler),
     ('/results',EventHandler),
     ('/golfpicks',GolfPicks),
     ('/guests',Guests),

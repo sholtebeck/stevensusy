@@ -97,9 +97,15 @@ $(document).ready(function() {
 {% if user %}
     &nbsp;Logged in as <b>{{ user }}</b>:
 {% endif %}
+<form action="/golfpicks" method="get" onchange="this.form.submit()">
   <a href="{{ url }}">{{ url_linktext }}</a>
 {% if event %}
-     &nbsp;Event: <b>{{ event.event_name }}</b>
+     &nbsp;Event: <select name="event_id">
+      {% for e in events %}
+    <option value="{{e.event_id}}" {% if e.event_id==event.event_id %} selected {% endif %} >{{e.event_name}}</option>
+   {% endfor %}
+   </select><input type="submit" id="submit" value="Get"> 
+</form> 
 {% endif %}
 <p><div id="container">
 
@@ -183,7 +189,7 @@ $(document).ready(function() {
 
 <div id="tab3" class="tab_content">
 {% if results >= 0 %}
-<iframe width='1250' height='800' frameborder='0' src='{{event.results}}'></iframe>
+<iframe width='1250' height='800' frameborder='0' src='/results?event_id={{event.event_id}}'></iframe>
 {% else %}
 No results yet.
 {% endif %}
