@@ -64,7 +64,6 @@ def globalVals(ctx):
     "time": "10:00am HST",
     "attire":"Casual (dress for a beach park)",
     "location": "Magic Island, Ala Moana Beach Park, Honolulu HI",
-    "map_key": "AIzaSyBQC2Eyx7Z4ersTZg15-zfm73CXXAjcRtk",
     "methods": ["email","facebook","mail","text"],
     "yes": "You are attending",
     "no": "You are not attending",
