@@ -74,7 +74,7 @@ def globalVals(ctx):
     "request" : ctx.request,
     "sender":"Susy & Steve <us@susyandsteve.appspotmail.com>",
     "subject":"Thank You for your RSVP",
-    "pages": [ {"name":"Tour","url":"/weddingtour"},  {"name":"RSVP","url":"/rsvp"}, {"name":"Registry","url":"/registry"}, {"name":"Guestbook","url":"/guestbook"}, {"name":"Program","url":"/program"}, {"name":"Photos","url":"/photos"}],
+    "pages": [ {"name":"Tour","url":"/weddingtour"},  {"name":"Restaurants","url":"/restaurants"}, {"name":"Registry","url":"/registry"}, {"name":"Golf Picks","url":"/golfpicks"}, {"name":"Program","url":"/program"}, {"name":"Photos","url":"/photos"}],
     "states":[ { "name": "Alabama", "code": "AL" }, { "name": "Alaska", "code": "AK" }, { "name": "Arizona", "code": "AZ" }, { "name": "Arkansas", "code": "AR" },
     { "name": "California", "code": "CA" }, { "name": "Colorado", "code": "CO" }, { "name": "Connecticut", "code": "CT" }, { "name": "Delaware", "code": "DE" },
     { "name": "District Of Columbia", "code": "DC" }, { "name": "Florida", "code": "FL" }, { "name": "Georgia", "code": "GA" },  { "name": "Hawaii", "code": "HI" }, 
@@ -341,22 +341,25 @@ def get_greetings():
     return greetings
     
 def getEvent(event_id):
-    event=Event.get_by_id(int(event_id))
-    if event:
-        event_data=event.event_json
-    else:
-        event_data=default_event(event_id)
+    event_data=memcache.get("event")
+    if not event_data:
+        event=Event.get_by_id(int(event_id))
+        if event:
+            event_data=event.event_json
+        else:
+            event_data=default_event(event_id)
     return event_data  
+
 
 def getEvents():
     events = memcache.get('events')    
     if not events:
         events=[{"event_id": event.event_id, "event_name": event.event_name } for event in Event.query().order(-Event.event_id).fetch(10)]
         memcache.add("events",events)
-    return events  
-    
+    return events 
+
 def getResults(event_id):
-    results=getEvent(event_id).get('results')
+    results={}
     results_key='results'+str(event_id)
     resultstr = memcache.get(results_key)
     if resultstr:
@@ -392,37 +395,35 @@ def setRestaurants(rest_type):
         memcache.delete("restaurants")    
     return restaurants
 	
+def getPlayers(event_data):
+    if event_data.get("players"):
+        return event["players"]
+    else:
+        return fetchPlayers()
 
 def updateEvent(event_data):
     event_id = int(event_data["event_id"])
     event=Event(id=event_id,event_id=event_id,event_name=event_data["event_name"],pick_no=event_data["pick_no"],event_json=event_data)
     event.put()
     memcache.delete("event")
-    memcache.add("event",str(json.dumps(event_data)))
+    memcache.add("event",event_data)
 
-def updateResults(event_id,results):
-    event_data=getEvent(event_id)
-    event_data['results']=results
-    updateEvent(event_data)
+def getUserData(self):
+    userdata={"user":"","url": users.create_login_url(self.request.uri), "url_linktext":"Login"}
+    if users.get_current_user():
+        userdata["user"] = names[users.get_current_user().nickname()]
+        userdata["url"] = users.create_logout_url(self.request.uri)
+        userdata["url_linktext"] = 'Logout'
+    return userdata
 
 class EventHandler(BaseHandler):
     def get(self):     
         event_id = int(self.request.get('event_id',currentEvent()))
         output=self.request.get('output')
         if "results" in self.request.url:
-            results=getResults(event_id)
-            if results:
-                updateResults(event_id,results)
-                template_values = { 'results': getResults(event_id) }
-                template = jinja_environment.get_template('results.html')
-                self.response.out.write(template.render(template_values))
-        elif "events" in self.request.url:
-            events=memcache.get('events')
-            if not events:
-                events=fetch_events()
-                memcache.add("events",events)
-            self.response.headers['Content-Type'] = 'application/json'
-            self.response.write({"events":events})
+            template_values = { 'results': getResults(event_id) }
+            template = jinja_environment.get_template('results.html')
+            self.response.out.write(template.render(template_values))
         else:
             event = getEvent(event_id)
             self.response.headers['Content-Type'] = 'application/json'
@@ -454,51 +455,30 @@ class GolfPicks(BaseHandler):
         event = getEvent(event_id)
         pick_no = event["pick_no"]
         picknum = pick_ord[pick_no]
-        # get next player
-        if picknum != "Done":
-            event["next"]=event["pickers"][0] if mypicks.count(pick_no)>0 else event["pickers"][1]
-        else:
-            event["next"]="Done"
         # check results
-        event["results_url"]=results_url+"?event_id="+str(event_id)
-        if users.get_current_user():
-            user = names[users.get_current_user().nickname()]
-            url = users.create_logout_url(self.request.uri)
-            url_linktext = 'Logout'
-        else:
-            user = ""
-            url = users.create_login_url(self.request.uri)
-            url_linktext = 'Login'
-     
+        event["results"]=results_url
+        userdata=getUserData(self)   
         template_values = {
             'results': current_ym() - event_id,
             'event': event,
-			'events': getEvents(),
-            'pick_no': pick_no,
-            'picknum': picknum,
-            'url': url,
-            'url_linktext': url_linktext,
-            'user': user
+            'events': getEvents(),
+            'user': userdata["user"],
+            'userdata': userdata
         }
         template = jinja_environment.get_template('index.html')
         self.response.out.write(template.render(template_values))
         
     def post(self):
-        event_id=self.request.get('event_id')
+        event_id=self.request.get('event_id',currentEvent())
         event=getEvent(event_id)     
-        who= self.request.get('who')
-        pick_no = int(self.request.get('pick_no'))
+        who= self.request.get('who',event["next"])
         player = self.request.get('player')
+        memcache.set("lastpick",who+" picked "+player)
         # update event (add to picks, remove from field)
-        event = getEvent(event_id)
-        if player in event["picks"]["Available"]:
-            event["picks"]["Available"].remove(player)
-            event["picks"]["Picked"].append(player)
-            event["picks"][who].append(player)
-            event["lastpick"]=who+" picked "+player
-            event["pick_no"]+=1
-            updateEvent(event)
-        self.redirect('/golfpicks?event_id=' +event_id) 
+        if player in [p["name"] for p in event["players"] if p["picked"]==0]:
+            updated_event=pick_player(event,player)
+            updateEvent(updated_event)
+        self.redirect('/golfpicks') 
     
 class Guestbook(BaseHandler):
     def get(self):
@@ -547,9 +527,12 @@ class PlayersHandler(BaseHandler):
         output_format = self.request.get('output')
         if not output_format:
             output_format='html'
-        players=getPlayers()
+        eventdict=getUserData(self)
+        eventdict["name"]=event.get('event_name') 
+        eventdict["nopick"]=(eventdict["user"]!=event["next"])
+        players=event.get("players")
         self.response.headers['Content-Type'] = 'application/json'
-        template_values = { 'event': {"name":event.get('event_name') }, "players": players }
+        template_values = { 'event': eventdict, "players": players }
         self.response.write(json.dumps(template_values))
 		
 		
@@ -570,7 +553,10 @@ class Restaurants(BaseHandler):
             self.response.headers['Content-Type'] = 'application/json'
             self.response.write(json.dumps({"restaurants":restaurants, "types":types }))
         elif output_format=='html':
-            self.redirect("/app/restaurants.html") 
+#            self.redirect("/app/restaurants.html") 
+            template = jinja_environment.get_template('restaurants.html')
+            template_values = globalVals(self) 
+            self.response.write(template.render(template_values))       
 			
     def post(self):
         rest_type = self.request.get('rest_type') 
@@ -641,7 +627,6 @@ app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/ceremony',Ceremony),
     ('/golfevent',EventHandler),
-    ('/golfevents',EventHandler),
     ('/results',EventHandler),
     ('/golfpicks',GolfPicks),
     ('/guests',Guests),
