@@ -24,7 +24,10 @@ $(document).ready(function() {
   </head>
   <body>
 <div>
-<form action="/golfpicks" method="get" onchange="this.form.submit()"></form>
+{% if not user %}
+  <a href="{{ userdata.url }}">{{ userdata.url_linktext }}</a>
+{% endif %}
+<form action="/golfpicks" method="get" onchange="this.form.submit()">
 {% if user %}
     &nbsp;Logged in as <b>{{ user }}</b>:
 {% endif %}
@@ -35,7 +38,7 @@ $(document).ready(function() {
 		{% for e in events %}
 	  <option value="{{e.event_id}}" {% if e.event_id==event.event_id %} selected {% endif %} >{{e.event_name}}</option>
 	 {% endfor %}
-	 </select><input type="submit" id="submit" value="Get">
+	 </select><input type="submit" id="submit" value="Load">
 	 &nbsp;<b>Dates</b>: {{event.event_dates}}
 {% endif %}
 </form>

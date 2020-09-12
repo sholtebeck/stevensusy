@@ -341,8 +341,8 @@ def get_greetings():
     return greetings
     
 def getEvent(event_id):
-    event_data=memcache.get("event")
-    if not event_data:
+    event_data=memcache.get("event"+str(event_id))
+    if not event_data:    
         event=Event.get_by_id(int(event_id))
         if event:
             event_data=event.event_json
@@ -406,7 +406,7 @@ def updateEvent(event_data):
     event=Event(id=event_id,event_id=event_id,event_name=event_data["event_name"],pick_no=event_data["pick_no"],event_json=event_data)
     event.put()
     memcache.delete("event")
-    memcache.add("event",event_data)
+    memcache.add("event"+str(event_id),event_data)
 
 def getUserData(self):
     userdata={"user":"","url": users.create_login_url(self.request.uri), "url_linktext":"Login"}
@@ -429,9 +429,13 @@ class EventHandler(BaseHandler):
             self.response.headers['Content-Type'] = 'application/json'
             self.response.write(json.dumps(event))
             
-    def post(self):     
-        event_data = self.request.get('event_data')
-        event_json = json.loads(event_data)
+    def post(self):
+        if self.request.get("event_data"): 
+            event_data = self.request.get('event_data')
+            event_json = json.loads(event_data)
+        else:
+            event_data = self.request.body
+            event_json = json.loads(event_data)
         updateEvent(event_json)
         event_id = str(event_json["event_id"])
         self.redirect('/golfevent?event_id=' +event_id) 
