@@ -4,6 +4,7 @@ import cgi
 import urllib
 import jinja2
 import webapp2
+from random import randint
 from datetime import date,datetime
 from google.appengine.api import users,mail,memcache
 from google.appengine.ext import ndb
@@ -91,6 +92,7 @@ def globalVals(ctx):
     "carriers": [ {"name":"Alltel","domain":"message.alltel.com"},{"name":"AT&T","domain":"message.alltel.com"},{"name":"Boost","domain":"myboostmobile.com"},
     {"name":"Sprint","domain":"messaging.sprintpcs.com"},{"name":"T-Mobile","domain":"tmomail.net"},{"name":"Verizon","domain":"vtext.com"},{"name":"Virgin","domain":"vmobl.com"}  ],
     "tour": True,
+    "restaurants": getRestaurants(),
 	"types": ['Asian', 'Barbecue', 'Breakfast', 'Brewpub', 'Burmese', 'Caribbean', 'Chinese', 'Ethiopian', 'Greek', 'Indian', 'Indian ', 'Italian', 'Japanese', 'Mediterranean', 'Mexican', 'Moroccan', 'Persian', 'Picnic', 'Pizza', 'Seafood', 'Shave Ice', 'Thai', 'Vietnamese']
     }
     # Get number of days until the big day
@@ -386,15 +388,9 @@ def getRestaurants():
             memcache.delete("restaurants")    
     return restaurants
 
-def setRestaurants(rest_type):
-    try:
-        restaurants=fetch_restaurants(rest_type)
-        reststr=str(json.dumps(restaurants))
-        memcache.add("restaurants",reststr,60)
-    except:
-        memcache.delete("restaurants")    
-    return restaurants
-	
+def setRestaurants(rest_type):  
+    return fetch_restaurants(rest_type)
+
 def getPlayers(event_data):
     if event_data.get("players"):
         return event["players"]
@@ -405,7 +401,7 @@ def updateEvent(event_data):
     event_id = int(event_data["event_id"])
     event=Event(id=event_id,event_id=event_id,event_name=event_data["event_name"],pick_no=event_data["pick_no"],event_json=event_data)
     event.put()
-    memcache.delete("event")
+    memcache.delete("event"+str(event_id))
     memcache.add("event"+str(event_id),event_data)
 
 def getUserData(self):
@@ -549,24 +545,27 @@ class Registry(BaseHandler):
 class Restaurants(BaseHandler):    
     def get(self):
         output_format = self.request.get('output')
+        restaurants = setRestaurants(self.request.get('type'))
+        r=randint(0,len(restaurants)-1)
         if not output_format:
             output_format='html'
         if output_format=='json':
-            restaurants = getRestaurants()
-            types=sorted(list(set([rest.get('Type').strip() for rest in restaurants])))
             self.response.headers['Content-Type'] = 'application/json'
             self.response.write(json.dumps({"restaurants":restaurants, "types":types }))
         elif output_format=='html':
 #            self.redirect("/app/restaurants.html") 
             template = jinja_environment.get_template('restaurants.html')
             template_values = globalVals(self) 
+            template_values["restaurants"]=restaurants
+            template_values["randrest"]=restaurants[r]    
+            template_values["type"]=self.request.get('type')        
             self.response.write(template.render(template_values))       
 			
     def post(self):
-        rest_type = self.request.get('rest_type') 
-        if rest_type:
-            setRestaurants(rest_type)		
-        self.redirect("/app/restaurants.html")      
+        if len(self.request.get('type'))>2:
+            self.redirect("/restaurants?type="+self.request.get('type'))   
+        else:
+            self.redirect("/restaurants")    
         
 		
 class Guests(BaseHandler):

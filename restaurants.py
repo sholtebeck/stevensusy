@@ -8,8 +8,12 @@ urls=[ta_rest_url]+['/Restaurants-g60982-oa'+str(o)+'-Honolulu_Oahu_Hawaii.html'
 def soup_results(url):
     page=requests.get(ta_base_url+url)
     soup = BeautifulSoup(page.text,"html.parser")
+    urls=[]
     if 'Restaurants' in url:
-        results = json.loads(soup.find('script', type='application/ld+json').text).get('itemListElement')
+        for a in soup.findAll('a', href=True):
+            if a["href"].startswith("/Restaurant_Review") and a["href"].endswith("html") and a["href"] not in urls:
+                urls.append(a["href"])
+        results=[{"url":url,name:url.split('-')[4].replace('_',' ')} for url in urls[1:]]    
     elif 'Restaurant_Review' in url:
         rdata=json.loads(soup.find('script', type='application/ld+json').text)
         results={t:rdata[t] for t in rdata.keys() if not(t.startswith('@'))}

@@ -195,10 +195,16 @@ def search_query(restaurant):
         query=restaurant["Address"].lower().replace(" ","+")
     return query
     
-def fetch_restaurants():
-    result = urllib2.urlopen(restaurants_url)
-    reader = csv.DictReader(result)
-    rest_list=[row for row in reader]
+def fetch_restaurants(rtype=None):
+    if cache.get("restaurants"):
+        rest_list=cache["restaurants"]
+    else:
+        result = urllib2.urlopen(restaurants_url)
+        reader = csv.DictReader(result)
+        rest_list=[row for row in reader]
+        cache["restaurants"]=rest_list
+    if rtype:
+        rest_list=[r for r in rest_list if r["Type"]==rtype]
     for r in range(len(rest_list)):
         rest_list[r]["Maplink"]=mapsearch+search_query(rest_list[r])
     return rest_list

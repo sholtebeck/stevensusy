@@ -87,6 +87,9 @@ td, th { border: solid; } /* Make cells a bit taller */
 .center {
 	text-align: center;
   }
-
+.rest {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 1.1em;
+	  }
 
 
