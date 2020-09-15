@@ -92,9 +92,9 @@ def globalVals(ctx):
     "carriers": [ {"name":"Alltel","domain":"message.alltel.com"},{"name":"AT&T","domain":"message.alltel.com"},{"name":"Boost","domain":"myboostmobile.com"},
     {"name":"Sprint","domain":"messaging.sprintpcs.com"},{"name":"T-Mobile","domain":"tmomail.net"},{"name":"Verizon","domain":"vtext.com"},{"name":"Virgin","domain":"vmobl.com"}  ],
     "tour": True,
-    "restaurants": getRestaurants(),
-	"types": ['Asian', 'Barbecue', 'Breakfast', 'Brewpub', 'Burmese', 'Caribbean', 'Chinese', 'Ethiopian', 'Greek', 'Indian', 'Indian ', 'Italian', 'Japanese', 'Mediterranean', 'Mexican', 'Moroccan', 'Persian', 'Picnic', 'Pizza', 'Seafood', 'Shave Ice', 'Thai', 'Vietnamese']
-    }
+    "restaurants": fetch_restaurants(),
+	"types": fetch_types()
+     }
     # Get number of days until the big day
     template_values['action']=ctx.request.get('action') 
     template_values['days']=int((datetime(2017,4,16,20,0)-datetime.now()).total_seconds()/86400+0.5)

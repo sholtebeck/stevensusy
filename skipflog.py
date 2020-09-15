@@ -189,10 +189,10 @@ def json_results(url):
     return results
 
 def search_query(restaurant):
-    if restaurant.get("Name"):
-        query=restaurant["Name"].lower().replace(" ","+")
-    elif restaurant.get("Address"):
-        query=restaurant["Address"].lower().replace(" ","+")
+    if restaurant.get("Address"):
+        query=restaurant["Address"].lower().replace(" ","+")+"+honolulu"
+    elif restaurant.get("Name"):
+        query=restaurant["Name"].lower().replace(" ","+")+"+honolulu"
     return query
     
 def fetch_restaurants(rtype=None):
@@ -204,11 +204,14 @@ def fetch_restaurants(rtype=None):
         rest_list=[row for row in reader]
         cache["restaurants"]=rest_list
     if rtype:
-        rest_list=[r for r in rest_list if r["Type"]==rtype]
+        rest_list=[r for r in rest_list if rtype in r["Type"]]
     for r in range(len(rest_list)):
         rest_list[r]["Maplink"]=mapsearch+search_query(rest_list[r])
     return rest_list
   
+def fetch_types():
+    return sorted(list({r["Type"].strip() for r in fetch_restaurants() if ',' not in r["Type"]}))
+    
 # Get the list of players from a spreadsheet (players tab)
 def fetchPlayers():
     if cache.get("players"):

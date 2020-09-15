@@ -18,6 +18,7 @@ susyandsteve.controller('restaurantController', ['$scope', '$http',
     $http.get('/restaurants?output=json').success(function(data) {
       $scope.restaurants = data.restaurants;
       $scope.types = data.types;
+      $scope.randrest = data.randrest;
     });   
     $scope.orderProp = 'Name';
   }]);
