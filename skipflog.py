@@ -179,7 +179,7 @@ def get_picks(event_id):
             picklist=picker["picks"][:10]
             picks[pickname]={'Name':pickname,'Count':len(picklist),'Picks':picklist,'Points':0}
             for pick in picklist:
-                picks[str(pick)]=picker
+                picks[str(pick)]=picker["name"]
     return picks
 
 # json_results -- get results for a url
@@ -235,13 +235,16 @@ def get_results(event_id):
        picks[name]["Count"]=0
        picks[name]["Points"]=0
     results=json_results(results_api)
-    tie={"Points":100,"Players":[]}
+    pts=[get_points(r) for r in range(len(results["players"])) if get_points(r)>0]
+    positions={p["POS"]: sum(1 for q in results["players"] if q["POS"]==p["POS"]) for p in results["players"]}
+    points={p:round(sum(pts[get_rank(p):get_rank(p)+positions[p]])/positions[p],2) for p in positions.keys() if get_rank(p)<len(pts)}
     for res in results["players"]:
+        res["Points"]=points.get(res["POS"],get_points(res["Rank"]))
         if res.get('Name') in picks.keys():
             picker=xstr(picks[res['Name']])
             res['Picker']=picker
             picks[picker]["Count"]+=1
-            picks[picker]["Points"]+=1
+            picks[picker]["Points"]+=res["Points"]
     results['players']=[p for p in results['players'] if p.get("Picker") or p.get("Points")>20]
     results['pickers']=[picks[key] for key in picks.keys() if key in skip_pickers]
     if results['pickers'][1]['Points']>results['pickers'][0]['Points']:
