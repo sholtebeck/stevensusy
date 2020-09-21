@@ -235,7 +235,7 @@ def get_results(event_id):
        picks[name]["Count"]=0
        picks[name]["Points"]=0
     results=json_results(results_api)
-    pts=[get_points(r) for r in range(len(results["players"])) if get_points(r)>0]
+    pts=[get_points(r) for r in range(len(results["players"])) if r==0 or get_points(r)>0]
     positions={p["POS"]: sum(1 for q in results["players"] if q["POS"]==p["POS"]) for p in results["players"]}
     points={p:round(sum(pts[get_rank(p):get_rank(p)+positions[p]])/positions[p],2) for p in positions.keys() if get_rank(p)<len(pts)}
     for res in results["players"]:
